@@ -7,6 +7,9 @@ import ChatHover from '../image/chathover.svg';
 import GameHover from '../image/gamehover.svg';
 import Setting from '../image/settingof.svg';
 import SettingHover from '../image/settingon.svg';
+import Leave from '../image/leave.svg';
+import LeaveHover from '../image/leaveHover.svg';
+import Router from "next/router";
 
 interface BarLeftProps {
   name: string;
@@ -19,6 +22,8 @@ function getImageSource(name : string){
     return Game;
   if (name === "Setting")
     return Setting;
+  if (name === "Log out")
+    return Leave;
 }
 function getImageHover(name : string){
   if (name === "Chat")
@@ -27,6 +32,8 @@ function getImageHover(name : string){
     return GameHover;
   if (name === "Setting")
     return SettingHover;
+  if (name === "Log out")
+    return LeaveHover;
 }
 
 const BarLeft = (props: BarLeftProps) => {
@@ -42,7 +49,7 @@ const BarLeft = (props: BarLeftProps) => {
       <span className="text-left">
         {img && <Image className="w-10" alt="user" src={img} />}
       </span>
-      <span className="mx-4 text-sm font-normal">{props.name}</span>
+      <span className="ml-4 text-sm font-normal">{props.name}</span>
     </Link>
   );
 };
