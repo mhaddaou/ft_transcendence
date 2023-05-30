@@ -48,7 +48,7 @@ function getImageSource({name , page} : PropsImg){
       return SettingHover;
     return Setting;
   }
-  else if (name === "Log out")
+  else if (name === "Logout")
     return Leave;
 }
 function getImageHover({name, page} : PropsImg){
@@ -58,19 +58,24 @@ function getImageHover({name, page} : PropsImg){
     return GameHover;
   else if (name === "Setting")
     return SettingHover;
-  else if (name === "Log out")
+  else if (name === "Logout")
     return LeaveHover;
   else if (name === "Profile")
     return (ProfileHover);
 }
 
 const BarLeft = (props: BarLeftProps) => {
+  const router = Router;
 
 
 
   const click= ()=>{
-    // if (profile)
-
+    if (props.name === "Profile")
+      router.push('http://localhost:3000/Dashbord');
+    if (props.name === "Setting")
+      router.push('http://localhost:3000/Setting');
+    if (props.name === "Chat")
+      router.push('http://localhost:3000/NewChat')
   }
 
 

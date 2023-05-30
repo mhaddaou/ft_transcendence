@@ -41,7 +41,7 @@ export function CallBarLeft(props: PropsCallBarLeft){
             <BarLeft name="Chat" check={false} page={props.page}  /> 
             <BarLeft name="Game" check={false}  page={props.page}/>
             <BarLeft name="Setting" check={false} page={props.page}/>
-            <BarLeft name="Log out" check={false} page={props.page}/> 
+            <BarLeft name="Logout" check={false} page={props.page}/> 
         </>
     );
 
