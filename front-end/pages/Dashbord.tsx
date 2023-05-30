@@ -45,7 +45,7 @@ export default function Progress() {
 
   return (
     <div className='bg-gradient-to-t from-gray-100 to-gray-400 min-h-screen ' >
-      <div className='flex flex-col container mx-auto h-screen py-2 space-y-2 md:space-y-3  '>
+      <div className='flex flex-col container mx-auto h-screen py-2 gap-3  '>
       <div className=' h-1/2 flex md:space-x-2'>
         <div className="hidden md:flex md:flex-col  md:w-[15%]  bg-gray-200 shadow-2xl shadow-gray-200  rounded-2xl dark:bg-gray-700 pt-4   ">
                    
@@ -53,8 +53,7 @@ export default function Progress() {
                    <FontAwesomeIcon  icon={faTableTennisPaddleBall} flip={true} size="2xl" style={{color:'#0369a1'}}/>                
                    </div>
                    <div className="mt-6">
-                    <Profile />
-                    <CallBarLeft />
+                    <CallBarLeft page="Profile" />
                        
                    </div>
                </div>
@@ -71,16 +70,18 @@ export default function Progress() {
             <div className='h-1/2 w-full flex justify-center '>
               <Image className='w-full h-full' src={Statics} alt='static' />
             </div>
-            <div className='bg-gray-200  h-1/2 rounded-2xl flex  items-center flex-row justify-around'>
+            <div className='bg-gray-200 w-full  h-1/2 rounded-2xl px-8 md:px-0  overflow-y-auto scrollbar-thin'>
+              <div className='h-full  w-full flex  flex-col gap-4 md:flex-row md:justify-around md:items-center'>
+
               <LevelStatics level={4} per={60} />
               <Stats per={88} name='Wins' />
               <Stats per={12} name='Losses' />
-
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div className=' h-1/2 flex flex-col space-y-3 bg-gray-200 rounded-2xl stack'>
+      <div className=' h-1/2 flex flex-col space-y-3 bg-gray-200 rounded-2xl stack '>
         <div className='h-[25%]  flex justify-around items-center  rounded-2xl '>
           <button onClick={clickHistory} className='font-bold md:text-xl font-mono border-b-4 rounded-b-xl border-slate-600 hover:border-cyan-600'>History</button>
           <button onClick={clickAchie} className='font-bold md:text-xl font-mono border-b-4 rounded-b-xl border-slate-600 hover:border-cyan-600'>Achievement</button>

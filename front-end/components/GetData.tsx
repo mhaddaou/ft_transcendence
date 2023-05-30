@@ -52,14 +52,7 @@ export default function GetDataHistory(){
                         </div>
 
                     </div>
-                    
                     </div>
-                    
-                    
-                    
-                    
-                    
-
             );
         }
 }
@@ -111,8 +104,8 @@ export  function GetDataFriend(){
                     </div>
                     <div className="w-full   h-[86%] overflow-y-auto scrollbar-thin scrollbar-track-slate-950 scrollbar-thumb-slate-300">
                         <div className=" h-[16%] max-h-[16%] bg-gray-200 flex justify-around items-center my-2">
-                            <div className=" w-1/3  flex justify-center">
-                                <Image className="mask mask-squircle w-12 h-12" src={mhaddaou} alt="avatar" />
+                            <div className="h-full w-1/3  flex justify-center items-center ">
+                                <Image className="mask mask-squircle w-8 h-8 sm:w-12 sm:h-12   " src={mhaddaou} alt="avatar" />
                             </div>
                             <div className="w-1/3  text-center ">mhaddaou</div>
                             <div className="w-1/3  text-center">
@@ -120,120 +113,6 @@ export  function GetDataFriend(){
                             </div>
 
                         </div>
-                        <div className=" h-[16%] max-h-[16%] bg-gray-200 flex justify-around items-center my-2">
-                            <div className=" w-1/3  flex justify-center">
-                                <Image className="mask mask-squircle w-12 h-12" src={smia} alt="avatar" />
-                            </div>
-                            <div className="w-1/3  text-center ">smia</div>
-                            <div className="w-1/3  text-center">
-                            <button className="btn btn-ghost btn-xs">details</button>
-                            </div>
-
-                        </div>
-                        <div className=" h-[16%] max-h-[16%] bg-gray-200 flex justify-around items-center my-2">
-                            <div className=" w-1/3  flex justify-center">
-                                <Image className="mask mask-squircle w-12 h-12" src={mhaddaou} alt="avatar" />
-                            </div>
-                            <div className="w-1/3  text-center ">mhaddaou</div>
-                            <div className="w-1/3  text-center">
-                            <button className="btn btn-ghost btn-xs">details</button>
-                            </div>
-
-                        </div>
-                        <div className=" h-[16%] max-h-[16%] bg-gray-200 flex justify-around items-center my-2">
-                            <div className=" w-1/3  flex justify-center">
-                                <Image className="mask mask-squircle w-12 h-12" src={mhaddaou} alt="avatar" />
-                            </div>
-                            <div className="w-1/3  text-center ">mhaddaou</div>
-                            <div className="w-1/3  text-center">
-                            <button className="btn btn-ghost btn-xs">details</button>
-                            </div>
-
-                        </div>
-
-                        <div className=" h-[16%] max-h-[16%] bg-gray-200 flex justify-around items-center my-2">
-                            <div className=" w-1/3  flex justify-center">
-                                <Image className="mask mask-squircle w-12 h-12" src={mhaddaou} alt="avatar" />
-                            </div>
-                            <div className="w-1/3  text-center ">mhaddaou</div>
-                            <div className="w-1/3  text-center">
-                            <button className="btn btn-ghost btn-xs">details</button>
-                            </div>
-
-                        </div>
-                        <div className=" h-[16%] max-h-[16%] bg-gray-200 flex justify-around items-center my-2">
-                            <div className=" w-1/3  flex justify-center">
-                                <Image className="mask mask-squircle w-12 h-12" src={mhaddaou} alt="avatar" />
-                            </div>
-                            <div className="w-1/3  text-center ">mhaddaou</div>
-                            <div className="w-1/3  text-center">
-                            <button className="btn btn-ghost btn-xs">details</button>
-                            </div>
-
-                        </div>
-                        <div className=" h-[16%] max-h-[16%] bg-gray-200 flex justify-around items-center my-2">
-                            <div className=" w-1/3  flex justify-center">
-                                <Image className="mask mask-squircle w-12 h-12" src={mhaddaou} alt="avatar" />
-                            </div>
-                            <div className="w-1/3  text-center ">mhaddaou</div>
-                            <div className="w-1/3  text-center">
-                            <button className="btn btn-ghost btn-xs">details</button>
-                            </div>
-
-                        </div>
-                        <div className=" h-[16%] max-h-[16%] bg-gray-200 flex justify-around items-center my-2">
-                            <div className=" w-1/3  flex justify-center">
-                                <Image className="mask mask-squircle w-12 h-12" src={mhaddaou} alt="avatar" />
-                            </div>
-                            <div className="w-1/3  text-center ">mhaddaou</div>
-                            <div className="w-1/3  text-center">
-                            <button className="btn btn-ghost btn-xs">details</button>
-                            </div>
-
-                        </div>
-                        <div className=" h-[16%] max-h-[16%] bg-gray-200 flex justify-around items-center my-2">
-                            <div className=" w-1/3  flex justify-center">
-                                <Image className="mask mask-squircle w-12 h-12" src={mhaddaou} alt="avatar" />
-                            </div>
-                            <div className="w-1/3  text-center ">mhaddaou</div>
-                            <div className="w-1/3  text-center">
-                            <button className="btn btn-ghost btn-xs">details</button>
-                            </div>
-
-                        </div>
-                        <div className=" h-[16%] max-h-[16%] bg-gray-200 flex justify-around items-center my-2">
-                            <div className=" w-1/3  flex justify-center">
-                                <Image className="mask mask-squircle w-12 h-12" src={mhaddaou} alt="avatar" />
-                            </div>
-                            <div className="w-1/3  text-center ">mhaddaou</div>
-                            <div className="w-1/3  text-center">
-                            <button className="btn btn-ghost btn-xs">details</button>
-                            </div>
-
-                        </div>
-                        <div className=" h-[16%] max-h-[16%] bg-gray-200 flex justify-around items-center my-2">
-                            <div className=" w-1/3  flex justify-center">
-                                <Image className="mask mask-squircle w-12 h-12" src={mhaddaou} alt="avatar" />
-                            </div>
-                            <div className="w-1/3  text-center ">mhaddaou</div>
-                            <div className="w-1/3  text-center">
-                            <button className="btn btn-ghost btn-xs">details</button>
-                            </div>
-
-                        </div><div className=" h-[16%] max-h-[16%] bg-gray-200 flex justify-around items-center my-2">
-                            <div className=" w-1/3  flex justify-center">
-                                <Image className="mask mask-squircle w-12 h-12" src={mhaddaou} alt="avatar" />
-                            </div>
-                            <div className="w-1/3  text-center ">mhaddaou</div>
-                            <div className="w-1/3  text-center">
-                            <button className="btn btn-ghost btn-xs">details</button>
-                            </div>
-
-                        </div>
-                       
-                   
-
-
                     </div>
 
                 </div>

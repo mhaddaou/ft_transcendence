@@ -3,10 +3,15 @@
 import GetDataHistory, {GetDataAchievement, GetDataFriend} from '@/components/GetData';
 import BarLeft from './BarLeft';
 
+interface PropsCallBarLeft{
+  page : string;
+}
 
 export default function  Functions(){
 
 }
+
+
 
 export function DataFunction (nbr : number){
     return (
@@ -29,13 +34,14 @@ export function DataFunction (nbr : number){
     )
 }
 
-export function CallBarLeft(){
+export function CallBarLeft(props: PropsCallBarLeft){
     return (
         <>
-            <BarLeft name="Chat" check={false} />
-            <BarLeft name="Game" check={false} />
-            <BarLeft name="Setting" check={false} />
-            <BarLeft name="Log out" check={false}/>
+            <BarLeft name="Profile" check={false} page={props.page}  />
+            <BarLeft name="Chat" check={false} page={props.page}  /> 
+            <BarLeft name="Game" check={false}  page={props.page}/>
+            <BarLeft name="Setting" check={false} page={props.page}/>
+            <BarLeft name="Log out" check={false} page={props.page}/> 
         </>
     );
 

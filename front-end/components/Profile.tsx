@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import User from '../image/user.svg' 
+import User from '../image/profilehover.svg' 
 
 const Profile = () =>{
     return (

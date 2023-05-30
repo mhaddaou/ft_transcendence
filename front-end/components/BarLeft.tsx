@@ -9,48 +9,87 @@ import Setting from '../image/settingof.svg';
 import SettingHover from '../image/settingon.svg';
 import Leave from '../image/leave.svg';
 import LeaveHover from '../image/leaveHover.svg';
+import ProfileHover from '../image/profilehover.svg'
+import Profile from '../image/profile.svg' 
 import Router from "next/router";
+import { profile } from "console";
+interface PropsImg{
+  name: string;
+  page: string;
+}
 
 interface BarLeftProps {
   name: string;
   check: boolean;
+  page : string;
 }
-function getImageSource(name : string){
-  if (name === "Chat")
+
+
+function getImageSource({name , page} : PropsImg){
+
+  
+  if (name === "Chat"){
+    if (name === page)
+      return ChatHover;    
     return Chat;
-  if (name === "Game")
+  }
+    else if (name === "Profile"){
+      if (name === page)
+        return ProfileHover;
+      return Profile;
+    }
+  else if (name === "Game"){
+    if (name === page)
+      return GameHover;
     return Game;
-  if (name === "Setting")
+  }
+  else if (name === "Setting"){
+    if (name === page)
+      return SettingHover;
     return Setting;
-  if (name === "Log out")
+  }
+  else if (name === "Log out")
     return Leave;
 }
-function getImageHover(name : string){
+function getImageHover({name, page} : PropsImg){
   if (name === "Chat")
     return ChatHover;
-  if (name === "Game")
+  else if (name === "Game")
     return GameHover;
-  if (name === "Setting")
+  else if (name === "Setting")
     return SettingHover;
-  if (name === "Log out")
+  else if (name === "Log out")
     return LeaveHover;
+  else if (name === "Profile")
+    return (ProfileHover);
 }
 
 const BarLeft = (props: BarLeftProps) => {
-  const [img, setImg] = useState(getImageSource(props.name));
+
+
+
+  const click= ()=>{
+    // if (profile)
+
+  }
+
+
+  const stylling :string = "flex items-center justify-start w-full p-4 my-2 font-thin text-blue-500 uppercase transition-colors duration-200 border-r-4 border-blue-500 bg-gradient-to-r from-white to-blue-100 dark:from-gray-700 dark:to-gray-800";
+  const stl : string = "hover:bg-gradient-to-r   hover:from-white hover:to-blue-100 flex items-center justify-start w-full p-4 my-2 font-thin text-gray-500 uppercase transition-colors duration-200 dark:text-gray-200 hover:text-blue-500"; 
+  const [img, setImg] = useState(getImageSource(props));
     const handlehover = () =>{
-        setImg(getImageHover(props.name));
+        setImg(getImageHover(props));
     }
     const handleLeave = ()=>{
-        setImg(getImageSource(props.name));
+        setImg(getImageSource(props));
     }
   return (
-    <Link onMouseEnter={handlehover} onMouseLeave={handleLeave} className="  hover:bg-gradient-to-r hover:from-white hover:to-blue-100 flex items-center justify-start w-full p-4 my-2 font-thin text-gray-500 uppercase transition-colors duration-200 dark:text-gray-200 hover:text-blue-500" href="#">
+    <button onClick={click} onMouseEnter={handlehover} onMouseLeave={handleLeave} className={`${props.page === props.name? stylling : stl}`} >
       <span className="text-left">
-        {img && <Image className="w-10" alt="user" src={img} />}
+        {img && <Image className={`${props.name === "Profile" ? 'w-8' : 'w-10'}`} alt="user" src={img} />}
       </span>
       <span className="ml-4 text-sm font-normal">{props.name}</span>
-    </Link>
+    </button>
   );
 };
 
