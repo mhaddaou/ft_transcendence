@@ -1,5 +1,7 @@
 
 import { useRef, useState } from "react";
+import { RiSendPlaneFill } from "react-icons/ri";
+
 
 function containsSpecialChars(str : string) : boolean {
     const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
@@ -72,8 +74,16 @@ export function InputMsg() {
 
 export function InputMsg2() {
     return (
-        <div className="w-full flex h-full text-black">
-            <input className="   min-h-full w-[95%] px-6" type="text" placeholder="Type a message" />
+        <div className="h-[4%] w-full   rounded-b-xl flex justify-center items-end">
+            <div className="w-full flex h-full rounded">
+                <div className="w-full h-full flex flex-row items-center  rounded-lg">
+                        <input className=" bg-red-400 appearance-none w-[90%] font-extraligh font-mono bg-transparent border-none   text-slate-700 mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder="Type a message" aria-label="Full name"/> 
+                        <button className=" flex-shrink-0  h-full w-[10%] text-sm   py-1 px-2 rounded" type="button">
+                        <RiSendPlaneFill className="h-8 w-6 text-white  " />
+                        </button>
+                </div>
+                        
+            </div>
         </div>
     );
 }

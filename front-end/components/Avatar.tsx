@@ -1,8 +1,8 @@
 
 import mhaddaou from '../image/mhaddaou.jpg'
-import React, { use, useState } from 'react';
+import React, { use, useState, useEffect } from 'react';
 import BarLeft from './BarLeft'
-import Image from 'next/image';
+import Image, { StaticImageData } from 'next/image';
 import Profile from './Profile';
 import { CallBarLeft } from './Functions';
 
@@ -11,7 +11,6 @@ interface PropsAvatar{
   check : boolean;
   page : string;
 }
-
 const Avatar = (props : PropsAvatar) => {
   const [color, setColor] = useState<string>(props.check === true ? "bg-green-500" : "bg-red-500");
   const [state , setState] = useState<string>(props.check === false ? "hidden" : "block");
@@ -32,3 +31,27 @@ const Avatar = (props : PropsAvatar) => {
 };
 
 export default Avatar;
+
+export const AvatarInfo = ({user} : {user : string}) =>{
+  const [Img, setImg] = useState<StaticImageData | undefined>(undefined);
+  useEffect(() =>{
+    if (user === "mhaddaou")
+      setImg(mhaddaou);
+  },[])
+
+  return (
+    <div className=' w-full h-full'>
+      <div className='w-full h-[20%]  flex justify-center items-center '>
+          { Img && <Image className='w-32 rounded-full border-spacing-1 border-4 border-slate-400'  src={Img} alt='aav' />}
+      </div>
+      <div className='w-full h-[80%]  flex flex-col items-center text-lg '>
+        <p>nick name</p>
+        <p>another things</p>
+        <p>and so forth</p>
+      </div>
+    </div>
+  );
+
+}
+
+
