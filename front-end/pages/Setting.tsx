@@ -1,6 +1,8 @@
 import Barl from "@/components/Barl";
 import NavBar from "@/components/NavBar";
 import setting2 from '../image/setting2.svg'
+import Lottie from "lottie-react";
+import Anim from '../image/paramanimation.json'
 import Image from "next/image";
 import { UpdateName, UpdateAvatar, Twofactor } from "@/components/Updates";
 import RealFooter from "@/components/RealFooter";
@@ -16,7 +18,9 @@ import RealFooter from "@/components/RealFooter";
                     <div className="w-full  flex flex-col gap-2">
                             <NavBar page="Setting" />
                         <div className="h-[88%] bg-slate-300 md:bg-inherit rounded-2xl flex justify-center items-center">
-                        <Image className="w-full h-full" src={setting2} alt="setting2"/>
+                        {/* <Image className="w-full h-full" src={setting2} alt="setting2"/> */}
+                        <Lottie className="w-full h-full" animationData={Anim} />
+
                         </div>
                     </div>
                 </div>

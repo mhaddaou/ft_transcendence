@@ -33,8 +33,19 @@ const NewChat = () =>{
                                     <div className="font-mono font-extrabold">mhaddaou</div>
                                 </div>
                                 <div className=" w-1/2 h-full flex flex-col items-end justify-center pr-8 ">
-                                    <button>
+                                    <button className="relative">
                                         <FontAwesomeIcon icon={faBars} flip style={{color: "#f0f2f5",}} />
+                                        <ul className=" bg-white absolute -left-24 z-20 rounded-lg y-2 text-sm text-gray-700 dark:text-gray-400" aria-labelledby="dropdownLargeButton">
+                                            <li>
+                                                <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">block</a>
+                                            </li>
+                                            <li>
+                                                <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">info</a>
+                                            </li>
+                                            <li>
+                                                <a href="#" className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Earnings</a>
+                                            </li>
+                                        </ul>
                                     </button>
                                     
                                 </div>
