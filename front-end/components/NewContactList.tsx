@@ -9,7 +9,7 @@ const NewContactList = () =>{
                 <p className="font-mono font-bold">Contact List</p>
             </div>
             <div className="h-[95%] w-full  rounded-2xl flex flex-col gap-1 px-2 md:px-1 overflow-y-auto scrollbar-none">
-                <button className="py-2 bg-gray-200 w-full h-16 flex px-4 gap-5  rounded">
+                <button className="py-2 bg-gray-500 w-full h-16 flex px-4 gap-5  rounded-lg">
                     <div className='w-1/2 h-full flex items-center gap-3'>
                     <div className="avatar">
                                         <div className="w-10 rounded-full ring ring-green-400 ring-offset-base-100 ring-offset-2">

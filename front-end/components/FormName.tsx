@@ -58,3 +58,22 @@ const FormName = () =>{
 }
 
 export default FormName;
+
+
+export function InputMsg() {
+    return (
+            <div className="flex items-center border-b border-slate-600 py-2 w-full  bg-red-300 px-6">
+
+                <input  className="appearance-none bg-transparent border-none text-gray-700 mr-3 py-1 px-6 leading-tight focus:outline-none" 
+                type="text" placeholder={``} aria-label="Full name"/>
+            </div>
+    );
+}
+
+export function InputMsg2() {
+    return (
+        <div className="w-full flex h-full text-black">
+            <input className="   min-h-full w-[95%] px-6" type="text" placeholder="Type a message" />
+        </div>
+    );
+}
