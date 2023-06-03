@@ -24,12 +24,20 @@ const Pop = () =>{
         <div className="min-h-screen bg-slate-400 flex justify-center items-center">
                 <button className={`bg-red-400 rounded-full ${hid}`} onClick={click}>modal</button>
                 <div className={` ${modal}`}>
-                <div className={`modal-box flex flex-col w-60 h-60`}>
-                    <div className="w-full h-[70%]">
-                    <p>
-                        this is modal
-                    </p>
-                    <input type="text" placeholder="enter your name" />
+                <div className={`modal-box flex flex-col w-[400px] h-[500px]`}>
+                    <div className="w-full h-[70%] flex flex-col gap-4 ">
+                        <div className="text-center font-mono font-semibold">login</div>
+                        <div className=" w-full h-full flex flex-col ">
+                            <div className="h-1/2 w-full text-center">
+                                <p>userName</p>
+                                <input type="text" className="border-none" placeholder="enter your name" />
+                            </div>
+                            <div className="h-1/2 w-full text-center">
+                                <p>Password</p>
+                                <input type="password"  placeholder="enter your password"/>
+                            </div>
+
+                        </div>
 
                     </div>
                     <div className="w-full h-[30%] flex items-center justify-around">

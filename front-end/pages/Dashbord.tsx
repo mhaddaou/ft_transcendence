@@ -37,7 +37,7 @@ export default function Progress() {
       <div className=' h-1/2 flex md:space-x-2'>
         <div className="hidden md:flex md:flex-col min-w-[130px]  md:w-[15%]  bg-gray-200 shadow-2xl shadow-gray-200  rounded-2xl dark:bg-gray-700 pt-4   ">
                    <div className=" self-center">
-                   <FontAwesomeIcon  icon={faTableTennisPaddleBall} flip={true} size="2xl" style={{color:'#0369a1'}}/>                
+                   <FontAwesomeIcon  icon={faTableTennisPaddleBall} flip size="2xl" style={{color:'#0369a1'}}/>                
                    </div>
                    <div className="mt-6">
                     <CallBarLeft page="Profile" />

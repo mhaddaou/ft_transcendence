@@ -8,8 +8,8 @@ interface NavProps{
 
 const NavBar = (props:NavProps ) =>{
     return (
-        <div className={`bg-gray-200 h-[${props.page === 'Chat' ? '5' : '12'}%] rounded-2xl flex items-center px-2 md:px-6 justify-between`}>
-            <div className='w-[50%] md:w-full'>
+        <div className={`bg-gray-200 h-[${props.page === 'Chat' ? '5' : '12'}%] rounded-2xl flex items-center px-2 md:px-6 justify-between `}>
+            <div className='w-[50%] md:w-full '>
 
           <Search />
             </div>
