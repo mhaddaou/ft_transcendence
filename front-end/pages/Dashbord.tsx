@@ -11,8 +11,11 @@ import NavBar from '@/components/NavBar';
 
 
 
+
 export default function Progress() {
 
+
+  // const {name = UseMyContext();
   // const [border, setBorder]
   const[check, setCheck] = useState(0);
   const [msg, setMsg] = useState("");

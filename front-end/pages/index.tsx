@@ -28,6 +28,7 @@ import axios from 'axios';
 import HBest from '@/components/HBest';
 import Link from 'next/link';
 import { useRef } from 'react';
+import Modal from './Pop';
 
 class Data{
   id : string = "";
@@ -55,15 +56,9 @@ export default function HomePage({pro}:any) {
   const [modal , setModal] = useState('modal-toggle')
     const [hid, setHid] = useState('block')
     
+    const [showModal, setModadl] = useState(false);
     const click = () =>{
-        if (hid === 'block')
-            setHid('hidden')
-        else if (hid === 'hidden')
-            setHid('block')
-        if (modal === 'modal-toggle')
-            setModal('modal-show')
-        else if (modal === 'modal-show')
-            setModal('modal-toggle')
+       setModadl(true);
     }
     const Sing = () =>{
       if (value.current){
@@ -82,33 +77,7 @@ export default function HomePage({pro}:any) {
             <div className='md:w-1/2 bg-slate-5 flex flex-col  space-y-8 justify-center py-8 md:py-20 md:space-y-10 text-center md:text-left text-slate-900'>
               <h1 className='lg:font-mono lg:font-semibold text-3xl md:text-5xl text-center md:border-b-4 md:pb-5'>ft_transcendence</h1>
               <p className='text-lg md:text-3xl font-light '>This project is about doing something you’ve never done before. Remind yourself the beginning of your journey in computer science. Look at you now. Time to shine!</p>
-              <button onClick={click} className='z-50 py-2 px-6 bg-slate-600 rounded-full self-center md:self-start border-4 border-cyan-300 font-semibold 
-                                hover:border-cyan-800 hover:bg-slate-900 hover:text-white'>Sing in with 
-                <Image className=' w-6 md:w-7 inline-block ml-2' src={Logo} alt='logo' />
-                  </button>
-                <div className={` ${modal} w-full flex justify-center items-start fixed`}>
-                <div className={`modal-box flex flex-col w-[400px] h-[500px]`}>
-                    <div className="w-full h-[70%] flex flex-col gap-4 ">
-                        <div className="text-center font-mono font-semibold">login</div>
-                        <div className=" w-full h-full flex flex-col ">
-                            <div className="h-1/2 w-full text-center">
-                                <p>userName</p>
-                                <input ref={value} type="text" className="border-none" placeholder="enter your name" />
-                            </div>
-                            <div className="h-1/2 w-full text-center">
-                                <p>Password</p>
-                                <input type="password"  placeholder="enter your password"/>
-                            </div>
-
-                        </div>
-
-                    </div>
-                    <div className="w-full h-[30%] flex items-center justify-around">
-                        <button onClick={Sing} className="bg-blue-300">sing in</button>
-                        <button onClick={click}  className="bg-cyan-800">exit</button>
-                    </div>
-                    </div>
-            </div>
+              <Modal />
             </div>
             <div className='md:w-1/2 '>
               <Image src={Game} alt='image' />
