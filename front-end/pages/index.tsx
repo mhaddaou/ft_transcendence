@@ -43,8 +43,13 @@ export default function HomePage({pro}:any) {
   const [text, setText] = useState("");
   const images = [Smia, Amya, Hastid, Mhaddaou];
   const Names = ["Said Mia", "Abderrahmane Mya", "Hamza Astid", "Mohamed Haddaoui"];
-  // let data  = new Data();
+  const click = ()=>{
+    
+
+  }
+  
   return (
+
     
       <div className=' bg-gradient-to-t from-gray-100 to-gray-400 min-h-screen '>
         <HBest />
@@ -53,7 +58,7 @@ export default function HomePage({pro}:any) {
             <div className='md:w-1/2 bg-slate-5 flex flex-col  space-y-8 justify-center py-8 md:py-20 md:space-y-10 text-center md:text-left text-slate-900'>
               <h1 className='lg:font-mono lg:font-semibold text-3xl md:text-5xl text-center md:border-b-4 md:pb-5'>ft_transcendence</h1>
               <p className='text-lg md:text-3xl font-light '>This project is about doing something you’ve never done before. Remind yourself the beginning of your journey in computer science. Look at you now. Time to shine!</p>
-              <button className='py-2 px-6 bg-slate-600 rounded-full self-center md:self-start border-4 border-cyan-300 font-semibold 
+              <button onClick={click} className='py-2 px-6 bg-slate-600 rounded-full self-center md:self-start border-4 border-cyan-300 font-semibold 
                                 hover:border-cyan-800 hover:bg-slate-900 hover:text-white'>Sing in with 
                 <Image className=' w-6 md:w-7 inline-block ml-2' src={Logo} alt='logo' />
                                 </button>
