@@ -10,7 +10,7 @@ interface ContextTypes{
     img : string;
     setImg : Dispatch<SetStateAction<string>>;
     friends : string[];
-    setFriends : Dispatch<SetStateAction<string[] >>
+    setFriends : Dispatch<SetStateAction<string[]>>
 }
 
 // types childer
@@ -36,7 +36,17 @@ const MyContextProvider = ({children} : ChildProps) =>{
 
         if (getname) setName(getname);
         if (getimg) setImg(getimg);
-        if (getfriends) setFriends(JSON.parse(getfriends));
+        if (getfriends !== undefined && getfriends !== null) {
+            try {
+              setFriends(JSON.parse(getfriends));
+            } catch (error) {
+              console.error("Error parsing JSON:", error);
+            }
+          } else {
+            console.warn("getfriends is undefined or null");
+          }
+          
+          
     },[]);
 
 // store data to localstorage

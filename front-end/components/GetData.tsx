@@ -1,10 +1,12 @@
 import { table } from "console";
 import React, { useState, useEffect, useContext } from "react";
 import mhaddaou from '../image/mhaddaou.jpg'
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import smia from '../image/smia.jpg'
+import amya from '../image/amya.jpg'
 import { MyContext } from "./Context";
+import avatar from '../image/avatar.webp'
 
 
 type DataProps = number | undefined;
@@ -83,45 +85,54 @@ export  function GetDataAchievement(){
         }
 }
 
-export  function GetDataFriend(){
+export function GetDataFriend() {
     const context = useContext(MyContext);
-    const [Data, setData] = useState(context?.friends);
-    useEffect(() =>{
-        //here for fetching data
-        // and here for setting the tade to usestate data
-        console.log('data');
-    })
-        if (context?.friends.length == 0){
-            console.log(context.friends);
-            console.log(`image her ${context.img}`)
-            return (
-                <p className=' text-center text-4xl mx-auto my-auto text-slate-700 font-semibold font-mono'>
-                    Not have any friend yet
-                </p>
-            )
-        }
-        else{
-            return (
-                <div className="flex flex-col w-full h-full ">
-                    <div className="w-full bg-gray-300 rounded-t-2xl h-[14%] flex justify-around items-center font-semibold text-sm text-left text-gray-500  ">
-                        <div>Avatar</div>
-                        <div>Name</div>
-                        <div>Details</div>
-                    </div>
-                    <div className="w-full   h-[86%] overflow-y-auto scrollbar-thin scrollbar-track-slate-950 scrollbar-thumb-slate-300">
-                        <div className=" h-[16%] max-h-[16%] bg-gray-200 flex justify-around items-center my-2">
-                            <div className="h-full w-1/3  flex justify-center items-center ">
-                                <Image className="mask mask-squircle w-8 h-8 sm:w-12 sm:h-12   " src={mhaddaou} alt="avatar" />
-                            </div>
-                            <div className="w-1/3  text-center ">mhaddaou</div>
-                            <div className="w-1/3  text-center">
-                            <button className="btn btn-ghost btn-xs">details</button>
-                            </div>
-
-                        </div>
-                    </div>
-
+    const [Data, setData] = useState(context?.friends ?? []);
+  
+    useEffect(() => {
+      // Fetch data and set it to the useState 'Data' here
+      console.log('data');
+    });
+    const getImgSrc = (name : string)  =>{
+        if (name === 'smia')
+        return smia;
+        else if (name === 'amya' )
+            return amya
+        else
+            return avatar;  
+    }
+  
+    if (Data.length === 0) {
+      
+      return (
+        <p className="text-center text-4xl mx-auto my-auto text-slate-700 font-semibold font-mono">
+          Not have any friend yet
+        </p>
+      );
+    } else {
+      return (
+        <div className="flex flex-col w-full h-full">
+          <div className="w-full bg-gray-300 rounded-t-2xl h-[14%] flex justify-around items-center font-semibold text-sm text-left text-gray-500">
+            <div>Avatar</div>
+            <div>Name</div>
+            <div>Details</div>
+          </div>
+          <div className="w-full h-[86%] overflow-y-auto scrollbar-thin scrollbar-track-slate-950 scrollbar-thumb-slate-300">
+            {Data.map((friend) => (
+              <div className="h-[16%] max-h-[16%] bg-gray-200 flex justify-around items-center my-2" >
+                <div className="h-full w-1/3 flex justify-center items-center">
+                  <Image className="mask mask-squircle w-8 h-8 sm:w-12 sm:h-12" src={getImgSrc(friend)} alt="avatar" />
                 </div>
-            );
-        }
-}
+                <div className="w-1/3 text-center">{friend}</div>
+                <div className="w-1/3 text-center">
+                  <button className="btn btn-ghost btn-xs">details</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+  }
+  
+  

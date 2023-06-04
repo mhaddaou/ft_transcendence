@@ -12,24 +12,42 @@ const Login = () =>{
     const [username, setUsername] = useState('');
     const [friends, setFriends] = useState([]);
 
-      const click = () =>{
+    // ...
 
-        console.log("clicked")
-        console.log(mm.current?.value)
-        if (mm.current){
-          setUsername(mm.current.value);
-          Datausers.users.map((user) =>{
-            if (user.name === username){
-              context?.setName(username);
-              context?.setImg(user.img);
-              () =>{
-                
-              }
-            }
-          })
+// ...
+
+// ...
+
+// ...
+
+// ...
+
+const click = async () => {
+  if (mm.current) {
+    setUsername(mm.current.value);
+    const users = Datausers.users;
+
+    const promises = users.map(async (user) => {
+      if (user.name === username) {
+        context?.setName(username);
+        context?.setImg(user.img);
+
+        if (Array.isArray(user.friends)) {
+          // Handle case where user.friends is an array
+          context?.setFriends(user.friends);
+        } else {
+          // Handle case where user.friends is a string
+          context?.setFriends([user.friends]);
         }
-
       }
+    });
+
+    await Promise.all(promises);
+  }
+};
+
+
+    
 
     
     return (
@@ -38,7 +56,7 @@ const Login = () =>{
     <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign in to your account</h2>
   </div>
   <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-    <form className="space-y-6" action="#" method="POST">
+    <div className="space-y-6"  >
       <div>
         <label  className="block text-sm font-medium leading-6 text-gray-900">User Name</label>
         <div className="mt-2">
@@ -61,7 +79,7 @@ const Login = () =>{
         {/* <button onClick={click}  className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Sign in</button> */}
       <Link onClick={click} href="http://localhost:3000/Dashbord">click</Link>
       </div>
-    </form>
+    </div>
 
 
   </div>
