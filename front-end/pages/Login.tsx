@@ -1,16 +1,28 @@
 import Image from "next/image";
 
-import { useState } from "react";
-
-
+import { useContext, useRef, useState } from "react";
+import { MyContext } from "@/components/Context";
+import Router from "next/router";
+import Link from "next/link";
 const Login = () =>{
-    // const {updateName} = UseMyContext();
-    const [username, setUsername] = useState('');
-    const handleSubmit = (e) => {
-        console.log(e.target.value);
-        e.preventDefault();
-        // updateName(username);
-      };
+  const router = Router;
+    const context = useContext(MyContext);
+    const mm = useRef<HTMLInputElement | null>(null);
+    // const [username, setUsername] = useState('');
+    // const handleSubmit = (e) => {
+    //     console.log(e.target.value);
+    //     e.preventDefault();
+    //   };
+
+      const click = () =>{
+        console.log("clicked")
+        console.log(mm.current?.value)
+        if (mm.current)
+          context?.setName(mm.current?.value)
+        console.log(context?.name);
+        // router.push('https://google.com')
+
+      }
 
     
     return (
@@ -27,8 +39,8 @@ const Login = () =>{
                 id="username"
                 name="username"
                 type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                ref={mm}
+                // value={username}
                 required
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
@@ -39,7 +51,8 @@ const Login = () =>{
       </div>
 
       <div>
-        <button type="submit" className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Sign in</button>
+        {/* <button onClick={click}  className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Sign in</button> */}
+      <Link onClick={click} href="http://localhost:3000/Dashbord">click</Link>
       </div>
     </form>
 

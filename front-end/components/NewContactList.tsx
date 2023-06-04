@@ -1,8 +1,9 @@
 import mhaddaou from '../image/mhaddaou.jpg'
 import Image from 'next/image';
-
+import { MyContext } from './Context';
+import { useContext } from 'react';
 const NewContactList = () =>{
-
+    const context = useContext(MyContext);
     return (
         <div className="h-full w-full  rounded-2xl flex flex-col gap-1">
             <div className="h-[5%] rounded-2xl flex justify-center items-center">
@@ -16,7 +17,7 @@ const NewContactList = () =>{
                                             <Image src={mhaddaou} alt="av" />
                                         </div>
                                     </div>
-                        <div className='font-mono font-semibold'>mhaddaou</div>
+                        <div className='font-mono font-semibold'>{context?.name}</div>
                     </div>
                     <div className='w-1/2 h-full flex items-center justify-end'>
                         <div className='w-5 h-5 bg-emerald-600 rounded-full text-xs flex justify-center items-center text-slate-800'>

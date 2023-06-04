@@ -1,9 +1,10 @@
 import { table } from "console";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import mhaddaou from '../image/mhaddaou.jpg'
 import Image from "next/image";
 import Link from "next/link";
 import smia from '../image/smia.jpg'
+import { MyContext } from "./Context";
 
 
 type DataProps = number | undefined;
@@ -13,6 +14,7 @@ type DataProps = number | undefined;
 
 
 export default function GetDataHistory(){
+    const context = useContext(MyContext);
     const [Data, setData] = useState(['name']);
     useEffect(() =>{
         //here for fetching data
@@ -35,7 +37,7 @@ export default function GetDataHistory(){
                             <Image className="mask mask-squircle w-12 h-12" src={mhaddaou} alt="avatar" />
 
                             </div>
-                            <div className="font-mono font-semibold md:text-[20px]">mhaddaou</div>
+                            <div className="font-mono font-semibold md:text-[20px]">{context?.name}</div>
                         </div>
                         <div className="flex w-1/5 md:w-[90px]    h-full items-center justify-between md:justify-center md:space-x-6 ">
                             <div className="font-bold text-lg text-red-500">4</div>
@@ -68,6 +70,7 @@ export  function GetDataAchievement(){
             return (
                 <p className=' text-center text-4xl mx-auto my-auto text-slate-700 font-semibold font-mono '>
                     Not have Achievement yet
+
                 </p>
             )
         }
