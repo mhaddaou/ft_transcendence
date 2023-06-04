@@ -30,8 +30,8 @@ const click = async () => {
     const promises = users.map(async (user) => {
       if (user.name === username) {
         context?.setName(username);
-        context?.setImg(user.img);
-
+        if (user.img == '0')
+          context?.setImg('avatar');
         if (Array.isArray(user.friends)) {
           // Handle case where user.friends is an array
           context?.setFriends(user.friends);

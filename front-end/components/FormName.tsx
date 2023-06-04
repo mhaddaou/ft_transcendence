@@ -1,6 +1,7 @@
 
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { RiSendPlaneFill } from "react-icons/ri";
+import { MyContext } from "./Context";
 
 
 function containsSpecialChars(str : string) : boolean {
@@ -9,57 +10,87 @@ function containsSpecialChars(str : string) : boolean {
   }
 
 
-function checkInputName(name : string) : void{
-    if (!containsSpecialChars(name) && name.length > 7){
+
+
+
+  const FormName = () => {
+    const context = useContext(MyContext);
+    
+    function checkInputName(name: string): void {
+      if (!containsSpecialChars(name) && name.length > 7) {
         // data ready to send it to the server
         console.log("send data");
-    }
-    else{
+        context?.setName(name);
+      } else {
         // data is malicious code
         console.warn(`name is ${name}`);
+      }
     }
-}
-
-
-const FormName = () =>{
-    const value  = useRef<HTMLInputElement| null>(null);
-    const [valueName , setValue ] = useState<string>(''); 
-    var name = "mhaddaou";
-    const handl = ( event : any) =>{
-        if (event.key === "Enter"){
-            if (value.current){
-                checkInputName(value.current.value);
-            }
+    
+    const value = useRef<HTMLInputElement | null>(null);
+    const [valueName, setValue] = useState<string>(''); // Initialize with an empty string
+    var name = context?.name;
+    
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setValue(event.target.value); // Update the valueName state as you type
+    };
+    
+    const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "Enter") {
+        if (value.current) {
+          checkInputName(value.current.value);
         }
-
-    }
-
-
-    const submit = () =>{
-        if (value.current){
-            checkInputName(value.current.value);
-        }
-
-    }
-
-
-
+      }
+    };
+    
+    const submit = () => {
+      if (value.current) {
+        checkInputName(value.current.value);
+      }
+      cancel();
+    };
+    
+    const cancel = () => {
+      setValue('');
+      if (value.current) {
+        value.current.value = '';
+      }
+    };
+    
     return (
-        <div className='w-full max-w-sm'>
-            <div className="flex items-center border-b border-slate-600 py-2">
-                <input onKeyDown={handl} ref={value} className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder={`${name}`} aria-label="Full name"/>
-                    <button onClick={submit} className="flex-shrink-0 bg-slate-500 hover:bg-slate-700 border-slate-500 hover:border-slate-700 text-sm border-4 text-white py-1 px-2 rounded" type="button">
-                        Submit
-                    </button>
-                    <button className="flex-shrink-0 border-transparent border-4 text-slate-600 hover:text-slate-800 text-sm py-1 px-2 rounded" type="button">
-                            Cancel
-                    </button>
-            </div>
-        </div>
+      <div className='w-full max-w-sm'>
+        <form className="flex items-center border-b border-slate-600 py-2">
+          <input
+            value={valueName}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyPress}
+            ref={value}
+            className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+            type="text"
+            placeholder={`${name}`}
+            aria-label="Full name"
+          />
+          <button
+            onClick={submit}
+            className="flex-shrink-0 bg-slate-500 hover:bg-slate-700 border-slate-500 hover:border-slate-700 text-sm border-4 text-white py-1 px-2 rounded"
+            type="button"
+          >
+            Submit
+          </button>
+          <button
+            onClick={cancel}
+            className="flex-shrink-0 border-transparent border-4 text-slate-600 hover:text-slate-800 text-sm py-1 px-2 rounded"
+            type="button"
+          >
+            Cancel
+          </button>
+        </form>
+      </div>
     );
-}
-
-export default FormName;
+  };
+  
+  export default FormName;
+  
 
 
 export function InputMsg() {

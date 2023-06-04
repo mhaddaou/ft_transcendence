@@ -4,7 +4,7 @@ import avatar from '../image/avatar.webp';
 
 // define types context
 
-interface ContextTypes{
+export interface ContextTypes{
     name : string;
     setName : Dispatch<SetStateAction<string>>
     img : string;
