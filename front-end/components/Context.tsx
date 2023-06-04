@@ -10,7 +10,7 @@ interface ContextTypes{
     img : string;
     setImg : Dispatch<SetStateAction<string>>;
     friends : string[];
-    setFriends : Dispatch<SetStateAction<string[]>>
+    setFriends : Dispatch<SetStateAction<string[] >>
 }
 
 // types childer
@@ -55,7 +55,7 @@ const MyContextProvider = ({children} : ChildProps) =>{
 
 
     return (
-        <MyContext.Provider value={ContextValue}>
+        <MyContext.Provider value={{name, setName, img, setImg, friends, setFriends}}>
             {children}
         </MyContext.Provider>
     );

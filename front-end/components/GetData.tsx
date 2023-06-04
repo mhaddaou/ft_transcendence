@@ -84,13 +84,16 @@ export  function GetDataAchievement(){
 }
 
 export  function GetDataFriend(){
-    const [Data, setData] = useState(['name']);
+    const context = useContext(MyContext);
+    const [Data, setData] = useState(context?.friends);
     useEffect(() =>{
         //here for fetching data
         // and here for setting the tade to usestate data
         console.log('data');
     })
-        if (Data.length == 0){
+        if (context?.friends.length == 0){
+            console.log(context.friends);
+            console.log(`image her ${context.img}`)
             return (
                 <p className=' text-center text-4xl mx-auto my-auto text-slate-700 font-semibold font-mono'>
                     Not have any friend yet

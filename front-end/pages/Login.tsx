@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Datausers from '@/components/users.json'
 
 import { useContext, useRef, useState } from "react";
 import { MyContext } from "@/components/Context";
@@ -8,19 +9,25 @@ const Login = () =>{
   const router = Router;
     const context = useContext(MyContext);
     const mm = useRef<HTMLInputElement | null>(null);
-    // const [username, setUsername] = useState('');
-    // const handleSubmit = (e) => {
-    //     console.log(e.target.value);
-    //     e.preventDefault();
-    //   };
+    const [username, setUsername] = useState('');
+    const [friends, setFriends] = useState([]);
 
       const click = () =>{
+
         console.log("clicked")
         console.log(mm.current?.value)
-        if (mm.current)
-          context?.setName(mm.current?.value)
-        console.log(context?.name);
-        // router.push('https://google.com')
+        if (mm.current){
+          setUsername(mm.current.value);
+          Datausers.users.map((user) =>{
+            if (user.name === username){
+              context?.setName(username);
+              context?.setImg(user.img);
+              () =>{
+                
+              }
+            }
+          })
+        }
 
       }
 
