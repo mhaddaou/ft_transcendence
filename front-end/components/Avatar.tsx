@@ -7,6 +7,7 @@ import Profile from './Profile';
 import { CallBarLeft } from './Functions';
 import { MyContext } from './Context';
 import avatar from '../image/avatar.webp'
+import smia from '../image/smia.jpg'
 
 interface PropsAvatar{
   id : number;
@@ -17,12 +18,20 @@ const Avatar = (props : PropsAvatar) => {
   const context = useContext(MyContext);
   const [color, setColor] = useState<string>(props.check === true ? "bg-green-500" : "bg-red-500");
   const [state , setState] = useState<string>(props.check === false ? "hidden" : "block");
+  const [Img, setImg] = useState<StaticImageData>(avatar);
+  useEffect(()=>{
+    if (context?.img === 'mhaddaou')
+      setImg(mhaddaou);
+    if (context?.img === 'smia')
+      setImg(smia)
+  },[context?.img])
+
   return (
     
     <div className="dropdown dropdown-end">
     <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
       <div className="w-10 rounded-full">
-        {/* <Image src={URL.createObjectURL()} alt='re' /> */}
+        <Image src={Img} alt='re' />
       </div>
     </label>
     <ul tabIndex={0} className={`md:hidden mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52`}>

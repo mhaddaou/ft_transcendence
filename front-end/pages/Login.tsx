@@ -23,13 +23,15 @@ const click = async () => {
     setUsername(mm.current.value);
     const item = Mymap.get(mm.current.value);
     if (item) {
-      console.log(item.getName());
+        context?.setName(item?.getName())
+        context?.setFriends(item?.getFriends());
+        context?.setImg(item?.getImg());
+        context?.setLevel(item?.getLevel());
+        context?.setLosses(item.getLosses());
+        context?.setWins(item.getWins())
+        context?.setLevlPer(item.getLevPer());
     }
-    if (item?.getName())
-      context?.setName(item?.getName())
-    if (item?.getFriends())
-      context?.setFriends(item?.getFriends());
-  }
+    }
 };
 
 

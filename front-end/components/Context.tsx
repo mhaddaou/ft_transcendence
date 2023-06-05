@@ -17,6 +17,12 @@ export interface ContextTypes{
     setWins : Dispatch<SetStateAction<number>>;
     losses : number;
     setLosses : Dispatch<SetStateAction<number>>
+    LevlPer : number;
+    setLevlPer : Dispatch<SetStateAction<number>>;
+    chatHistory : number;
+    setChatHistory : Dispatch<SetStateAction<number>>
+    showMsg : string;
+    setShowMsg : Dispatch<SetStateAction<string>>
 }
 
 // types childer
@@ -35,13 +41,21 @@ const MyContextProvider = ({children} : ChildProps) =>{
     const [friends, setFriends] = useState<string[]>([]);
     const [level, setLevel] = useState(0);
     const [wins, setWins] = useState(0);
-    const [losses, setLoss] = useState(0);
+    const [losses, setLosses] = useState(0);
+    const [LevlPer,setLevlPer ] = useState(0);
+    const [chatHistory,setChatHistory ] = useState(0);
+    const [showMsg, setShowMsg] = useState('block');
     // load data from localstorage
     useEffect(()=>{
         const getname = localStorage.getItem('name');
         const getimg = localStorage.getItem('img');
         const getfriends = localStorage.getItem('friends');
         const getlevel = localStorage.getItem('level');
+        const getwins = localStorage.getItem('wins');
+        const getlosses = localStorage.getItem('losses');
+        const getlevelper = localStorage.getItem('levelPer');
+        const getchatHistory = localStorage.getItem('chatHistory');
+        const getshowMsg = localStorage.getItem('showchat');
         if (getname) setName(getname);
         if (getimg) setImg(getimg);
         if (getfriends !== undefined && getfriends !== null) {
@@ -53,9 +67,20 @@ const MyContextProvider = ({children} : ChildProps) =>{
           } else {
             console.warn("getfriends is undefined or null");
           }
-          
-          
+        if (getlevel)
+          setLevel(+getlevel)
+        if (getwins)
+          setWins(+getwins);
+        if (getlosses)
+          setLosses(+getlosses);
+        if (getlevelper)
+          setLevlPer(+getlevelper);
+        if (getchatHistory)
+          setChatHistory(+getchatHistory);
+        if (getshowMsg) 
+          setShowMsg(getshowMsg);
     },[]);
+
 
 // store data to localstorage
     useEffect(()=>{
@@ -79,12 +104,22 @@ const MyContextProvider = ({children} : ChildProps) =>{
     useEffect(()=>{
         localStorage.setItem('losses', losses.toString());
     },[losses]);
-    const ContextValue = {name, setName, img, setImg, friends, setFriends};
+    useEffect(()=>{
+        localStorage.setItem('levelPer', LevlPer.toString())
+    },[LevlPer])
+    useEffect(() =>{
+      localStorage.setItem('chatHistory', chatHistory.toString());
+    },[chatHistory])
+    useEffect(() =>{
+      localStorage.setItem('showMsg', showMsg);
+    },[showMsg]);
+    const ContextValue = {name, setName, img, setImg, friends, setFriends,wins, setWins, losses, 
+      setLosses,  level, setLevel,LevlPer,setLevlPer, chatHistory,setChatHistory,showMsg, setShowMsg };
 
 
 
     return (
-        <MyContext.Provider value={{name, setName, img, setImg, friends, setFriends}}>
+        <MyContext.Provider value={ContextValue}>
             {children}
         </MyContext.Provider>
     );

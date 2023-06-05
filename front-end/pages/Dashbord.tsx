@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Statics from '../image/statics.svg'
 import 'react-circular-progressbar/dist/styles.css';
 import LevelStatics, {Stats} from '@/components/Statics'
@@ -8,11 +8,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTableTennisPaddleBall } from '@fortawesome/free-solid-svg-icons';
 import {DataFunction, CallBarLeft} from '@/components/Functions';
 import NavBar from '@/components/NavBar';
-
+import { MyContext } from '@/components/Context';
 
 
 
 export default function Progress() {
+
+  const context = useContext(MyContext);
 
 
   // const {name = UseMyContext();
@@ -54,9 +56,10 @@ export default function Progress() {
             </div>
             <div className='bg-gray-200 w-full  h-1/2 rounded-2xl px-8 md:px-0  overflow-y-auto scrollbar-thin'>
               <div className='h-full  w-full flex  flex-col gap-4 md:flex-row md:justify-around md:items-center'>
-              <LevelStatics level={4} per={60} />
-              <Stats per={88} name='Wins' />
-              <Stats per={12} name='Losses' />
+                
+              <LevelStatics level={context?.level || 0} per={context?.LevlPer || 0} />
+              <Stats per={context?.wins || 0} name='Wins' />
+              <Stats per={context?.losses || 0} name='Losses' />
               </div>
             </div>
           </div>

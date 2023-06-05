@@ -1,7 +1,8 @@
 import '@/styles/globals.css'
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import type { AppProps } from 'next/app'
 import { MyContextProvider } from '@/components/Context'
+
 
 
 

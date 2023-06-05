@@ -8,20 +8,41 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { CallBarLeft } from "@/components/Functions";
 import smia from '../image/smia.jpg'
-import  {InputMsg2} from "@/components/FormName";
 import Link from "next/link";
-import { useState } from "react";
-import Messages from "@/components/Messages";
+import { useContext, useEffect, useState } from "react";
+import Lottie from "lottie-react";
+import anim from '../image/chatanim.json'
+import ChatConversation from "@/components/ChatConversation";
+import { MyContext } from "@/components/Context";
 import Info from "@/components/Info";
 
+import Messages from "@/components/Messages";
+import  {InputMsg2} from "@/components/FormName";
+
+
 const NewChat = () =>{
+    const context  = useContext(MyContext);
+
+
+    const [show, setShow] = useState('block');
+    console.log(show)
+
+    const click  = () =>{
+        if (show === 'block')
+            setShow('hidden');
+        else
+            setShow('block');
+        
+    }
     const [hidden, setHidden] = useState('hidden');
+
     const clickPro = () : void =>{
         if (hidden === 'hidden')
             setHidden('block');
         else
             setHidden('hidden');
     }
+    
     return (
         <div className="bg-gradient-to-t from-gray-100 to-gray-400 min-h-screen">
             <div className="container w-full mx-auto h-screen min-h-[1024px] flex flex-row py-2 gap-2">
@@ -30,49 +51,45 @@ const NewChat = () =>{
                 <NavBar page="Chat"/>
                     <div className="w-full h-[95%] rounded-2xl bg-gray-400 flex gap-1">
                         <div className="w-full md:w-1/3 rounded-2xl bg-gray-200 ">
-                            <NewContactList />
+                        <div className="h-full w-full  rounded-2xl flex flex-col gap-1">
+                        <div className="h-[5%] rounded-2xl flex justify-center items-center">
+                            <p className="font-mono font-bold">Contact List</p>
+                        </div>
+                        <div className="h-[95%] w-full  rounded-2xl flex flex-col gap-1 px-2 md:px-1 overflow-y-auto scrollbar-none">
+                            <button onClick={click}  className="py-2 bg-slate-300 w-full h-16 flex px-4 gap-5  rounded-lg">
+                                <div className='w-1/2 h-full flex items-center gap-3'>
+                                <div className="avatar">
+                                                    <div className="w-10 rounded-full ring ring-green-400 ring-offset-base-100 ring-offset-2">
+                                                        <Image src={mhaddaou} alt="av" />
+                                                    </div>
+                                                </div>
+                                    <div className='font-mono font-semibold'>{context?.name}</div>
+                                </div>
+                                <div className='w-1/2 h-full flex items-center justify-end'>
+                                    <div className='w-5 h-5 bg-emerald-600 rounded-full text-xs flex justify-center items-center text-slate-800'>
+                                        2
+                                    </div>
+                                </div>
+                            </button>
+                        
                             
                         </div>
-                        <div className="hidden md:flex bg-gradient-to-r from-gray-200 via-slate-300 to-slate-400 w-2/3 rounded-2xl md:flex-col">
-                            <div className="w-full rounded-2xl  h-[5%] flex items-center justify-around ">
-                                <div className="w-1/2 h-full flex items-center pl-8 gap-6">
-                                    <div className="avatar">
-                                        <div className="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                                            <Image src={mhaddaou} alt="av" />
-                                        </div>
-                                    </div>
-                                    <div className="font-mono font-extrabold">mhaddaou</div>
-                                </div>
-                                <div className=" w-1/2 h-full flex flex-col items-end justify-center pr-8 ">
-                                    <button onClick={clickPro} className="relative">
-                                        <FontAwesomeIcon icon={faBars} flip style={{color: "#f0f2f5",}} />
-                                        <ul className={`${hidden} bg-white absolute -left-24 z-20 rounded-lg y-2 text-sm text-gray-700 dark:text-gray-400 flex flex-col font-mono font-semibold`} aria-labelledby="dropdownLargeButton">
-                                            <li>
-                                                <Link href="#" className=" hover:text-cyan-700 pl- text-left  rounded-t-lg block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">info</Link>
-                                            </li>
-                                            <li>
-                                                <Link href="#" className=" hover:text-cyan-700 text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">block</Link>
-                                            </li>
-                                            <li>
-                                                <Link href="#" className="hover:text-cyan-700 text-left rounded-b-lg block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Earnings</Link>
-                                            </li>
-                                        </ul>
-                                    </button>
-                                    
-                                </div>
 
-                            </div>
-                            <div className="w-full h-full hidden">
-                                <Info />
-
-                            </div>
-                            <div className="w-full h-full hidde">
-                                <Messages />
-                                <InputMsg2 />
-                            </div>
-
+                    </div>
+                            
                         </div>
-
+                        {
+                            (() =>{
+                                const elements = [];
+                                if (show === 'block')
+                                    elements.push(<Lottie className={`w-full h-full `}   animationData={anim} />);
+                                else
+                                    elements.push(<ChatConversation num={1} />);
+                                return elements;
+                            })()
+                        }
+                       
+                        
                     </div>
                 </div>
             </div>
