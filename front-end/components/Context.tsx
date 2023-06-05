@@ -11,6 +11,12 @@ export interface ContextTypes{
     setImg : Dispatch<SetStateAction<string>>;
     friends : string[];
     setFriends : Dispatch<SetStateAction<string[]>>
+    level : number;
+    setLevel : Dispatch<SetStateAction<number>>;
+    wins : number;
+    setWins : Dispatch<SetStateAction<number>>;
+    losses : number;
+    setLosses : Dispatch<SetStateAction<number>>
 }
 
 // types childer
@@ -19,7 +25,6 @@ interface ChildProps{
 }
 
 // create context
-
 const MyContext = createContext<ContextTypes | undefined>(undefined);
 
 // create provider
@@ -28,12 +33,15 @@ const MyContextProvider = ({children} : ChildProps) =>{
     const [name, setName] = useState('');
     const [img, setImg] = useState('0');
     const [friends, setFriends] = useState<string[]>([]);
+    const [level, setLevel] = useState(0);
+    const [wins, setWins] = useState(0);
+    const [losses, setLoss] = useState(0);
     // load data from localstorage
     useEffect(()=>{
         const getname = localStorage.getItem('name');
         const getimg = localStorage.getItem('img');
         const getfriends = localStorage.getItem('friends');
-
+        const getlevel = localStorage.getItem('level');
         if (getname) setName(getname);
         if (getimg) setImg(getimg);
         if (getfriends !== undefined && getfriends !== null) {
@@ -52,14 +60,25 @@ const MyContextProvider = ({children} : ChildProps) =>{
 // store data to localstorage
     useEffect(()=>{
         localStorage.setItem('name', name);
+        console.log("the name is changed to " + name);
     },[name]);
     useEffect(()=>{
         localStorage.setItem('img', img);
+        console.log()
     },[img]);
     useEffect(()=>{
         localStorage.setItem('friends', JSON.stringify(friends));
     },[friends]);
+    useEffect(() =>{
+        localStorage.setItem('level', level.toString());
 
+    },[level])
+    useEffect(()=>{
+        localStorage.setItem('wins', wins.toString());
+    },[wins]);
+    useEffect(()=>{
+        localStorage.setItem('losses', losses.toString());
+    },[losses]);
     const ContextValue = {name, setName, img, setImg, friends, setFriends};
 
 

@@ -5,6 +5,10 @@ import { useContext, useRef, useState } from "react";
 import { MyContext } from "@/components/Context";
 import Router from "next/router";
 import Link from "next/link";
+import { Mymap } from "@/components/ClassesData";
+
+
+
 const Login = () =>{
   const router = Router;
     const context = useContext(MyContext);
@@ -12,37 +16,19 @@ const Login = () =>{
     const [username, setUsername] = useState('');
     const [friends, setFriends] = useState([]);
 
-    // ...
-
-// ...
-
-// ...
-
-// ...
-
-// ...
+  
 
 const click = async () => {
   if (mm.current) {
     setUsername(mm.current.value);
-    const users = Datausers.users;
-
-    const promises = users.map(async (user) => {
-      if (user.name === username) {
-        context?.setName(username);
-        if (user.img == '0')
-          context?.setImg('avatar');
-        if (Array.isArray(user.friends)) {
-          // Handle case where user.friends is an array
-          context?.setFriends(user.friends);
-        } else {
-          // Handle case where user.friends is a string
-          context?.setFriends([user.friends]);
-        }
-      }
-    });
-
-    await Promise.all(promises);
+    const item = Mymap.get(mm.current.value);
+    if (item) {
+      console.log(item.getName());
+    }
+    if (item?.getName())
+      context?.setName(item?.getName())
+    if (item?.getFriends())
+      context?.setFriends(item?.getFriends());
   }
 };
 
