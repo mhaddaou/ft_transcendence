@@ -9,6 +9,7 @@ import { MyContext } from './Context';
 import avatar from '../image/avatar.webp'
 import smia from '../image/smia.jpg'
 
+
 interface PropsAvatar{
   id : number;
   check : boolean;
@@ -31,7 +32,33 @@ const Avatar = (props : PropsAvatar) => {
     <div className="dropdown dropdown-end">
     <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
       <div className="w-10 rounded-full">
-        <Image src={Img} alt='re' />
+        {
+          (
+            () =>{
+              const element = [];
+              if (context?.check == 0)
+                element.push(<Image src={Img} alt='re' />);
+                else if (context?.img) {
+                  let imgSrc: string | Blob | MediaSource | StaticImageData;
+                  
+                  if (typeof context.img === 'string') {
+                    imgSrc = context.img;
+                    if (imgSrc === '0')
+                      imgSrc = mhaddaou;
+                    else if (imgSrc === '1')
+                      imgSrc = smia;
+                  } else {
+                    imgSrc = URL.createObjectURL(context.img);
+                  }
+                  
+                  element.push(<Image src={imgSrc} alt='ava' width={200} height={200} />);
+                }                
+                               
+              return element;
+            }
+          )()
+
+        }
       </div>
     </label>
     <ul tabIndex={0} className={`md:hidden mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52`}>

@@ -1,4 +1,4 @@
-import React, {useState, useContext, createContext, Dispatch, SetStateAction, ReactNode, useEffect} from "react";
+import React, {useState, useContext, createContext, Dispatch, SetStateAction, ReactNode, useEffect, use} from "react";
 import { StaticImageData } from "next/image";
 import avatar from '../image/avatar.webp';
 
@@ -7,8 +7,8 @@ import avatar from '../image/avatar.webp';
 export interface ContextTypes{
     name : string;
     setName : Dispatch<SetStateAction<string>>
-    img : string;
-    setImg : Dispatch<SetStateAction<string>>;
+    img : string | File ;
+    setImg : Dispatch<SetStateAction<string | File>>;
     friends : string[];
     setFriends : Dispatch<SetStateAction<string[]>>
     level : number;
@@ -23,6 +23,8 @@ export interface ContextTypes{
     setChatHistory : Dispatch<SetStateAction<number>>
     showMsg : string;
     setShowMsg : Dispatch<SetStateAction<string>>
+    check : number;
+    setCheck : Dispatch<SetStateAction<number>>
 }
 
 // types childer
@@ -36,8 +38,9 @@ const MyContext = createContext<ContextTypes | undefined>(undefined);
 // create provider
 
 const MyContextProvider = ({children} : ChildProps) =>{
+    const [check, setCheck] = useState(0);
     const [name, setName] = useState('');
-    const [img, setImg] = useState('0');
+    const [img, setImg] = useState<string | File>('0');
     const [friends, setFriends] = useState<string[]>([]);
     const [level, setLevel] = useState(0);
     const [wins, setWins] = useState(0);
@@ -88,7 +91,7 @@ const MyContextProvider = ({children} : ChildProps) =>{
         console.log("the name is changed to " + name);
     },[name]);
     useEffect(()=>{
-        localStorage.setItem('img', img);
+        localStorage.setItem('img', img.toString());
         console.log()
     },[img]);
     useEffect(()=>{
@@ -114,7 +117,7 @@ const MyContextProvider = ({children} : ChildProps) =>{
       localStorage.setItem('showMsg', showMsg);
     },[showMsg]);
     const ContextValue = {name, setName, img, setImg, friends, setFriends,wins, setWins, losses, 
-      setLosses,  level, setLevel,LevlPer,setLevlPer, chatHistory,setChatHistory,showMsg, setShowMsg };
+      setLosses,  level, setLevel,LevlPer,setLevlPer, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck };
 
 
 

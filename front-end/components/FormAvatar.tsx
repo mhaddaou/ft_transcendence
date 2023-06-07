@@ -1,11 +1,13 @@
-import { useContext } from "react";
+import { ChangeEvent, useContext } from "react";
 import { MyContext } from "./Context";
 
 const FormAvatar = () =>{
     const context = useContext(MyContext);
-    const handlefile= (event) =>{
-        const file = event.target.files[0];
-        context?.setImg(file);
+    const handlefile= (event : ChangeEvent<HTMLInputElement>) =>{
+        if (event.target.files && event.target.files.length > 0){
+            context?.setImg(event.target.files[0]);
+            context?.setCheck(1);
+        }
     }
     return (
         <form className="w-full max-w-sm">
