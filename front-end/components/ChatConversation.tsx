@@ -21,7 +21,7 @@ const ChatConversation = ({num } : {num : number}) =>{
     }
     return (
         <div className="hidden md:flex bg-gradient-to-r from-gray-200 via-slate-300 to-slate-400 w-2/3 rounded-2xl md:flex-col">
-                            <div className="w-full rounded-2xl  h-[5%] flex items-center justify-around ">
+                            <div className="w-full rounded-2xl  h-[8%] flex items-center justify-around ">
                                 <div className="w-1/2 h-full flex items-center pl-8 gap-6">
                                     <div className="avatar">
                                         <div className="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
