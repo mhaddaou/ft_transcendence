@@ -75,7 +75,7 @@ const BarLeft = (props: BarLeftProps) => {
     if (props.name === "Setting")
       router.push('http://localhost:3000/Setting');
     if (props.name === "Chat")
-      router.push('http://localhost:3000/NewChat')
+      router.push('http://localhost:3000/Chat')
   }
 
 

@@ -153,6 +153,10 @@ const clickchoices = () =>{
     setinfo('hidden');
 }
 
+const btnBlock = () =>{
+  //block friend
+}
+
 
 
   return (
@@ -167,9 +171,9 @@ const clickchoices = () =>{
                 <button onClick={clickchoices}>
                   <FontAwesomeIcon className="w-8 h-7 text-black" icon={faBars} flip />
                 </button>
-                <div className={`${info} w-50 bg-slate-400 rounded-xl mt-20`}>
-                <div><InfoContact /> </div>
-                <div className="btn flex text-center bg-transparent border-transparent">block </div>
+                <div className={`${info} w-50 bg-gray-100 rounded-xl mt-20 z-50`}>
+                <div className="m-4 "><InfoContact /> </div>
+                <button onClick={btnBlock} className="btn flex text-center bg-transparent border-none hover:bg-slate-300 text-slate-600   m-4">block </button>
 
                 </div>
        
