@@ -8,13 +8,27 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTableTennisPaddleBall } from '@fortawesome/free-solid-svg-icons';
 import {DataFunction, CallBarLeft} from '@/components/Functions';
 import NavBar from '@/components/NavBar';
-import { MyContext } from '@/components/Context';
+import { MyContext , ContextTypes} from '@/components/Context';
+
+
+const func = () =>{
+  const context = useContext(MyContext);
+  if (context?.match)
+    console.log(context.match[0]);
+
+}
 
 
 
 export default function Progress() {
 
   const context = useContext(MyContext);
+
+  if (context?.match)
+  for (let i = 0; i < context?.match?.length ; i++){
+    console.log(context?.match[i].loginA);
+    console.log("heh");
+  }
 
 
   // const {name = UseMyContext();

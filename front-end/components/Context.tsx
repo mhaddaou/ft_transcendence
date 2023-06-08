@@ -4,13 +4,34 @@ import avatar from '../image/avatar.webp';
 
 // define types context
 
+export interface MatchType {
+  matchId: string;
+  userAId: string;
+  loginA: string;
+  scoreA: number;
+  loginB: string;
+  userBId: string;
+  scoreB: number;
+  winner: boolean;
+  finishedAt: string;
+}
+export interface FriendsType{
+  FriendshipId: string;
+  userAId:  string;
+  loginA:  string;
+  userBId:  string;
+  loginB:  string;
+  isFriends:  boolean;
+}
+
+
 export interface ContextTypes{
     name : string;
     setName : Dispatch<SetStateAction<string>>
     img : string | File ;
     setImg : Dispatch<SetStateAction<string | File>>;
-    friends : string[];
-    setFriends : Dispatch<SetStateAction<string[]>>
+    friends : FriendsType[];
+    setFriends : Dispatch<SetStateAction<FriendsType[]>>
     level : number;
     setLevel : Dispatch<SetStateAction<number>>;
     wins : number;
@@ -25,6 +46,8 @@ export interface ContextTypes{
     setShowMsg : Dispatch<SetStateAction<string>>
     check : number;
     setCheck : Dispatch<SetStateAction<number>>
+    match : MatchType[] ;
+    setMatch : Dispatch<SetStateAction<MatchType[]>>;
 }
 
 // types childer
@@ -41,13 +64,14 @@ const MyContextProvider = ({children} : ChildProps) =>{
     const [check, setCheck] = useState(0);
     const [name, setName] = useState('');
     const [img, setImg] = useState<string | File>('0');
-    const [friends, setFriends] = useState<string[]>([]);
+    const [friends, setFriends] = useState<FriendsType[]>([]);
     const [level, setLevel] = useState(0);
     const [wins, setWins] = useState(0);
     const [losses, setLosses] = useState(0);
     const [LevlPer,setLevlPer ] = useState(0);
     const [chatHistory,setChatHistory ] = useState(0);
     const [showMsg, setShowMsg] = useState('block');
+    const [match, setMatch] = useState<MatchType[]>([]);
     // load data from localstorage
     useEffect(()=>{
         const getname = localStorage.getItem('name');
@@ -117,7 +141,7 @@ const MyContextProvider = ({children} : ChildProps) =>{
       localStorage.setItem('showMsg', showMsg);
     },[showMsg]);
     const ContextValue = {name, setName, img, setImg, friends, setFriends,wins, setWins, losses, 
-      setLosses,  level, setLevel,LevlPer,setLevlPer, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck };
+      setLosses,  level, setLevel,LevlPer,setLevlPer, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck, match, setMatch };
 
 
 

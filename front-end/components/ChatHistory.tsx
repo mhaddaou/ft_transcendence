@@ -13,8 +13,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 // import ContactSearch from "./ContactSearch";
 import InfoContact from "./InfoContact";
-const socket = io("http://localhost:4040");
-
+const socket = io("http://localhost:3333");
 
 const Sender = ({msg} : {msg : string}) =>{
   return (
