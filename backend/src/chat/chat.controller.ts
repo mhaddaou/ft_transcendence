@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Res, UseGuards} from '@nestjs/common';
+import { Body, Controller, Get, Post, Res, UseGuards} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {  channeDto,getConvDto} from './Dto/chat.dto';
 import { ChatService } from './chat.service';
@@ -11,7 +11,7 @@ export class ChatController {
 
     // get conversation between two users
     @UseGuards(AuthGuard('jwt'))
-    @Get('findConversation')
+    @Post('findConversation')
     async getConversation(@Body() getConv:getConvDto, @Res() response:Response){
         try{
             const result = await this.chatService.getConversation(getConv);
@@ -24,7 +24,7 @@ export class ChatController {
 
     // get conversations that user belongs to
     @UseGuards(AuthGuard('jwt'))
-    @Get('conversations')
+    @Post('conversations')
     async getConversationsOfUser(@Body() dto:findUserDto, @Res() response:Response){
         try{
             const result = await this.chatService.getConversationsOfUser(dto);
@@ -39,7 +39,7 @@ export class ChatController {
 
     // get conversation  channel 
     @UseGuards(AuthGuard('jwt'))
-    @Get('channel/message/all')
+    @Post('channel/message/all')
     async getConversationChannel(@Body() chDto:channeDto, @Res() response:Response){
         try{
             const result = await this.chatService.getConversationChannel(chDto);
@@ -52,14 +52,14 @@ export class ChatController {
 
     // get all public channels
     @UseGuards(AuthGuard('jwt'))
-    @Get('channel/all')
+    @Post('channel/all')
     async getAllChannels(){
         return await this.chatService.getAllChannels();
     }
     
     // get all memberShips of channels info that a user join to
     @UseGuards(AuthGuard('jwt'))
-    @Get('membership/all')
+    @Post('membership/all')
     async getUserChannels(@Body() userDto:findUserDto, @Res() response:Response){
         try{
             const result = await this.chatService.getUserChannels(userDto);
@@ -72,7 +72,7 @@ export class ChatController {
 
     // get members  of a channel
     @UseGuards(AuthGuard('jwt'))
-    @Get('channel/members')
+    @Post('channel/members')
     async getMembersOfChannel(@Body() chDto:channeDto, @Res() response:Response){
         try{
             const result = await this.chatService.getMembersOfChannel(chDto);

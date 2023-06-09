@@ -200,12 +200,18 @@ export class UserService {
     async getUserFriends(findUser:findUserDto){
         const {login} = findUser;
         const user = await  this.findUser(findUser);
+        let result:any[] = [];
         // list of friendship that added user(login)
         const friendAddedUser = await this.prisma.client.friend.findMany({
             where:{
                 loginA:login,
             },
         });
+        for(let i = 0;i < friendAddedUser.length; ++i) {
+            let otherUser = await this.findUser({login:friendAddedUser[i].loginB});
+            const {loginA, loginB,isFriends } = friendAddedUser[i];
+            result.push({loginA:loginA, loginB:loginB, isFriends:isFriends, avatar:otherUser.avatar, username:otherUser.username,})
+        };
         // list of friendship that addedBy user(login)
         const friendAddedbyUser = await this.prisma.client.friend.findMany({
             where:{
@@ -213,7 +219,12 @@ export class UserService {
                 isFriends:true,
             },
         });
-        return [...friendAddedUser, ...friendAddedbyUser];
+        for(let i = 0;i < friendAddedbyUser.length; ++i) {
+            let otherUser = await this.findUser({login:friendAddedbyUser[i].loginA});
+            const {loginA, loginB,isFriends } = friendAddedbyUser[i];
+            result.push({loginA:loginB, loginB:loginA, isFriends:isFriends, avatar:otherUser.avatar, username:otherUser.username,})
+        };
+        return result;
     }
 
     // delete a friend 
@@ -449,14 +460,12 @@ export class UserService {
                         UserId:userA.UserId,
                     },
                 },
-                loginA:loginA,
                 scoreA:scoreA,
                 userB:{
                     connect:{
                         UserId:userB.UserId,
                     },
                 },
-                loginB:loginB,
                 scoreB:scoreB,
                 winner:winner,
             }
@@ -466,17 +475,28 @@ export class UserService {
     // get user's matchs history 
     async getHistoryUserMatchs(findUser:findUserDto){
         const user = await  this.findUser(findUser);
+        let result:any[] = [];
         const matchsA =  await this.prisma.client.match.findMany({
             where:{
                 userAId:user.UserId,
             },
         });
+        for (let i = 0;i < matchsA.length; ++i){
+            let otherUser = await this.findUserById(matchsA[i].userBId);
+            const {scoreA, scoreB,winner, finishedAt} = matchsA[i];
+            result.push({loginA:user.login, loginB:otherUser.login, winner:winner,scoreA:scoreA,scoreB:scoreB, finishedAt:finishedAt, avatar:otherUser.avatar, username:otherUser.username});
+        }
         const matchsB =  await this.prisma.client.match.findMany({
             where:{
                 userBId:user.UserId,
             },
         });
-        return {...matchsA, ...matchsB};
+        for (let i = 0;i < matchsB.length; ++i){
+            let otherUser = await this.findUserById(matchsB[i].userAId);
+            const {scoreA, scoreB,winner, finishedAt} = matchsB[i];
+            result.push({loginA:user.login, loginB:otherUser.login, winner:winner,scoreA:scoreA,scoreB:scoreB, finishedAt:finishedAt, avatar:otherUser.avatar, username:otherUser.username});
+        }
+        return result;
     }
 
     // get history match one vs one
@@ -500,4 +520,3 @@ export class UserService {
         return {...matchsA, ...matchsB};
     }
 }
-

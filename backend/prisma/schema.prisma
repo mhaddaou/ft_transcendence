@@ -34,7 +34,7 @@ model Friend {
   FriendshipId       String @id @default(uuid())
   userA              User @relation("relationA",fields: [userAId], references: [UserId], onDelete: Cascade) // user that requested friendship first
   userAId            String
-  loginA             String 
+  loginA             String
   userB              User @relation("relationB",fields: [userBId], references: [UserId], onDelete: Cascade)
   userBId            String
   loginB             String 
@@ -135,10 +135,8 @@ model match {
   matchyId     String    @id @default(uuid())
   userA        User      @relation("matchA",fields: [userAId], references: [UserId], onDelete: Cascade)
   userAId      String
-  loginA       String
   scoreA       Int
   userB        User      @relation("matchB",fields: [userBId], references: [UserId], onDelete: Cascade)
-  loginB       String
   userBId      String
   scoreB       Int       @default(0)
   winner       Boolean     // userA :true  , userB:false

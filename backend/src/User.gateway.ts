@@ -8,7 +8,7 @@ import { ChannelDto, DeleteMemberChannelDto, MemberChannelDto, deleteChannelDto,
 import { ChatService } from './chat/chat.service';
 import { BadRequestException, NotFoundException, UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
 import { WebsocketExceptionsFilter } from './chat/socketException';
-import { FriendDto, UpdateStatus, UpdateUserDto, newBlockDto, newFriendDto, newUpdateUserDto } from 'src/user/dto/user.dto';
+import { FriendDto, UpdateStatus, UpdateUserDto, jwtDto, newBlockDto, newFriendDto, newUpdateUserDto } from 'src/user/dto/user.dto';
 import { BlockDto } from 'src/user/dto/user.dto';
 import { createHash } from 'crypto';
 
@@ -35,25 +35,27 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect{
     // Socket should contain a user's jwt to connect him succefully 
     async handleConnection(client: Socket) {
         try{
-            const token = client.handshake.headers.authorization;
-            const hashedToken:string = await createHash('sha256').update(token).digest('hex');
-            if (this.blackListedJwt.has(hashedToken))
-                throw new BadRequestException('this jwt token is black Listed you have re login');
-            const decodedToken = await this.jwtService.verify(token,{secret:`${process.env.jwt_secret}`});
-            const login = decodedToken.login;
-            const user = await this.userService.findUser({login:login});
-            this.connectedUsers.set(client.id,user);
-            const roomsToJoin = await this.chatService.getUserNameChannels({login:user.login});
-            roomsToJoin.forEach((channelName) => {
-                client.join(channelName);
-            });
-            // set status online in database
-            const dto:UpdateStatus = {login:user.login, isOnline:true, inGame:undefined};
-            await this.userService.modifyStatusUser(dto);
-            client.emit('message',`welcome ${this.connectedUsers.get(client.id).username} you have connected succefully`);
+            console.log('wawwaw');
+            // const token = client.handshake.headers.authorization;
+            // const hashedToken:string = await createHash('sha256').update(token).digest('hex');
+            // if (this.blackListedJwt.has(hashedToken))
+            //     throw new BadRequestException('this jwt token is black Listed you have re login');
+            // const decodedToken = await this.jwtService.verify(token,{secret:`${process.env.jwt_secret}`});
+            // const login = decodedToken.login;
+            // const user = await this.userService.findUser({login:login});
+            // this.connectedUsers.set(client.id,user);
+            // const roomsToJoin = await this.chatService.getUserNameChannels({login:user.login});
+            // roomsToJoin.forEach((channelName) => {
+            //     client.join(channelName);
+            // });
+            // // set status online in database
+            // const dto:UpdateStatus = {login:user.login, isOnline:true, inGame:undefined};
+            // await this.userService.modifyStatusUser(dto);
+            // client.emit('message',`welcome ${this.connectedUsers.get(client.id).username} you have connected succefully`);
         }
         catch(error){
-            this.connectedUsers.delete(client.id);
+            console.log('ikhan',error)
+            // this.connectedUsers.delete(client.id);
             client.emit('errorMessage', error);
             client.disconnect();
         }
@@ -85,6 +87,37 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect{
         return undefined;
       }
 
+    
+    // call back 
+    @SubscribeMessage('connectCallBack')
+    async connectCallBack(@ConnectedSocket() client:Socket, @MessageBody() body:jwtDto){
+        try{
+            console.log("here");
+            const {token} = body;
+            const hashedToken:string = await createHash('sha256').update(token).digest('hex');
+            if (this.blackListedJwt.has(hashedToken))
+                throw new BadRequestException('this jwt token is black Listed you have re login');
+            const decodedToken = await this.jwtService.verify(token,{secret:`${process.env.jwt_secret}`});
+            const login = decodedToken.login;
+            const user = await this.userService.findUser({login:login});
+            this.connectedUsers.set(client.id,user);
+            const roomsToJoin = await this.chatService.getUserNameChannels({login:user.login});
+            roomsToJoin.forEach((channelName) => {
+                client.join(channelName);
+            });
+            // set status online in database
+            const dto:UpdateStatus = {login:user.login, isOnline:true, inGame:undefined};
+            await this.userService.modifyStatusUser(dto);
+            console.log("i will send you  msg")
+            client.emit('message',`welcome ${this.connectedUsers.get(client.id).username} you have connected succefully`);
+        }
+        catch(error){
+            client.emit('errorMessage', error);
+            this.connectedUsers.delete(client.id);
+            client.emit('errorMessage', error);
+            client.disconnect();
+        }
+    }
     // create new channel
     @SubscribeMessage('newChannel')
     async createNewChannel(@ConnectedSocket() client:Socket, @MessageBody() body:newChannelDto){
@@ -246,7 +279,7 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect{
     }
 
 // user
-    // update a user
+    // update a user  you can update username , 2fa bool , avater
     @SubscribeMessage('updateUser')
     async updateUserEvent(@ConnectedSocket() client:Socket, @MessageBody() body:newUpdateUserDto){
         try{

@@ -98,7 +98,7 @@ export class newBlockDto {
     @IsBoolean()
     stillEnemy:boolean;// true: add new block , false: remove block 
 }
-  
+
 export class newFriendDto {
     @IsString()
     login: string;
@@ -119,4 +119,9 @@ export class newUpdateUserDto {
     @IsOptional()
     @IsBoolean()
     enableTwoFa:boolean;
+}
+
+export class jwtDto {
+    @IsString()
+    token:string;
 }

@@ -15,14 +15,12 @@ constructor(private readonly userSrevice:UserService){}
     async findAll(){
         return await this.userSrevice.findAllUsers();
     }
-
-
     // get a user by his token jwt and his friend
     @UseGuards(AuthGuard('jwt'))
     @Get('me')
     async findMe(@Req() req:any, @Res() response:Response){
         try{
-            const  { login} = req.user;
+            const { login} = req.user;
             const user = await this.userSrevice.findUser({login:login});
             const friends = await this.userSrevice.getUserFriends({login:login});
             const matches = await this.userSrevice.getHistoryUserMatchs({login:login});
@@ -35,9 +33,9 @@ constructor(private readonly userSrevice:UserService){}
         }
     }
 
-    // get user 
+    // get user
     @UseGuards(AuthGuard('jwt'))
-    @Get('find')
+    @Post('find')
     async findOne(@Body() findUser:findUserDto, @Res() response:Response){
         try{
             const result = await this.userSrevice.findUser(findUser);
@@ -63,7 +61,7 @@ constructor(private readonly userSrevice:UserService){}
 
     // get list of blocked users
     @UseGuards(AuthGuard('jwt'))
-    @Get('blocks')
+    @Post('blocks')
     async getListBlocked(@Body() findUser:findUserDto, @Res() response:Response){
         try {
             const result =  await this.userSrevice.getBlockedList(findUser);
@@ -76,7 +74,7 @@ constructor(private readonly userSrevice:UserService){}
 
 // get status of user
     @UseGuards(AuthGuard('jwt'))
-    @Get('status')
+    @Post('status')
     async getUserStatus(@Body() findUser:findUserDto, @Res() response:Response){
         try {
             const result =  await this.userSrevice.getStatusUser(findUser); 
@@ -90,7 +88,7 @@ constructor(private readonly userSrevice:UserService){}
 
 // get stats of user
     @UseGuards(AuthGuard('jwt'))
-    @Get('stats')
+    @Post('stats')
     async getUserStats(@Body() findUser:findUserDto, @Res() response:Response){
         try {
             const result = await this.userSrevice.getStatsUser(findUser); 
@@ -110,7 +108,7 @@ constructor(private readonly userSrevice:UserService){}
 
     // get history of matches between of a  user
     @UseGuards(AuthGuard('jwt'))
-    @Get('historyMatch')
+    @Post('historyMatch')
     async getHistoryMatch(@Body() findUser:findUserDto, @Res() response:Response){
         try {
             const result = await this.userSrevice.getHistoryUserMatchs(findUser);
@@ -123,7 +121,7 @@ constructor(private readonly userSrevice:UserService){}
     
     // get history of matches between two users
     @UseGuards(AuthGuard('jwt'))
-    @Get('historyFriend')
+    @Post('historyFriend')
     async getHistoryOneVsOne(@Body() friendDto:FriendDto, @Res() response:Response){
         try {
             const result = await this.userSrevice.getHistoryOneVsOne(friendDto);

@@ -27,7 +27,7 @@ export class AuthController {
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Get('QR')
+    @Post('QR')
     async generateNewQrCode(@Body() userDto:findUserDto, @Res() response:Response){
       try{
           const result = await this.authService.generateNewQrCode(userDto);
