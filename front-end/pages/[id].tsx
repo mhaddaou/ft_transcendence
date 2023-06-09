@@ -10,6 +10,7 @@ const router = Router;
 async function fetchdata(token :string | string[] | undefined){
     const context = useContext(MyContext);
     console.log("the token", token);
+    context?.setToken(token);
     console.log("debug")
     try{
         const res = await axios.get('http://localhost:5000/user/me', {headers:{

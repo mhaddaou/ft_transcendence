@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Statics from '../image/statics.svg'
 import 'react-circular-progressbar/dist/styles.css';
 import LevelStatics, {Stats} from '@/components/Statics'
@@ -9,6 +9,7 @@ import { faTableTennisPaddleBall } from '@fortawesome/free-solid-svg-icons';
 import {DataFunction, CallBarLeft} from '@/components/Functions';
 import NavBar from '@/components/NavBar';
 import { MyContext , ContextTypes} from '@/components/Context';
+import axios from 'axios';
 
 
 const func = () =>{
@@ -21,14 +22,38 @@ const func = () =>{
 
 
 export default function Progress() {
+  const requst = {
+    login : 'smia',
+  }
+
 
   const context = useContext(MyContext);
+  const fet = async () => {
+    const requestData = {
+      // Your request body data here
+      login: 'mhaddaou',
+    };
+    try{
+      const res = await axios.post('http://localhost:5000/user/find', 
+        {login : 'smia'},
+        {
+        headers: {
+          Authorization: `Bearer ${context?.token}`,
+        },
+      });
+    
+      const response = await res.data;
+      console.log(response);
 
-  if (context?.match)
-  for (let i = 0; i < context?.match?.length ; i++){
-    console.log(context?.match[i].loginA);
-    console.log("heh");
-  }
+    }catch(e){
+      console.error(e);
+    }
+  
+  };
+  
+   useEffect(()=>{
+    fet();
+   },[])
 
 
   // const {name = UseMyContext();

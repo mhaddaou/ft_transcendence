@@ -3,13 +3,18 @@ import { StaticImageData } from "next/image";
 import avatar from '../image/avatar.webp';
 
 // define types context
+const r : File | string = '';
 
 export interface MatchType {
   matchId: string;
   userAId: string;
   loginA: string;
+  //usernameA:string
+  // avatarA:string
   scoreA: number;
   loginB: string;
+  //usernameA:string
+  // avatar:string
   userBId: string;
   scoreB: number;
   winner: boolean;
@@ -21,13 +26,17 @@ export interface FriendsType{
   loginA:  string;
   userBId:  string;
   loginB:  string;
-  isFriends:  boolean;
+  // avatar a
+  // avatar b
+  isFriends:  boolean; 
 }
 
 
 export interface ContextTypes{
     name : string;
     setName : Dispatch<SetStateAction<string>>
+    token : string | string[] | undefined;
+    setToken : Dispatch<SetStateAction<string| string[] | undefined>>;
     img : string | File ;
     setImg : Dispatch<SetStateAction<string | File>>;
     friends : FriendsType[];
@@ -62,6 +71,7 @@ const MyContext = createContext<ContextTypes | undefined>(undefined);
 
 const MyContextProvider = ({children} : ChildProps) =>{
     const [check, setCheck] = useState(0);
+    const [token, setToken] = useState<string | string[] | undefined>('');
     const [name, setName] = useState('');
     const [img, setImg] = useState<string | File>('0');
     const [friends, setFriends] = useState<FriendsType[]>([]);
@@ -141,7 +151,8 @@ const MyContextProvider = ({children} : ChildProps) =>{
       localStorage.setItem('showMsg', showMsg);
     },[showMsg]);
     const ContextValue = {name, setName, img, setImg, friends, setFriends,wins, setWins, losses, 
-      setLosses,  level, setLevel,LevlPer,setLevlPer, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck, match, setMatch };
+      setLosses,  level, setLevel,LevlPer,setLevlPer, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck, match, setMatch
+      ,token, setToken };
 
 
 
