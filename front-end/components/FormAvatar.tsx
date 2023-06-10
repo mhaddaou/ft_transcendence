@@ -1,21 +1,26 @@
 import { ChangeEvent, useContext } from "react";
 import { MyContext } from "./Context";
-
+import axios from "axios";
 const FormAvatar = () =>{
     const context = useContext(MyContext);
-    const handlefile= (event : ChangeEvent<HTMLInputElement>) =>{
+    const  handlefile= (event : ChangeEvent<HTMLInputElement>) =>{
         if (event.target.files && event.target.files.length > 0){
             context?.setImg(event.target.files[0]);
             context?.setCheck(1);
-            if (context?.socket) {
-                context?.socket.emit("photo",event.target.files[0]);
-                context.socket.on('message', (msg: string) => {
-                  console.log(msg);
-                })
-                context.socket.on("errorMessage", (msg: string) => {
-                  console.log(msg);
-                })
+
+            try{
+                const res =  axios.post('http://localhost:5000/user/photo', 
+                  event.target.files[0],
+                  {
+                  headers: {
+                    Authorization: `Bearer ${context?.token}`,
+                  },
+                });
+          
+              }catch(e){
+                console.error(e);
               }
+            
         }
     }
     return (

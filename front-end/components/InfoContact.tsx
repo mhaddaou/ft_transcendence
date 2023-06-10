@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import mhaddaou from '../image/mhaddaou.jpg'
 import Image from 'next/image';
+import { subscribe } from 'diagnostics_channel';
+import { useEffect, useState } from 'react';
 
 const InfoContact = () =>{
     return (
@@ -27,9 +29,41 @@ const InfoContact = () =>{
 </div>
     );
 }
-const submitName = () =>{
+const SubmitName = () =>{
+  const [md, setMd] = useState(0);
+  const [show, setShow] = useState('hidden');
+  useEffect(() =>{
+    // if ((md === 0))
+
+  },[md])
+  return (
+    <div >
+
+
+      <div className={``}>
+        <div className=' absolute top-[600px] modal-box w-full h-60 bg-green-300   flex flex-col gap-4 items-center'>
+          <div className='w-full h-[80%] flex flex-col justify-center'>
+          <h3 className="font-bold text-lg text-center mb-4 ">Success</h3>
+          <p className='text-center'>your name is change successfuly</p>
+          </div>
+          <div className=' w-full flex justify-end items-end'>
+            <button onClick={() =>{
+
+
+            }} className='bg-white py-2 px-4  rounded-md self-end font-light'>close</button>
+          </div>
+        
+         
+    
+        </div>
+        </div>
+
+    </div>
+  );
+
 
 }
 
 
 export default InfoContact;
+export {SubmitName};

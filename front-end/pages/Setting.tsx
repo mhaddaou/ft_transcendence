@@ -60,6 +60,7 @@ import InfoContact from "@/components/InfoContact";
                 </div>
                 <div className="w-full h-[67%] rounded-2xl bg-gray-300 flex flex-col gap-2 px-4">
                 {/* <InfoContact /> */}
+                
                     <UpdateName />
                     <UpdateAvatar />
                     <Twofactor />

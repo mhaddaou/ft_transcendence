@@ -4,6 +4,7 @@ import { RiSendPlaneFill } from "react-icons/ri";
 import { MyContext } from "./Context";
 import { Socket } from "socket.io-client";
 import InfoContact from "./InfoContact";
+import { SubmitName } from "./InfoContact";
 
 
 function containsSpecialChars(str : string) : boolean {
@@ -85,13 +86,15 @@ function containsSpecialChars(str : string) : boolean {
             placeholder={`${name}`}
             aria-label="Full name"
           />
-          <button
+          <SubmitName />
+          {/* <InfoContact /> */}
+          {/* <button
             onClick={submit}
             className="flex-shrink-0 bg-slate-500 hover:bg-slate-700 border-slate-500 hover:border-slate-700 text-sm border-4 text-white py-1 px-2 rounded"
             type="button"
           >
             Submit
-          </button>
+          </button> */}
           <button
             onClick={cancel}
             className="flex-shrink-0 border-transparent border-4 text-slate-600 hover:text-slate-800 text-sm py-1 px-2 rounded"
