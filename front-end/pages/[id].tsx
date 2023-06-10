@@ -3,26 +3,49 @@ import { useRouter } from "next/router";
 import Profile from "./Profile";
 import Router from "next/router";
 import { MyContext } from "@/components/Context";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { string } from "prop-types";
 import { match } from "assert";
+import {io} from "socket.io-client"
+import { type } from "os";
+import { Socket } from "dgram";
+import Lottie from "lottie-react";
+import wait from '../image/wait.json'
+// import use
+
+
+
+
+
 const router = Router;
-async function fetchdata(token :string | string[] | undefined){
+async function fetchdata(tokene :string ){
+
     const context = useContext(MyContext);
-    console.log("the token", token);
-    context?.setToken(token);
+    var l : string = '';
+    if (typeof(tokene) === 'string')
+        l = tokene;
+    localStorage.setItem('token', tokene);
+    
+    console.log("the token", tokene);
+
+    context?.setToken(tokene);
     console.log("debug")
     try{
         const res = await axios.get('http://localhost:5000/user/me', {headers:{
-            Authorization : `Bearer ${token}`
+            Authorization : `Bearer ${tokene}`
         }})
+
         const response = await res.data;
+        console.log("response " , response);
         context?.setName(response.username);
         context?.setImg(response.avatar);
         context?.setFriends(response.friends);
         context?.setMatch(response.matches);
-        console.log("here is");
-        console.log(context?.friends[0]);
+        // context?.setMatch(response.matches);
+        // console.log("here is");
+        // console.log(context?.friends[0]);
+       
+     
       
         router.push('http://localhost:3000/Dashbord');
     }catch(e){
@@ -30,12 +53,29 @@ async function fetchdata(token :string | string[] | undefined){
 }
 
 
-export default function Profileid(){
+export default  function Profileid(){
+    const context = useContext(MyContext);
     const router = useRouter();
-    const id = router.query.id ?? null;
-    if (id)
-    var res = fetchdata(id);
+    var id : string = '';
+    if (router.query.id){
+        
+        id  = router.query.id.toString();
+        fetchdata(id);
+    }
+    
+    
+    return (
+        <div className="min-h-screen w-screen bg-slate-200">
+            <div className="container w-screen h-screen flex justify-end items-center">
+
+                <Lottie className="w-full h-full" animationData={wait} />
+            </div>
+
+
+        </div>
+    )
 }
+  
 
 
 // {

@@ -10,25 +10,76 @@ import {DataFunction, CallBarLeft} from '@/components/Functions';
 import NavBar from '@/components/NavBar';
 import { MyContext , ContextTypes} from '@/components/Context';
 import axios from 'axios';
+import {io} from "socket.io-client";
+var i = 0;
 
 
-const func = () =>{
-  const context = useContext(MyContext);
-  if (context?.match)
-    console.log(context.match[0]);
 
-}
+
+
+
 
 
 
 export default function Progress() {
-  const requst = {
-    login : 'smia',
+  const context = useContext(MyContext);
+  const [isPageReloaded, setIsPageReloaded] = useState(false);
+
+  useEffect(() => {
+    if (window.performance && window.performance.navigation.type === 1) {
+      setIsPageReloaded(true);
+      console.log("is refreching")
+    }
+  }, []);
+
+
+  
+
+  if (context?.token && i == 0){
+    i++;
+
+    var socket = io("http://localhost:3333", {
+          extraHeaders: {
+              Authorization: context?.token,
+      }
+      });
+      socket.on('message', (payload: any) => {
+          console.log("111111111111111");
+          console.log(`Received message: ${payload}`);
+          // SetToMessages(payload);
+          // setMessages([...messages, payload]);
+        });
+        socket.on('errorMessage', (payload: any) => {
+          console.log("111111111111111");
+  
+          console.log(`Received message: ${payload}`);
+          // SetToMessages(payload);
+          // setMessages([...messages, payload]);
+        });
+        context.setSocket(socket);
   }
 
+      
+    
+ // Replace with your server URL
 
-  const context = useContext(MyContext);
+// Handle the connect event
+
+  
+
+  
+
+
+  
+  
+ // Assuming you have already established the Socket.IO connection
+// context?.socket.on('connect', () => {
+//   socket.emit('connectCallBack', { token: 'your_token_here' }); // Replace 'your_token_here' with the actual token value
+// });
+
+  
   const fet = async () => {
+    
     const requestData = {
       // Your request body data here
       login: 'mhaddaou',
@@ -60,6 +111,8 @@ export default function Progress() {
   // const [border, setBorder]
   const[check, setCheck] = useState(0);
   const [msg, setMsg] = useState("");
+
+ 
   
   
   const clickHistory = () => {

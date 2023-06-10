@@ -2,6 +2,8 @@
 import { useContext, useRef, useState } from "react";
 import { RiSendPlaneFill } from "react-icons/ri";
 import { MyContext } from "./Context";
+import { Socket } from "socket.io-client";
+import InfoContact from "./InfoContact";
 
 
 function containsSpecialChars(str : string) : boolean {
@@ -15,14 +17,26 @@ function containsSpecialChars(str : string) : boolean {
 
   const FormName = () => {
     const context = useContext(MyContext);
+    var Msg : string = '';
+    const [num, setNum] = useState(false);
     
     function checkInputName(name: string): void {
       if (!containsSpecialChars(name) && name.length > 7) {
-        // data ready to send it to the server
-        console.log("send data");
+        if (context?.socket) {
+          context?.socket.emit("updateUser",{username : name});
+          context.socket.on('message', (msg: string) => {
+            console.log(msg);
+          })
+          context.socket.on("errorMessage", (msg: string) => {
+            console.log(msg);
+          })
+        }
+          
+        Msg = "send data";
         context?.setName(name);
       } else {
         // data is malicious code
+        Msg = "the name is small or not valid";
         console.warn(`name is ${name}`);
       }
     }
@@ -59,6 +73,7 @@ function containsSpecialChars(str : string) : boolean {
     
     return (
       <div className='w-full max-w-sm'>
+        {/* <InfoContact /> */}
         <form className="flex items-center border-b border-slate-600 py-2">
           <input
             value={valueName}

@@ -17,13 +17,12 @@ type DataProps = number | undefined;
 
 export default function GetDataHistory(){
     const context = useContext(MyContext);
-    const [Data, setData] = useState(['name']);
     useEffect(() =>{
         //here for fetching data
         // and here for setting the tade to usestate data
         console.log('data');
     })
-        if (Data.length == 0){
+        if (context?.match.length == 0){
             return (
                 <p className=' text-center text-4xl mx-auto my-auto text-slate-700 font-semibold font-mono'>
                     Not have history yet
@@ -55,7 +54,7 @@ export default function GetDataHistory(){
 
                         </div>
                         <div className="flex justify-around md:justify-start md:space-x-10  w-1/3 h-full items-center ">
-                            <div className="font-mono font-semibold md:text-[20px]">{context?.match[i].loginB}</div>
+                            <div className="font-mono font-semibold md:text-[20px]">{context?.match[i].username}</div>
                             <div>
                             <Image className="mask mask-squircle w-12 h-12" src={smia} alt="avatar" />
 

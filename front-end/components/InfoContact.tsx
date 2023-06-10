@@ -27,5 +27,9 @@ const InfoContact = () =>{
 </div>
     );
 }
+const submitName = () =>{
 
-export default InfoContact;
+}
+
+
+export default InfoContact, {su};
