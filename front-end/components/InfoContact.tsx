@@ -32,4 +32,4 @@ const submitName = () =>{
 }
 
 
-export default InfoContact, {su};
+export default InfoContact;

@@ -7,6 +7,15 @@ const FormAvatar = () =>{
         if (event.target.files && event.target.files.length > 0){
             context?.setImg(event.target.files[0]);
             context?.setCheck(1);
+            if (context?.socket) {
+                context?.socket.emit("photo",event.target.files[0]);
+                context.socket.on('message', (msg: string) => {
+                  console.log(msg);
+                })
+                context.socket.on("errorMessage", (msg: string) => {
+                  console.log(msg);
+                })
+              }
         }
     }
     return (
