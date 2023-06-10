@@ -5,6 +5,7 @@ const FormAvatar = () =>{
     const context = useContext(MyContext);
     const  handlefile= (event : ChangeEvent<HTMLInputElement>) =>{
         if (event.target.files && event.target.files.length > 0){
+            console.log(event.target.files[0]);
             context?.setImg(event.target.files[0]);
             context?.setCheck(1);
 
@@ -14,6 +15,7 @@ const FormAvatar = () =>{
                   {
                   headers: {
                     Authorization: `Bearer ${context?.token}`,
+                    'Content-Type': 'multipart/form-data',
                   },
                 });
           
