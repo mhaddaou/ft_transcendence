@@ -2,7 +2,8 @@ import Link from 'next/link';
 import mhaddaou from '../image/mhaddaou.jpg'
 import Image from 'next/image';
 import { subscribe } from 'diagnostics_channel';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
+import { MyContext } from './Context';
 
 const InfoContact = () =>{
     return (
@@ -30,17 +31,26 @@ const InfoContact = () =>{
     );
 }
 const SubmitName = () =>{
-  const [md, setMd] = useState(0);
-  const [show, setShow] = useState('hidden');
+  const context = useContext(MyContext);
+  const [check, setcheck] = useState('hidden');
   useEffect(() =>{
-    // if ((md === 0))
+    if (context?.checkname){
+      if (context?.checkname == 0)
+        setcheck('hidden');
+      else{
+        setcheck('block');
+      }
+    }
 
-  },[md])
+
+  },[context?.checkname])
+  
+ 
   return (
     <div >
 
 
-      <div className={``}>
+      <div className={`${check}`}>
         <div className=' absolute top-[600px] modal-box w-full h-60 bg-green-300   flex flex-col gap-4 items-center'>
           <div className='w-full h-[80%] flex flex-col justify-center'>
           <h3 className="font-bold text-lg text-center mb-4 ">Success</h3>
@@ -48,8 +58,7 @@ const SubmitName = () =>{
           </div>
           <div className=' w-full flex justify-end items-end'>
             <button onClick={() =>{
-
-
+              setcheck('hidden');
             }} className='bg-white py-2 px-4  rounded-md self-end font-light'>close</button>
           </div>
         

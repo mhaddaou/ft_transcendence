@@ -53,6 +53,8 @@ export interface ContextTypes{
     setCheck : Dispatch<SetStateAction<number>>
     match : MatchType[] ;
     setMatch : Dispatch<SetStateAction<MatchType[]>>;
+    checkname : number;
+    setCheckname : Dispatch<SetStateAction<number>>;
 }
 
 // types childer
@@ -66,6 +68,7 @@ const MyContext = createContext<ContextTypes | undefined>(undefined);
 // create provider
 
 const MyContextProvider = ({children} : ChildProps) =>{
+    const [checkname, setCheckname] = useState(0);
     const [check, setCheck] = useState(0);
     const [token, setToken] = useState('');
     const [socket, setSocket] = useState<Socket | undefined>(undefined);
@@ -93,6 +96,8 @@ const MyContextProvider = ({children} : ChildProps) =>{
         const getshowMsg = localStorage.getItem('showchat');
         const getMatch  = localStorage.getItem('match');
         const getToken = localStorage.getItem('token');
+        const getCheckName = localStorage.getItem('checkName');
+        if (getCheckName) setCheckname(+getCheckName);
         if (getToken) setToken(getToken); 
         if (getMatch !== undefined && getMatch !== null) {
           try {
@@ -137,6 +142,10 @@ const MyContextProvider = ({children} : ChildProps) =>{
       localStorage.setItem('img', img.toString());
       console.log()
   },[img]);
+  useEffect(() =>{
+      localStorage.setItem('checkName',checkname.toString() )
+
+  },[checkname])
   useEffect(()=>{
       localStorage.setItem('friends', JSON.stringify(friends));
   },[friends]);
@@ -167,7 +176,7 @@ const MyContextProvider = ({children} : ChildProps) =>{
   },[token])
  
     const ContextValue = {name, setName, img, setImg, friends, setFriends,wins, setWins, losses, 
-      setLosses,  level, setLevel,LevlPer,setLevlPer, socket,setSocket, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck, match, setMatch
+      setLosses,  level, setLevel,LevlPer,setLevlPer, checkname, setCheckname,socket,setSocket, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck, match, setMatch
       ,token, setToken };
 
 
