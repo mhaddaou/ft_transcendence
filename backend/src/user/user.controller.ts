@@ -1,7 +1,7 @@
 import { UserService } from 'src/user/user.service';
 import { Body, Controller, Delete, Get,Req, Post, UseGuards, Patch, Res } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { FriendDto ,findUserDto, storeMatchDto } from './dto/user.dto';
+import { FriendDto ,findUserDto, storeMatchDto, usernameDto } from './dto/user.dto';
 import { Response } from 'express';
 import { ApiBearerAuth, ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -132,6 +132,18 @@ constructor(private readonly userSrevice:UserService){}
         }
         catch(error){
             response.status(400).json(error);
+        }
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Post('findLogin')
+    async findUserWithUsername(@Body() dto:usernameDto, @Res() response:Response){
+        try{
+            const result =  await this.userSrevice.findUserWithUsername(dto);
+            response.status(200).json(result);
+        }
+        catch(error){
+            response.status(400 ).json(error);
         }
     }
 }

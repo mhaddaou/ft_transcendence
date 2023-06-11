@@ -7,6 +7,8 @@ import smia from '../image/smia.jpg'
 import amya from '../image/amya.jpg'
 import { MyContext, MatchType } from "./Context";
 import avatar from '../image/avatar.webp'
+import {ModalChat} from "./Modal";
+
 
 
 type DataProps = number | undefined;
@@ -132,6 +134,16 @@ export  function GetDataAchievement(){
 
 export function GetDataFriend() {
     const context = useContext(MyContext);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => {
+      setIsModalOpen(true);
+    };
+
+
+    const closeModal = () => {
+      setIsModalOpen(false);
+    };
     
   
     useEffect(() => {
@@ -146,6 +158,11 @@ export function GetDataFriend() {
         else
             return avatar;  
     }
+
+    const sendMsg = ()=>{
+      console.log('sendMsg');
+
+    }
   
     if (context?.friends.length === 0) {
       
@@ -157,7 +174,13 @@ export function GetDataFriend() {
     } else {
       return (
         <div className="flex flex-col w-full h-full">
-          <div className="w-full bg-gray-300 rounded-t-2xl h-[14%] flex justify-around items-center font-semibold text-sm text-left text-gray-500">
+          <div>
+            {
+            }
+
+            
+          </div>
+          <div className="w-full bg-gray-300 rounded-t-2xl h-[14%] flex justify-around items-center font-semibold text-sm text-left text-gray-500 z-20">
             <div>Avatar</div>
             <div>Name</div>
             <div>Details</div>
@@ -170,12 +193,22 @@ export function GetDataFriend() {
                 while (context?.friends[i]){
                   elements.push(
                     <div className="h-[16%] max-h-[16%] bg-gray-200 flex justify-around items-center my-2" >
+                      <ModalChat  isOpen={isModalOpen} closeModal={closeModal} name={context.friends[i].username} />
                       <div className="h-full w-1/3 flex justify-center items-center">
                         <Image className="mask mask-squircle w-8 h-8 sm:w-12 sm:h-12" src={getImgSrc(context.friends[i].loginB)} alt="avatar" />
                       </div>
-                      <div className="w-1/3 text-center">{context.friends[i].loginB}</div>
-                      <div className="w-1/3 text-center">
-                        <button className="btn btn-ghost btn-xs">details</button>
+                      <div className="w-1/3 text-center">{context.friends[i].username}</div>
+                      <div className="w-1/3 text-center z-50">
+                        <div className="dropdown dropdown-left ">
+                        <label tabIndex={0} className="btn btn-ghost btn-xs">details</label>
+                        <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                          <li><button onClick={() =>{
+                            sendMsg();
+                            setIsModalOpen(true);
+                          }}>Send Msg</button></li>
+                          <li><Link href="#">View Profile</Link></li>
+                        </ul>
+                      </div>
                       </div>
                     </div>
                   );

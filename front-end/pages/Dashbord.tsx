@@ -85,8 +85,8 @@ export default function Progress() {
       login: 'mhaddaou',
     };
     try{
-      const res = await axios.post('http://localhost:5000/user/find', 
-        {login : 'smia'},
+      const res = await axios.post('http://localhost:5000/user/findLogin', 
+        {username : 'mohamed haddaoui'},
         {
         headers: {
           Authorization: `Bearer ${context?.token}`,
@@ -94,7 +94,7 @@ export default function Progress() {
       });
     
       const response = await res.data;
-      console.log(response);
+      console.log("this is login of user name " ,response);
 
     }catch(e){
       console.error(e);
