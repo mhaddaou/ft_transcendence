@@ -65,18 +65,6 @@ export class UserService {
         
     }
 
-    // async updateUserField<T>(field:T, userId:string){
-
-    //     let map:Map<number,string>;
-    //     return await this.prisma.client.user.update({
-    //         where:{
-    //             UserId:userId,
-    //         },
-    //         data:{
-
-    //         }
-    //     })
-    // }
     // find user with same username
     async findUserwithSameUsername(username:string){
         return await this.prisma.client.user.findFirst({

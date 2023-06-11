@@ -33,8 +33,8 @@ export interface ContextTypes{
     setSocket : Dispatch<SetStateAction<Socket | undefined>>;
     token : string ;
     setToken : Dispatch<SetStateAction<string>>;
-    img : string | File ;
-    setImg : Dispatch<SetStateAction<string | File>>;
+    img : string ;
+    setImg : Dispatch<SetStateAction<string>>;
     friends : FriendsType[];
     setFriends : Dispatch<SetStateAction<FriendsType[]>>
     level : number;
@@ -73,7 +73,7 @@ const MyContextProvider = ({children} : ChildProps) =>{
     const [token, setToken] = useState('');
     const [socket, setSocket] = useState<Socket | undefined>(undefined);
     const [name, setName] = useState('');
-    const [img, setImg] = useState<string | File>('0');
+    const [img, setImg] = useState<string>('0');
     const [friends, setFriends] = useState<FriendsType[]>([]);
     const [level, setLevel] = useState(0);
     const [wins, setWins] = useState(0);

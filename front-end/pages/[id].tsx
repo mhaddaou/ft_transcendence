@@ -39,6 +39,7 @@ async function fetchdata(tokene :string ){
         console.log("response " , response);
         context?.setName(response.username);
         context?.setImg(response.avatar);
+        console.log("avatar " , response.avatar);
         context?.setFriends(response.friends);
         context?.setMatch(response.matches);
         // context?.setMatch(response.matches);

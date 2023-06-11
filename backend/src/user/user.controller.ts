@@ -15,6 +15,7 @@ constructor(private readonly userSrevice:UserService){}
     async findAll(){
         return await this.userSrevice.findAllUsers();
     }
+    
     // get a user by his token jwt and his friend
     @UseGuards(AuthGuard('jwt'))
     @Get('me')
@@ -100,6 +101,8 @@ constructor(private readonly userSrevice:UserService){}
     }
 
 // matches
+
+    // store a match
     @UseGuards(AuthGuard('jwt'))
     @Post('match')
     async storeNewMatch(@Body() matchDto:storeMatchDto){

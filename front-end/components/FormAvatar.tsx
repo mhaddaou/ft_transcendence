@@ -1,42 +1,50 @@
-import { ChangeEvent, useContext } from "react";
+import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { MyContext } from "./Context";
+import Modal from "./Modal";
 import axios from "axios";
+import {io} from "socket.io-client"
+import Upload from "@/pages/Upload";
+
+function checkFile(file : File){
+  // max size 10mb
+  console.log(file.name);
+  console.log((file.size / (1024 * 1024)));
+  // console.log(file.type);
+  if (file.type.substring(6, file.type.length) === "jpeg" || file.type.substring(6, file.type.length) === "png"){
+    if ((file.size / (1024 * 1024)) < 10){
+      console.log("waaaaàaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        return 0;
+    }
+    else{
+      // this file is too big
+      return 1;
+    }
+
+  }
+  else{
+    //this file is not a jpeg file or PNG file
+    return 2;
+  }
+
+}
+
 const FormAvatar = () =>{
     const context = useContext(MyContext);
-    const  handlefile= (event : ChangeEvent<HTMLInputElement>) =>{
-        if (event.target.files && event.target.files.length > 0){
-            console.log(event.target.files[0]);
-            context?.setImg(event.target.files[0]);
-            context?.setCheck(1);
 
-            try{
-                const res =  axios.post('http://localhost:5000/user/photo', 
-                  event.target.files[0],
-                  {
-                  headers: {
-                    Authorization: `Bearer ${context?.token}`,
-                    'Content-Type': 'multipart/form-data',
-                  },
-                });
-          
-              }catch(e){
-                console.error(e);
-              }
-            
-        }
-    }
+
+    // useEffect(() =>{
+    //   if (context?.socket) {
+    //     context?.socket.emit("updateUser",{avatar : context.img });
+    //     console.log("jat jat");
+    //   }
+    // },[context?.img,])
+   
+
+   
     return (
-        <form className="w-full max-w-sm">
-            <div className="flex items-center border-b border-slate-600 py-2">
-                    <label className=" cursor-pointer flex-shrink-0 bg-slate-500 hover:bg-slate-700 border-slate-500 hover:border-slate-700 text-sm border-4 text-white py-1 px-2 rounded" >
-                        <input onChange={handlefile} type="file" className="hidden" />
-                        select file
-                    </label>
-                    <button className=" ml-2 flex-shrink-0 bg-slate-500 hover:bg-slate-700 border-slate-500 hover:border-slate-700 text-sm border-4 text-white py-1 px-2 rounded" type="button">
-                            Upload
-                    </button>
-            </div>
-        </form>
+        <div className="w-full max-w-sm">
+          <Upload />
+        </div>
        
 
 );

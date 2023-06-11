@@ -6,6 +6,7 @@ import { Socket } from "socket.io-client";
 import InfoContact from "./InfoContact";
 import { SubmitName } from "./InfoContact";
 import { Hidden } from "@mui/material";
+import Modal from "./Modal";
 
 
 function containsSpecialChars(str : string) : boolean {
@@ -19,8 +20,10 @@ function containsSpecialChars(str : string) : boolean {
 
   const FormName = () => {
     const context = useContext(MyContext);
-    var Msg : string = '';
+    const [msg, setMsg] = useState('') // msg for modal
     const [num, setNum] = useState(false);
+    const [color, setColor] = useState(''); // color for modal
+    const [title, setTitle] = useState(''); // title for modal
     
     function checkInputName(name: string): void {
       if (!containsSpecialChars(name) && name.length > 7) {
@@ -34,11 +37,15 @@ function containsSpecialChars(str : string) : boolean {
           })
         }
           
-        Msg = "send data";
+        setMsg("send data");
+        setColor("bg-green-400");
+        setTitle("Success");
         context?.setName(name);
       } else {
         // data is malicious code
-        Msg = "the name is small or not valid";
+        setMsg("the name is small or not valid");
+        setColor("bg-orange-400");
+        setTitle("Failed");
         console.warn(`name is ${name}`);
       }
     }
@@ -73,6 +80,15 @@ function containsSpecialChars(str : string) : boolean {
         value.current.value = '';
       }
     };
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const openModal = () => {
+      setIsModalOpen(true);
+    };
+    const closeModal = () => {
+      setIsModalOpen(false);
+    };
+        
+
     
     return (
       <div className='w-full max-w-sm'>
@@ -88,9 +104,16 @@ function containsSpecialChars(str : string) : boolean {
             placeholder={`${name}`}
             aria-label="Full name"
           />
-          <SubmitName />
+
+          {isModalOpen && <Modal isOpen={isModalOpen} closeModal={closeModal} title={title} msg={msg} color={color}/>}
+          {/* <SubmitName /> */}
            <button
-            onClick={submit}
+            onClick={() =>{
+              submit();
+              openModal();
+
+              
+            }}
             className="flex-shrink-0 bg-slate-500 hover:bg-slate-700 border-slate-500 hover:border-slate-700 text-sm border-4 text-white py-1 px-2 rounded"
             type="button"
           >

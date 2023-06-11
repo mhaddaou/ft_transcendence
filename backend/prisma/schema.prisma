@@ -98,7 +98,7 @@ model User {
   login               String @unique()
   username            String @unique
   email               String @unique
-  avatar              String @default("smia")
+  avatar              String @default("0")
   enableTwoFa         Boolean @default(false)
   twoFactorSecret     String?
   bioGra              String
@@ -127,9 +127,6 @@ model User {
   matchhistoryA   match[] @relation("matchA")
   matchhistoryB   match[] @relation("matchB")
 }
-
-
-
 
 model match {
   matchyId     String    @id @default(uuid())
