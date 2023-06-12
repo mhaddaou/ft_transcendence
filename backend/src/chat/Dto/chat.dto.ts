@@ -91,7 +91,7 @@ export class updateChannelDto {
     channelName:string;
     @IsOptional()
     @IsBoolean()
-    isPrivate:boolean
+    isPrivate:boolean;
     @IsOptional()
     @IsBoolean()
     ispassword:boolean;
@@ -172,4 +172,50 @@ export class newMsgChannelDto {
     channelName:string;
     @IsString()
     content:string;
+}
+
+// update channel
+export class newUpdateChannelDto {
+    @IsString()
+    channelName:string;
+    @IsOptional()
+    @IsBoolean()
+    isPrivate:boolean
+    @IsOptional()
+    @IsBoolean()
+    ispassword:boolean;
+    @IsString()
+    @IsOptional()
+    newPassword:string;
+}
+
+export class newDeleteChannelDto {
+    @IsString()
+    channelName:string;
+}
+
+export class newDeleteMemberChannelDto {
+    @IsString()
+    channelName:string;
+    @IsString()
+    loginDeleted:string;
+}
+
+export class newUpdateMemberShipDto{
+    @IsString()
+    channelName:string;
+    @IsString()
+    loginAffected:string;
+    @IsOptional()
+    @IsBoolean()
+    isMute:boolean;
+    @IsOptional()
+    @IsNumber()
+    timeMute:number
+    @IsOptional()
+    @IsBoolean()
+    isBlacklist:boolean;
+    @IsOptional()
+    @IsBoolean()
+    isAdmin:boolean;
 }

@@ -29,6 +29,8 @@ export interface FriendsType{
 export interface ContextTypes{
     name : string;
     setName : Dispatch<SetStateAction<string>>
+    login : string;
+    setLogin : Dispatch<SetStateAction<string>>
     socket : Socket | undefined;
     setSocket : Dispatch<SetStateAction<Socket | undefined>>;
     token : string ;
@@ -68,6 +70,7 @@ const MyContext = createContext<ContextTypes | undefined>(undefined);
 // create provider
 
 const MyContextProvider = ({children} : ChildProps) =>{
+  const [login, setLogin] = useState('');
     const [checkname, setCheckname] = useState(0);
     const [check, setCheck] = useState(0);
     const [token, setToken] = useState('');
@@ -97,6 +100,8 @@ const MyContextProvider = ({children} : ChildProps) =>{
         const getMatch  = localStorage.getItem('match');
         const getToken = localStorage.getItem('token');
         const getCheckName = localStorage.getItem('checkName');
+        const getLogin = localStorage.getItem('login');
+        if (getLogin) setLogin(getLogin);
         if (getCheckName) setCheckname(+getCheckName);
         if (getToken) setToken(getToken); 
         if (getMatch !== undefined && getMatch !== null) {
@@ -174,9 +179,12 @@ const MyContextProvider = ({children} : ChildProps) =>{
   useEffect(()=>{
     localStorage.setItem('token', token);
   },[token])
+  useEffect(() =>{
+    localStorage.setItem('login', login);
+  }, [login]);
  
     const ContextValue = {name, setName, img, setImg, friends, setFriends,wins, setWins, losses, 
-      setLosses,  level, setLevel,LevlPer,setLevlPer, checkname, setCheckname,socket,setSocket, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck, match, setMatch
+      setLosses,  level, setLevel,LevlPer,setLevlPer,login, setLogin, checkname, setCheckname,socket,setSocket, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck, match, setMatch
       ,token, setToken };
 
 

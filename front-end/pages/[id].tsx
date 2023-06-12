@@ -56,11 +56,12 @@ async function fetchdata(tokene :string ){
         }})
 
         const response = await res.data;
-        console.log("response " , response);
         context?.setName(response.username);
         context?.setImg(response.avatar);
-        console.log("avatar " , response.avatar);
         context?.setFriends(response.friends);
+        context?.setLogin(response.login);
+        console.log("this is the login  " , response.login);
+
         context?.setMatch(response.matches);
         // context?.setMatch(response.matches);
         // console.log("here is");

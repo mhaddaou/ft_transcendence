@@ -25,9 +25,7 @@ export class AuthService {
             return await this.jwtService.signAsync(payload);
     }
 
-
     // 2-FA Google Authenticator
-
     async generateNewQrCode(userDto:findUserDto){
         const user = await this.userService.findUser(userDto);
         if (!(user.enableTwoFa))
@@ -46,7 +44,6 @@ export class AuthService {
         return {qrImg};
     }
 
-    
     async validateCode2FA(twoFA:TwoFADto){
         const {login, code} = twoFA;
         let user = await this.userService.findUser({login:login});
@@ -56,4 +53,5 @@ export class AuthService {
             secret: secret,
           });
     }
+    
 }

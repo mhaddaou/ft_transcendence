@@ -381,3 +381,194 @@ $ npm run start:prod
       ladder: number;
     }
     ```
+# GateWay 
+
+## connection and disconnection
+  
+  - **Description**:  Header.authorization of Socket should contain a user's jwt to connect him succefully
+  - **Authentication Required**: Yes (JWT)
+  - **Response success**: welcome 'username' you have connected succefully
+  - **Response error**: jwt error , 
+  - **Response disconnection**: you have disonnected
+
+## user
+
+### update user info
+  
+  - **Event**: updateUser
+  - **Description**: pdate a user  you can update username , 2fa bool , avater
+  - **Authentication Required**: NO
+  - **Socket Body**: `updateUser` object 
+    ```typescript
+    interface updateUser {
+    username?: string;         // Optional
+    bioGra?: string;          // Optional
+    avatar?: boolean;          // Optional
+    enableTwoFa?: boolean;     // Optional
+    }
+    ```
+  - **Response success**: User updated
+
+### send a Private Message
+  
+  - **Event**: PrivateMessage
+  - **Description**: send a Private Message
+  - **Authentication Required**: NO
+  - **Socket Body**: `PrivateMessage` object 
+    ```typescript
+    interface PrivateMessage {
+    receiver: string;         // Required
+    content: string;          // Required
+    }
+    ```
+  - **Response success**: emit to reciever content
+
+### blo9 someone or .remove block
+  
+  - **Event**: block
+  - **Description**: event to blo9 someone or .remove block
+  - **Authentication Required**: NO
+  - **Socket Body**: `block` object 
+    ```typescript
+    interface block {
+    blockedLogin: string;  // Required
+    stillEnemy: boolean;   // Required. true: add new block , false: remove block 
+    }
+    ```
+  - **Response success**: emit to user that he blok or deblock a user
+
+###  add friend or remove friend
+  
+  - **Event**: friend
+  - **Description**: add friend or remove friend
+  - **Authentication Required**: NO
+  - **Socket Body**: `friend` object 
+    ```typescript
+    interface friend {
+    login: string;         / Required
+    bool: boolean;   // Required. true: add new friend , false: remove friend
+    }
+    ```
+  - **Response success**: emit to user that he addfriend or remove friend
+  
+## channel
+
+### create new channel
+  
+  - **Event**: newChannel
+  - **Description**: event for creating a new channel
+  - **Authentication Required**: NO
+  - **Socket Body**: `newChannel` object 
+    ```typescript
+    interface newChannel {
+    channelName: string;   // Required
+    isPrivate: boolean;    // Required
+    ispassword: boolean;   // Required
+    password?: string;     // Optional
+    }
+    ```
+  - **Response success**: your Channel: 'channelName' has been created
+
+### update a channel
+  
+  - **Event**: updateChannel
+  - **Description**: turne it public , private or  add , change password
+  - **Authentication Required**: NO
+  - **Socket Body**: `updateChannelDto` object 
+    ```typescript
+    interface updateChannelDto {
+    channelName: string;      // Required
+    isPrivate? boolean;       // Optional
+    ispassword?: boolean;     // Optional
+    newPassword?: string;     // Optional
+    }
+    ```
+  - **Response success**: changes have been sauvegardeded
+
+
+### delete channel
+
+  - **Event**: deleteChannel
+  - **Description**: delete channel and also msg of channel and memberships 
+  - **Authentication Required**: NO
+  - **Socket Body**: `updateChannelDto` object 
+    ```typescript
+    interface deletelDto {
+    channelName: string;      // Required
+    }
+    ```
+  - **Response success**: you have been delete channelName channel
+ 
+### join channel
+
+  - **Event**: joinChannel
+  - **Description**: add new Member to a channel
+  - **Authentication Required**: NO
+  - **Socket Body**: `updateChannelDto` object 
+    ```typescript
+    interface updateChannelDto {
+    channelName: string;      // Required
+    password?:   string;         // Optional
+    }
+    ```
+  - **Response success**: you have been Joined to channelName
+
+### kick member channel
+
+  - **Event**: kickMember
+  - **Description**: delete member from a channel
+  - **Authentication Required**: NO
+  - **Socket Body**: `DeleteMemberChannelDto` object
+    ```typescript
+    interface kickmemberDto {
+    channelName:  string;      // Required
+    loginDeleted: string;      // Required
+    }
+    ```
+ 
+  - **Response success**: you have kicked loginDeleted from ${channelName} channel
+
+### leave channel
+
+  - **Event**: leaveChannel
+  - **Description**: leave channel
+  - **Authentication Required**: NO
+  - **Socket Body**: `leaveChannel` object 
+    ```typescript
+    interface leaveChannel {
+    channelName: string;      // Required
+    }
+    ```
+  - **Response success**: you have leaved channelName
+
+
+### update member channel
+
+  - **Event**: updateMember
+  - **Description**: update a member ban mute ...
+  - **Authentication Required**: NO
+  - **Socket Body**: `updateMember`  
+    ```typescript
+    interface updateMember {
+    channelName: string;       // Required
+    loginAffected: string;     // Required
+    isMute?:boolean;           // Optional
+    timeMute?:number;         // Optional
+    isBlacklist?:boolean;      // Optional
+    isAdmin?:boolean;           // Optional
+    }
+    ```
+
+### message channel
+
+  - **Event**: msgChannel
+  - **Description**: send msg to channel
+  - **Authentication Required**: NO
+  - **Socket Body**: `msgChannel` object 
+    ```typescript
+    interface msgChannel {
+    channelName: string;      // Required
+    content: string;          // Required
+    }
+    ```
+  - **Response success**: msg emited to all ember of that channel

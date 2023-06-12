@@ -20,9 +20,12 @@ var i = 0;
 
 
 
-
 export default function Progress() {
   const context = useContext(MyContext);
+
+  // context?.friends.map((friend) =>{
+  //   console.log(friend.username);
+  // })
   const [isPageReloaded, setIsPageReloaded] = useState(false);
 
   useEffect(() => {
@@ -80,25 +83,25 @@ export default function Progress() {
   
   const fet = async () => {
     
-    const requestData = {
-      // Your request body data here
-      login: 'mhaddaou',
-    };
-    try{
-      const res = await axios.post('http://localhost:5000/user/findLogin', 
-        {username : 'mohamed haddaoui'},
-        {
-        headers: {
-          Authorization: `Bearer ${context?.token}`,
-        },
-      });
+    // const requestData = {
+    //   // Your request body data here
+    //   login: 'mhaddaou',
+    // };
+    // try{
+    //   const res = await axios.post('http://localhost:5000/user/findLogin', 
+    //     {username : 'mohamed haddaoui'},
+    //     {
+    //     headers: {
+    //       Authorization: `Bearer ${context?.token}`,
+    //     },
+    //   });
     
-      const response = await res.data;
-      console.log("this is login of user name " ,response);
+    //   const response = await res.data;
+    //   console.log("this is login of user name " ,response);
 
-    }catch(e){
-      console.error(e);
-    }
+    // }catch(e){
+    //   console.error(e);
+    // }
   
   };
   

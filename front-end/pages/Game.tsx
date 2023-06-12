@@ -2,38 +2,86 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 const { log } = console;
-import { matterJsModules } from "../utils/matterTools"
+import { MatterJsModules } from '../utils/MatterJsModules'
+import { MyContext } from '@/components/Context';
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Game() {
+  const context = useContext(MyContext);
+
   const [joinRoom, setJoinRoom] = useState<string>("hidden")
   const [roomName, setRoomName] = useState<string>("")
-  const [height, setHeight] = useState<string>("75vh")
+  const [height, setHeight] = useState<number>(400)
+  const [score, setScore] = useState({ left: 0, right: 0 })
+  const [countDown, setCountDown] = useState(5);
+  const [animations, setAnimations] = useState(1)
+  const [matterjsInstance, setMatterjsInstance] = useState<MatterJsModules>()
+  useEffect(() => {
+    console.log(animations)
+
+    if (countDown <= 4 && (score.left || score.right)) {
+
+      const timer = setTimeout(() => {
+
+        setCountDown(countDown + 1);
+        setAnimations(animations + 1)
+        if (countDown == 2)
+          setAnimations(animations + 2)
+      }, 1000); // Example: Increment count every 2 seconds
+
+      return () => clearTimeout(timer);
+    }
+
+  }, [countDown]);
+
   const handleRoomName = (e: any) => {
     setRoomName(e.target.value)
   }
+
   useEffect(() => {
+    const matterContainer = document.querySelector("#matter-Container") as HTMLElement
+
+    setHeight(matterContainer.clientWidth * 16 / 9)
+    const handleResize = () => {
+
+      setHeight(matterContainer.clientWidth * 16 / 9); // Update the width based on the window size
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize); // Clean up the event listener
+    };
   }, []);
+  useEffect(()=>{
+    matterjsInstance?.onWindowSizeChange()
+
+  },[height])
+
   const runMatterJs = () => {
     setJoinRoom("go")
-    const MatterNode = new matterJsModules(roomName)
+
+    const MatterNode = new MatterJsModules(roomName)
+    setMatterjsInstance(MatterNode)
     MatterNode.createModules()
     MatterNode.createBodies()
     MatterNode.events()
     MatterNode.run()
     MatterNode.socketStuff()
-    function handleResize() {
-      var oldscreen = { w : MatterNode.objects.render.canvas.width, h : MatterNode.objects.render.canvas.height}
-      var newScreen = { w: MatterNode.matterContainer.clientWidth, h : MatterNode.matterContainer.clientHeight}
-      console.log(oldscreen, newScreen)
-      MatterNode.responsivity(oldscreen, newScreen, setHeight)
-     }
-     window.addEventListener('resize', handleResize);
-     return () => window.removeEventListener('resize', handleResize);
+    MatterNode.updateGameScore(setScore, setCountDown)
+
   }
+  const handleResize = () => {
+    setHeight(window.innerWidth); // Update the width based on the window size
+  };
+  const divStyle = {
+    height: `${height}px`,
+
+  };
+
   return (
     <>
       <Head>
@@ -43,10 +91,12 @@ export default function Game() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-      {
-joinRoom == "hidden" &&
-        <div className="relative flex h-screen w-screen flex-col bg-black md:items-center
-        md:justify-center md:bg-transparent">
+
+
+        {
+          joinRoom == "hidden" &&
+          <div className="relative flex h-screen w-screen flex-col bg-black md:items-center
+          md:justify-center md:bg-transparent">
             <label className="text-lg">Room ID</label>
             <div className="border ">
               <input className="pl-1" onChange={handleRoomName} value={roomName} type="text" />
@@ -55,10 +105,29 @@ joinRoom == "hidden" &&
           </div>
         }
         {
-      <div id="matter-Container" className={`h-[667px] w-[375px]  ${!joinRoom && "hidden"}`}>  </div>}
-        
-     
+          <div className="relative flex justify-center items-center flex-col">
+            <div className="relative h-[50px] w-[375px] flex items-center  bg-[#a22d2d]">
+              <div className='absolute left-5 flex flex-col items-center justify-center'>
 
+                <span className="text-white font-semibold"> player1 </span>
+                <span className="text-white"> {score.left}</span>
+              </div>
+              <div className='absolute right-5 flex flex-col items-center justify-center'>
+                <span className="text-white font-semibold"> player2 </span>
+                <span className="text-white">{score.right}</span>
+              </div>
+            </div>
+            <div id="matter-Container" style={divStyle} className={` w-full max-w-[623px] bg-white ${!joinRoom && "hidden"}`}>  </div>
+            {
+              countDown <= 4 &&
+              <div className="absolute text-white text-xl "
+                style={{ animationName: 'fadeout, growup', animationDuration: '1s', animationIterationCount: `${animations}` }}>
+                {countDown == 4 ? 'GO' : countDown}
+              </div>
+            }
+
+          </div>
+        }
       </main>
     </>
   )

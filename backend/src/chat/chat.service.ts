@@ -662,6 +662,7 @@ export class ChatService {
     }
 
     async getConversationsOfUser(dto:findUserDto){
+        let resulte:any[] = [];
         const {login} = dto;
         const user = await this.userService.findUser({login:login});
         const convA = await this.prisma.client.conversation.findMany({
@@ -669,11 +670,21 @@ export class ChatService {
                 loginA:login
             }
         });
+        for(let i = 0; i < convA.length; i++){
+            let otherUser = await this.userService.findUser({login:convA[i].loginB});
+            let otherUserState = await this.userService.getStatusUser({login:otherUser.login});
+            resulte.push({login:otherUser.login, username:otherUser.username, avatar:otherUser.avatar, isOnline:otherUserState.isOnline, inGame:otherUserState.inGame});  
+        }
         const convB = await this.prisma.client.conversation.findMany({
             where:{
                 loginB:login
             }
         });
-        return {...convA,...convB};
+        for(let i = 0; i < convB.length; i++){
+            let otherUser = await this.userService.findUser({login:convB[i].loginA});
+            let otherUserState = await this.userService.getStatusUser({login:otherUser.login});
+            resulte.push({login:otherUser.login, username:otherUser.username, avatar:otherUser.avatar, isOnline:otherUserState.isOnline, inGame:otherUserState.inGame}); 
+        }
+        return resulte;
     }
 }

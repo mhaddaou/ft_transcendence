@@ -18,21 +18,13 @@ const Upload = () =>{
 
 
 
-
-    const [send, setSend] = useState(false);
-    useEffect(() =>{
+    function sendToBck(Url : string) {
         if (context?.socket) {
-            console.log(context.img)
-            context?.socket.emit("updateUser",{avatar : context.img });
+            context?.socket.emit("updateUser",{avatar : Url });
         }
-      },[context?.img])
-    
-    
+    }
     const uploadImage = () =>{
 
-        // if (send === false)
-        //     console.log("Uploading empty image...");
-        // else{
 
             const form = new FormData();
     
@@ -58,17 +50,15 @@ const Upload = () =>{
                     setIsModalOpen(true);
                 }
                 else{  
-                    console.log("success!");   
                     axios.post("https://api.cloudinary.com/v1_1/daczu80rh/upload", form)
                     .then((result) =>{
                         setUrl(result.data.secure_url);
                         context?.setImg(result.data.secure_url);
+                        sendToBck(result.data.secure_url);
                         setColor('bg-green-500');
                         setMsg('The image was successfully uploaded');
                         setTitle('Success!');
                         setIsModalOpen(true);
-                        
-                        
                     })
                 }
                 setFile(null);

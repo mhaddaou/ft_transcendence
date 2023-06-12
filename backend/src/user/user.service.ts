@@ -1,17 +1,24 @@
 import { BlockDto, FriendDto, LoginDto, UpdateStats, UpdateStatus, UpdateUserDto, findUserDto, storeMatchDto, usernameDto } from './dto/user.dto';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma, PrismaClient  } from '@prisma/client';
 import { PrismaService,  } from 'prisma/prisma.service';
 
 @Injectable()
 export class UserService {
     constructor(private prisma:PrismaService){}
 
-
     async findAllUsers(){
         const resuslt = await this.prisma.client.user.findMany();
         return resuslt;
     }
+
+    async findUser(findUser:findUserDto) {
+        const {login} = findUser;
+        const user = await this.prisma.client.user.findFirst({where:{login:login}});
+        if (!user)
+            throw new NotFoundException(`no such user with login ${login}`);
+        return user;
+    }
+
     async findUserWithUsername(dto:usernameDto){
         const user = await this.prisma.client.user.findFirst({
             where:{
@@ -21,13 +28,6 @@ export class UserService {
         if (!user)
             throw new NotFoundException('no such user');
         return user.login;
-    }
-    async findUser(findUser:findUserDto) {
-        const {login} = findUser;
-        const user = await this.prisma.client.user.findFirst({where:{login:login}});
-        if (!user)
-            throw new NotFoundException(`no such user with login ${login}`);
-        return user;
     }
 
     async findUserById(id:string) {
@@ -451,7 +451,7 @@ export class UserService {
         const {loginA, loginB, scoreA, scoreB, winner} = matchDto;
         const userA = await  this.findUser({login:loginA});
         const userB = await  this.findUser({login:loginB});
-        return await this.prisma.client.match.create({
+        await this.prisma.client.match.create({
             data:{
                 userA:{
                     connect:{
@@ -468,12 +468,18 @@ export class UserService {
                 winner:winner,
             }
         });
+
+        // await this.prisma.client.match.findMany({
+        //     where{
+
+        //     }})
     }
 
     // get user's matchs history 
     async getHistoryUserMatchs(findUser:findUserDto){
         const user = await  this.findUser(findUser);
         let result:any[] = [];
+        let win:number = 0;
         const matchsA =  await this.prisma.client.match.findMany({
             where:{
                 userAId:user.UserId,
@@ -481,6 +487,8 @@ export class UserService {
         });
         for (let i = 0;i < matchsA.length; ++i){
             let otherUser = await this.findUserById(matchsA[i].userBId);
+            if (matchsA[i].winner)
+                win++;
             const {scoreA, scoreB,winner, finishedAt} = matchsA[i];
             result.push({loginA:user.login, loginB:otherUser.login, winner:winner,scoreA:scoreA,scoreB:scoreB, finishedAt:finishedAt, avatar:otherUser.avatar, username:otherUser.username});
         }
@@ -491,11 +499,18 @@ export class UserService {
         });
         for (let i = 0;i < matchsB.length; ++i){
             let otherUser = await this.findUserById(matchsB[i].userAId);
+            if (matchsB[i].winner)
+                win++;
             const {scoreA, scoreB,winner, finishedAt} = matchsB[i];
             result.push({loginA:user.login, loginB:otherUser.login, winner:winner,scoreA:scoreA,scoreB:scoreB, finishedAt:finishedAt, avatar:otherUser.avatar, username:otherUser.username});
         }
+        const lose = result.length - win;
+        const pWin =  win / result.length * 100;
+        const pLose = lose / result.length * 100;
+        result.push({pWin:pWin, pLose:pLose, numberOfMatches:result.length});
         return result;
     }
+
 
     // get history match one vs one
     async getHistoryOneVsOne(friendDto:FriendDto){
@@ -519,5 +534,8 @@ export class UserService {
     }
 
 
-    
+    // get statique lose win for a user
+    async isUserLoser(login:string){
+        const user = await  this.findUser({login:login});
+    }
 }

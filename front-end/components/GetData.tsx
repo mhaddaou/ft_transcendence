@@ -134,7 +134,10 @@ export  function GetDataAchievement(){
 
 export function GetDataFriend() {
     const context = useContext(MyContext);
+    console.log()
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [login, setLogin] = useState('');
+    const [name, setName] = useState('');
 
     const openModal = () => {
       setIsModalOpen(true);
@@ -159,8 +162,12 @@ export function GetDataFriend() {
             return avatar;  
     }
 
-    const sendMsg = ()=>{
-      console.log('sendMsg');
+    const sendMsg = (login : string, username : string, )=>{
+      console.log(login);
+      console.log(username);
+      setName(username);
+      setLogin(login);
+        setIsModalOpen(true);
 
     }
   
@@ -187,35 +194,29 @@ export function GetDataFriend() {
           </div>
           <div className="w-full h-[86%] overflow-y-auto scrollbar-thin scrollbar-track-slate-950 scrollbar-thumb-slate-300">
             {
-              (() =>{
-                const elements = [];
-                let i = 0;
-                while (context?.friends[i]){
-                  elements.push(
-                    <div className="h-[16%] max-h-[16%] bg-gray-200 flex justify-around items-center my-2" >
-                      <ModalChat  isOpen={isModalOpen} closeModal={closeModal} name={context.friends[i].username} />
+              context?.friends.map((friend) =>{
+                return (
+                  <div className="h-[16%] max-h-[16%] bg-gray-200 flex justify-around items-center my-2" >
+                      <ModalChat  isOpen={isModalOpen} closeModal={closeModal} name={name} login={login}/>
                       <div className="h-full w-1/3 flex justify-center items-center">
-                        <Image className="mask mask-squircle w-8 h-8 sm:w-12 sm:h-12" src={getImgSrc(context.friends[i].loginB)} alt="avatar" />
+                        <Image className="mask mask-squircle w-8 h-8 sm:w-12 sm:h-12" src={getImgSrc(friend.loginB)} alt="avatar" />
                       </div>
-                      <div className="w-1/3 text-center">{context.friends[i].username}</div>
-                      <div className="w-1/3 text-center z-50">
+                      <div className="w-1/3 text-center">{friend.username}</div>
+                      <div className="w-1/3 text-center z-20">
                         <div className="dropdown dropdown-left ">
                         <label tabIndex={0} className="btn btn-ghost btn-xs">details</label>
                         <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
                           <li><button onClick={() =>{
-                            sendMsg();
-                            setIsModalOpen(true);
+                            sendMsg(friend.loginB, friend.username);
+                            
                           }}>Send Msg</button></li>
                           <li><Link href="#">View Profile</Link></li>
                         </ul>
                       </div>
                       </div>
                     </div>
-                  );
-                  i++;
-                }
-                return elements;
-              })()
+                )
+              })
             }
           </div>
         </div>
@@ -225,4 +226,4 @@ export function GetDataFriend() {
 }
 
 
-  
+    

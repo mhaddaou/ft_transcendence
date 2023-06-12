@@ -1,6 +1,6 @@
 import { ChangeEvent, useContext, useEffect, useState } from "react";
 import { MyContext } from "./Context";
-import Modal from "./Modal";
+
 import axios from "axios";
 import {io} from "socket.io-client"
 import Upload from "@/pages/Upload";
