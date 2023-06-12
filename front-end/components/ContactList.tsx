@@ -6,6 +6,7 @@ import { MyContext } from './Context';
 import Avatar from '../image/avatar.webp';
 import Image from 'next/image';
 import { StaticImageData } from 'next/image';
+import smia from '../image/smia.jpg'
 
 interface ContaType{
   username: string;
@@ -47,14 +48,13 @@ export default function ContactList({  onContactClick } : any) {
     }
 
     function GetImg(imge : string){
-      if (imge.length < 6){
-        if (imge === '0')
-          setImg(Avatar);
-      }
-      else{
-        setImg(imge);
-      }
+      console.log("here is the avatar ",imge);
+        if (imge === 'smia')
+          return smia;
+        else
+          return Avatar;
     }
+
   
     return (
       
@@ -67,8 +67,16 @@ export default function ContactList({  onContactClick } : any) {
 
       {contacts.map((contact) => (
             <button onClick={() => handleClick(contact)} className=" flex flex-col h-14 bg-gray-300 mb-1 w-full px-2 rounded-lg" >
-              <div className='flex flex-row items-center p-2 space-x-2'>{
-                typeof(img) === 'string' ? <img className="w-10 h-10 rounded-full mr-3" src={img} alt="" /> : <Image src={img} />
+              <div className='flex flex-row items-center p-2 space-x-2'>
+              {
+                (() =>{
+                  console.log(contact.avatar, "  ", contact.username);
+                  if (contact.avatar.length < 5)
+                    return <Image src={GetImg(contact.avatar)} className="w-10 h-10 rounded-full mr-3" alt="dklfj" width={200} height={200}/>
+                  else
+                    return <img className="w-10 h-10 rounded-full mr-3" src={contact.avatar} alt='avatar' width={200} height={200}/>
+                }) ()
+                
 
               }
                 
@@ -77,9 +85,6 @@ export default function ContactList({  onContactClick } : any) {
             </button>
           ))}
       </div>
-  
-  
-  
 
      
      </div>
