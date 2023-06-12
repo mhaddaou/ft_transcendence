@@ -11,18 +11,43 @@ import Footer from "@/components/Footer";
 import RealFooter from "@/components/RealFooter";
 import Barl from "@/components/Barl";
 import NavBar from "@/components/NavBar";
+import { MyContext } from "@/components/Context";
+import { useContext } from "react";
+import { headers } from "next/dist/client/components/headers";
+import Login from "./Login";
+import { Messsages } from "@/components/Context";
 
 export default function Chat() {
-  const [id, setId] = useState(0);
+  const context = useContext(MyContext);
+
+  const [id, setId] = useState('');
   const [chatHistory, setChatHistory] = useState([]);
   const [show, setShow] = useState('block');
 
-  async function handleContactClick(contactId : any) {
-    setId(contactId);
-    const res = await axios.get(`https://jsonplaceholder.typicode.com/comments?postId=${contactId}`);
+  async function handleContactClick(login : string) {
+    const message : Messsages = new Messsages();
+    setId(login);
+    const res = await axios.post('http://localhost:5000/chat/findConversation', 
+          {loginA : context?.login, 
+            loginB : login},
+          {
+          headers: {
+            Authorization: `Bearer ${context?.token}`,
+          },
+        });
+        context?.setMessage(message);
+        message.msginfo = res.data[0];
+        message.msgContent = res.data[1];
         setChatHistory(res.data);
         setShow('hidden');
   }
+  if (context?.Message)
+    console.log("this is the class ",context.Message.msginfo);
+
+  // loginA 
+  //loginB
+  // username
+  // 
   
 
   
@@ -38,7 +63,7 @@ export default function Chat() {
             <ContactList onContactClick={handleContactClick} />
           </div>
           <div className={`  md:block w-full md:w-[75%]  h-full rounded-xl ${show === 'hidden' ? 'block' : 'hidden'}`}>
-            <ChatHistory chatHistory={chatHistory} id = {id} />
+            <ChatHistory chatHistory={chatHistory} login = {Login} />
           </div>
         </div>
         </div>

@@ -75,7 +75,7 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
             client.disconnect();
         }
     }
- 
+
     // handle disconnection user
     async handleDisconnect(client: Socket) {
         try {
@@ -86,9 +86,9 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
             const dto:UpdateStatus = {login:user.login, isOnline:false, inGame:undefined};
             await this.userService.modifyStatusUser(dto);
             client.emit("message",'you have disonnected');
+            console.log(`${user.login} had disconected  ${client.id}`);
             this.connectedUsers.delete(client.id);
             this.connectedSocket.delete(client.id);
-            console.log(`${user.login} had disconnected   ${client.id}`)
             // game
             this.world?.handleDisconnect(client);
             if (!this.server.engine.clientsCount) {
@@ -347,7 +347,6 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
     @SubscribeMessage('PrivateMessage')
     async handlePrivatemessage(@ConnectedSocket() client:Socket, @MessageBody() body:sendMsgSocket){
         try {
-            console.log('its prMsg', body);
             const {receiver, content} = body;
             const userSender = this.connectedUsers.get(client.id);
             if (!userSender)

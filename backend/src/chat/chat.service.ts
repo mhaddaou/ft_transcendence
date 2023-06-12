@@ -108,22 +108,29 @@ export class ChatService {
                     conversationId:conv.ConvId,
                 },
             });
-        return null;
+            throw new BadRequestException(`${loginA} never had a conversation with ${loginB}`);
     }
 
     async getConversation(getConv:getConvDto){
         const {loginA, loginB} = getConv;
+        let result:any[] = [];
         // check if sender or receiver exist in  database 
         const userA = await this.userService.findUser({login:loginA});
         const userB = await this.userService.findUser({login:loginB});
         if ((userA.login == userB.login))
             throw new BadRequestException('sender and receiver cant be same');
-        const convA = await this.getConv(loginA,loginB);
-        if (convA)
-            return convA;
-        const convB = await this.getConv(loginB, loginA);
-        if (convB)
-            return convB;
+        let conv = await this.getConv(loginA,loginB);
+        if (conv){
+            result.push({loginA:userA.login,loginB:userB.login,usernameA:userA.username, usernameB:userB.username, avatarA:userA.avatar, avatarB:userB.avatar});
+        }
+        if (!conv)
+        {
+            conv =  await this.getConv(loginB, loginA);
+            if (conv)
+                result.push({loginA:userA.login,loginB:userB.login,usernameA:userA.username, usernameB:userB.username, avatarA:userA.avatar, avatarB:userB.avatar});
+        }
+        result.push(conv);
+        return result;
     }
 
 // channel
@@ -687,4 +694,5 @@ export class ChatService {
         }
         return resulte;
     }
+    
 }

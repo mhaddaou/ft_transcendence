@@ -24,9 +24,34 @@ export interface FriendsType{
   username: string;
   isFriends:  boolean; 
 }
+export interface MesgType{
+  content : string;
+  sendAt: string;
+  fromUserA: boolean;
+}
+
+export interface msgPropType{
+  avatarA: string;
+  avatarB: string;
+  loginA: string;
+  loginB: string;
+  usernameA: string;
+  usernameB: string;
+}
+
+export class Messsages{
+  msginfo : msgPropType[] | any;
+  msgContent : MesgType[] | any;
+
+  addMsg(newMsg : MesgType){
+    this.msginfo.push(newMsg);
+  }
+}
 
 
 export interface ContextTypes{
+    Message : Messsages;
+    setMessage: Dispatch<SetStateAction<Messsages>>;
     name : string;
     setName : Dispatch<SetStateAction<string>>
     login : string;
@@ -70,6 +95,7 @@ const MyContext = createContext<ContextTypes | undefined>(undefined);
 // create provider
 
 const MyContextProvider = ({children} : ChildProps) =>{
+  const [Message, setMessage] = useState<Messsages>(new Messsages());
   const [login, setLogin] = useState('');
     const [checkname, setCheckname] = useState(0);
     const [check, setCheck] = useState(0);
@@ -101,9 +127,21 @@ const MyContextProvider = ({children} : ChildProps) =>{
         const getToken = localStorage.getItem('token');
         const getCheckName = localStorage.getItem('checkName');
         const getLogin = localStorage.getItem('login');
+        const getMessage = localStorage.getItem('message');
         if (getLogin) setLogin(getLogin);
         if (getCheckName) setCheckname(+getCheckName);
         if (getToken) setToken(getToken); 
+        if (getMessage !== undefined && getMessage !== null){
+          try{
+            setMessage(JSON.parse(getMessage));
+
+          }catch(err){
+            console.log(err);
+        }
+      }
+      else{
+        console.log("messages is undefined or null");
+      }
         if (getMatch !== undefined && getMatch !== null) {
           try {
             setMatch(JSON.parse(getMatch));
@@ -182,10 +220,14 @@ const MyContextProvider = ({children} : ChildProps) =>{
   useEffect(() =>{
     localStorage.setItem('login', login);
   }, [login]);
+  useEffect(() =>{
+    localStorage.setItem('message', JSON.stringify(Message));
+
+  }, [Message]);
  
     const ContextValue = {name, setName, img, setImg, friends, setFriends,wins, setWins, losses, 
       setLosses,  level, setLevel,LevlPer,setLevlPer,login, setLogin, checkname, setCheckname,socket,setSocket, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck, match, setMatch
-      ,token, setToken };
+      ,token, setToken, Message,setMessage };
 
 
 

@@ -98,7 +98,7 @@ model User {
   login               String @unique()
   username            String @unique
   email               String @unique
-  avatar              String @default("0")
+  avatar              String @default("smia")
   enableTwoFa         Boolean @default(false)
   twoFactorSecret     String?
   bioGra              String

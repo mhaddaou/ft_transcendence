@@ -1,5 +1,5 @@
 
-import { useState ,useEffect  } from "react";
+import { useState ,useEffect, useContext  } from "react";
 import { FiSend } from 'react-icons/fi';
 import anim from '../image/chatanim.json'
 import Image, { StaticImageData } from "next/image";
@@ -13,6 +13,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 // import ContactSearch from "./ContactSearch";
 import InfoContact from "./InfoContact";
+import { MyContext } from "./Context";
 const socket = io("http://localhost:3333");
 
 const Sender = ({msg} : {msg : string}) =>{
@@ -65,18 +66,17 @@ const AvatarOnline = ({img } : {img : StaticImageData}) =>{
 
 
 
-export default function ChatHistory({ chatHistory, id } : any) {
-  const myMap = new Map();
-  myMap.set('key1', 'value1');
-  myMap.set('key2', 'value2');
+export default function ChatHistory({ chatHistory, login } : any) {
+  const context = useContext(MyContext);
   
-  console.log(myMap.get('key1'));
 
-
+// const [Messages , setMessages] = useState([]) 
  
   
     
  
+const [messages, setMessages] = useState(chatHistory[1]);
+console.log(messages);
   
 
   const SetToMessages = (payload : any) =>{
@@ -93,7 +93,6 @@ export default function ChatHistory({ chatHistory, id } : any) {
   });
   
   
-  const [messages, setMessages] = useState(chatHistory);
   // useEffect(() => {
   //   async function getData() {
   //     const response = await fetchData(props.url);
@@ -180,14 +179,14 @@ const btnBlock = () =>{
         </div>
       </div>
       <div className="w-full h-[93%] flex flex-col p-2  ">
-        {
+        {/* {
           chatHistory.map((chat : any) =>{
             if (chat.id % 2 == 0)
               return (<Sender msg={chat.name.toString()} />);
             else
               return (<Reciever msg={chat.name.toString()} />);
           })
-        }
+        } */}
         
                  
       
