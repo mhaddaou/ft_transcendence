@@ -13,8 +13,9 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 // import ContactSearch from "./ContactSearch";
 import InfoContact from "./InfoContact";
-import { MyContext } from "./Context";
-const socket = io("http://localhost:3333");
+import { MesgType, MyContext } from "./Context";
+import { msgPropType } from "./Context";
+import { element } from "prop-types";
 
 const Sender = ({msg} : {msg : string}) =>{
   return (
@@ -66,45 +67,62 @@ const AvatarOnline = ({img } : {img : StaticImageData}) =>{
 
 
 
-export default function ChatHistory({ chatHistory, login } :  any) {
+
+export default function ChatHistory({ chatHistory, login } :  {chatHistory : MesgType[], login: string}) {
+
+  const context = useContext(MyContext);
+  const [newMsg, setNewMsg] = useState<MesgType[] >([])
+ 
   
-  // console.log("this is chat history", chatHistory[0].content);
-  // const [Messages , setMessages] = useState([]) 
  
   
   
- 
-  const [messages, setMessages] = useState(chatHistory);
-  console.log(messages);
-  console.log(chatHistory);
+
+  
+
   
   
-  const SetToMessages = (payload : any) =>{
-    setMessages([...messages, {"postId": 4,
-    "id": 16,
-    "name": "perferendis temporibus delectus optio ea eum ratione dolorum",
-    "email": "Christine@ayana.info",
-    "body": payload}]);
+  const [newMessage, setNewMessage] = useState("");
+  
+  
+  const [inputValue, setInputValue] = useState("");
+  const SetToMessages = (payload : MesgType) =>{
+    context?.setMessageContent([...context.MessageContent, payload]);
+    console.log("setMessageContent" ,payload);
+    setNewMsg([...newMsg, payload]);
+    console.log("setNewMsg" ,newMsg);
+
+    
   } 
-  socket.on('receivedMessage', (payload: any) => {
-    console.log(`Received message: ${payload}`);
-    SetToMessages(payload);
-    // setMessages([...messages, payload]);
-  });
-  
-  
-  // useEffect(() => {
-    //   async function getData() {
-      //     const response = await fetchData(props.url);
-      //     setMessages(response);
-      //   }
-      //   getData();
-      // }, []);
-      
-      const [newMessage, setNewMessage] = useState("");
-      
-      
-      const [inputValue, setInputValue] = useState("");
+
+
+      const sendMsg = () =>{
+        console.log(`msg to send : ${inputValue}`);
+        console.log('this is the user', login);
+          if (context?.socket){
+            context.socket.emit('PrivateMessage', {
+              receiver : login,
+              content : inputValue,
+            })
+            // savethemsg(login, inputValue);
+            context.socket.on('PrivateMessage', (payload: any) => {
+              if (payload.data != undefined){
+                console.log("1111111111111112");
+                console.log(`Received message: ${payload.data}`);
+                SetToMessages(payload.data);
+
+              }
+              else{
+                console.log(payload);
+                console.log("khawi khawi");
+              }
+            });
+          
+          } 
+        }
+
+
+
       
       const handleInputChange = (event : any) => {
         console.log("handel input change");
@@ -118,20 +136,8 @@ export default function ChatHistory({ chatHistory, login } :  any) {
       setInputValue("");
     }
   };
-  const mes = {
-    sender: {id: 1, name: "john"},
-    receiver:{id: 2, name: "jane"},
-    content: inputValue
-  };
-  const click = ()=>{
-    console.log("this is click");
-    console.log("this is click");
-    socket.on("connect", () => {
-      console.log("Connected to server!");
-    });
-    
-    socket.emit("sendMessage",mes)
-  }
+  
+
   
   
   
@@ -184,18 +190,36 @@ export default function ChatHistory({ chatHistory, login } :  any) {
         </div>
       </div>
       <div className="w-full h-[93%] flex flex-col p-2  ">
-        {
-          chatHistory.map((msg : any) =>{
-            if (msg.fromUserA){
-              console.log("Message content ",msg.content);
-              return (<Sender msg={msg.content} />);
+      {
+
+  (() => {
+    const elements: JSX.Element[] = [];
+    chatHistory.map((msg : MesgType ) => {
+          if (context){
+            if (context.MessageInfo)
+            if (context?.MessageInfo.loginA === context?.login) {
+              if (msg.fromUserA) {
+                elements.push(<Sender msg={msg.content} />);
+              } else {
+                elements.push(<Reciever msg={msg.content} />);
+              }
+            } else {
+              if (msg.fromUserA) {
+                elements.push(<Reciever msg={msg.content} />);
+              } else {
+                elements.push(<Sender msg={msg.content} />);
+              }
             }
-            else{
-              console.log("Message content ",msg.content);
-              return (<Reciever msg={msg.content} />);
-            }
-          })
-        }
+
+          }
+        });
+    return elements;
+  })()
+}
+
+  
+
+
         
                  
       
@@ -209,7 +233,7 @@ export default function ChatHistory({ chatHistory, login } :  any) {
                 placeholder="Type a message..."
                 className="flex-grow p-2 rounded-lg mr-2 bg-bginp w-2 sm:w-full h-full focus:outline-none focus:border-2 focus:border-slate-500"
                 />
-                <button type="submit" onClick={click}><FiSend className=" text-white w-5 h-5 mr-2 " /></button>
+                <button type="submit" onClick={sendMsg}><FiSend className=" text-white w-5 h-5 mr-2 " /></button>
             
             </div>
           </form>

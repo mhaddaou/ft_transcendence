@@ -8,36 +8,38 @@ import Image from 'next/image';
 import { StaticImageData } from 'next/image';
 import smia from '../image/smia.jpg'
 
-interface ContaType{
-  username: string;
-  login : string;
-  avatar: string;
-}
+
 
 
 
 
 export default function ContactList({  onContactClick } : any) {
-  const [contacts, setContacts] = useState<ContaType[]>([]);
-  const [img, setImg] = useState<StaticImageData | string>('');
   const context = useContext(MyContext);
+  const [img, setImg] = useState<StaticImageData | string>('');
 
-  useEffect( ()  => {
-    const fetchData = async () =>{
-      const res = await axios.post('http://localhost:5000/chat/conversations',
-      {login : context?.login},
-      {headers:{
-            Authorization : `Bearer ${context?.token}`
-        }})
-        setContacts(res.data);
-    }
-    try{
-      fetchData();
-    }catch(err){
-      console.log(err);
-    }
-    
-  })
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.post(
+          'http://localhost:5000/chat/conversations',
+          { login: context?.login },
+          {
+            headers: {
+              Authorization: `Bearer ${context?.token}`,
+            },
+          }
+        );
+        context?.setContactChat(res.data);
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
 
 
   
@@ -54,6 +56,7 @@ export default function ContactList({  onContactClick } : any) {
         else
           return Avatar;
     }
+    
 
   
     return (
@@ -65,7 +68,7 @@ export default function ContactList({  onContactClick } : any) {
       </div>
       <div className='h-[92%] w-full px-2 '>
 
-      {contacts.map((contact) => (
+      {context?.contactChat.map((contact) => (
             <button onClick={() => handleClick(contact.login)} className=" flex flex-col h-14 bg-gray-300 mb-1 w-full px-2 rounded-lg" >
               <div className='flex flex-row items-center p-2 space-x-2'>
               {

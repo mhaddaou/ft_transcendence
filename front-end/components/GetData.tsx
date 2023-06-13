@@ -163,13 +163,13 @@ export function GetDataFriend() {
     }
 
     const sendMsg = (login : string, username : string, )=>{
-      console.log(login);
-      console.log(username);
+     
       setName(username);
       setLogin(login);
         setIsModalOpen(true);
 
     }
+    console.log("this is friends " ,context?.friends);
   
     if (context?.friends.length === 0) {
       

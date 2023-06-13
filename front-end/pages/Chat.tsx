@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import ChatApp from "../ChatApp";
 
 import ChatHistory from '@/components/ChatHistory';
@@ -14,20 +14,24 @@ import NavBar from "@/components/NavBar";
 import { MyContext } from "@/components/Context";
 import { useContext } from "react";
 import { headers } from "next/dist/client/components/headers";
-import Login from "./Login";
-import { Messsages } from "@/components/Context";
+import { MesgType } from "@/components/Context";
+
+
 import { msgPropType } from "@/components/Context";
+import {io} from "socket.io-client"
 
 export default function Chat() {
   const context = useContext(MyContext);
 
   const [id, setId] = useState('');
-  const [chatHistory, setChatHistory] = useState([]);
+  const [chatHistory, setChatHistory] = useState<MesgType[]>([]);
   const [show, setShow] = useState('block');
 
   async function handleContactClick(login : string) {
-    const message : Messsages = new Messsages();
     setId(login);
+    console.log("logina " ,context?.login)
+    console.log("loginb " ,login);
+    console.log("this is token", context?.token);
     const res = await axios.post('http://localhost:5000/chat/findConversation', 
           {loginA : context?.login, 
             loginB : login},
@@ -36,20 +40,44 @@ export default function Chat() {
             Authorization: `Bearer ${context?.token}`,
           },
         });
-        context?.setMessage(message);
-        message.msginfo = res.data[0];
-        message.msgContent = res.data[1];
+        // context?.(message);
+        // console.log(res.data);
+        context?.setMessageInfo(res.data[0]);
+        context?.setMessageContent(res.data[1]);
+        // console.log(context?.MessageContent);
         setChatHistory(res.data[1]);
         setShow('hidden');
   }
-  if (context?.Message)
-    console.log("this is the class ",context.Message.msginfo);
 
   // loginA 
   //loginB
   // username
   // 
   
+  useEffect(() => {
+    if (context?.token){
+        var socket = io("http://localhost:3333", {
+          extraHeaders: {
+              Authorization: context?.token,
+      }
+      });
+      socket.on('message', (payload: any) => {
+        console.log("111111111111111");
+        console.log(`Received message: ${payload}`);
+        // SetToMessages(payload);
+        // setMessages([...messages, payload]);
+      });
+      socket.on('errorMessage', (payload: any) => {
+        console.log("111111111111111");
+
+        console.log(`Received message: ${payload}`);
+        // SetToMessages(payload);
+        // setMessages([...messages, payload]);
+      });
+      context.setSocket(socket);
+
+    }
+  }, [context?.token]);
 
   
     
@@ -64,7 +92,7 @@ export default function Chat() {
             <ContactList onContactClick={handleContactClick} />
           </div>
           <div className={`  md:block w-full md:w-[75%]  h-full rounded-xl ${show === 'hidden' ? 'block' : 'hidden'}`}>
-            <ChatHistory chatHistory={chatHistory} login = {Login} />
+            <ChatHistory chatHistory={chatHistory} login={id} />
           </div>
         </div>
         </div>

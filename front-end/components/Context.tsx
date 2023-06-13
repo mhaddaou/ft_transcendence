@@ -38,20 +38,29 @@ export interface msgPropType{
   usernameA: string;
   usernameB: string;
 }
-
-export class Messsages{
-  msginfo : msgPropType[] | any;
-  msgContent : MesgType[] | any;
-
-  addMsg(newMsg : MesgType){
-    this.msginfo.push(newMsg);
-  }
+export interface ContaType{ // for contact chat
+  username: string;
+  login : string;
+  avatar: string;
 }
+
+// export class Messages {
+//   msginfo: msgPropType[] = [];
+//   msgContent: MesgType[] = [];
+
+//   addMsg(newMsg: MesgType) {
+//     this.msginfo.push(newMsg);
+//   }
+// }
 
 
 export interface ContextTypes{
-    Message : Messsages;
-    setMessage: Dispatch<SetStateAction<Messsages>>;
+    MessageContent : MesgType[] ; // Messages between you and others
+    setMessageContent: Dispatch<SetStateAction<MesgType[]>>; // to add new messages to old messages
+    MessageInfo : msgPropType | undefined; // to check the information messages
+    setMessageInfo: Dispatch<SetStateAction<msgPropType | undefined>>; // to set THE information messages
+    contactChat : ContaType[]; // this for contact chat
+    setContactChat : Dispatch<SetStateAction<ContaType[]>> // update contact chat
     name : string;
     setName : Dispatch<SetStateAction<string>>
     login : string;
@@ -95,7 +104,9 @@ const MyContext = createContext<ContextTypes | undefined>(undefined);
 // create provider
 
 const MyContextProvider = ({children} : ChildProps) =>{
-  const [Message, setMessage] = useState<Messsages>(new Messsages());
+  const [MessageContent, setMessageContent] = useState<MesgType[]>([]);
+  const [MessageInfo, setMessageInfo] = useState<msgPropType>();
+  const [contactChat, setContactChat] = useState<ContaType[]>([]);
   const [login, setLogin] = useState('');
     const [checkname, setCheckname] = useState(0);
     const [check, setCheck] = useState(0);
@@ -128,20 +139,32 @@ const MyContextProvider = ({children} : ChildProps) =>{
         const getCheckName = localStorage.getItem('checkName');
         const getLogin = localStorage.getItem('login');
         const getMessage = localStorage.getItem('message');
+        const GetContaChat = localStorage.getItem('contactchat');
+        if (GetContaChat!== undefined && GetContaChat !== null){
+          try{
+            setContactChat(JSON.parse(GetContaChat));
+          }catch(e){
+            console.error(e);
+          }
+
+        }
+        else{
+          console.error("the contact chat is not available or null or undefined");
+        }
         if (getLogin) setLogin(getLogin);
         if (getCheckName) setCheckname(+getCheckName);
         if (getToken) setToken(getToken); 
-        if (getMessage !== undefined && getMessage !== null){
-          try{
-            setMessage(JSON.parse(getMessage));
+      //   if (getMessage !== undefined && getMessage !== null){
+      //     try{
+      //       setMessage(JSON.parse(getMessage));
 
-          }catch(err){
-            console.log(err);
-        }
-      }
-      else{
-        console.log("messages is undefined or null");
-      }
+      //     }catch(err){
+      //       console.log(err);
+      //   }
+      // }
+      // else{
+      //   console.log("messages is undefined or null");
+      // }
         if (getMatch !== undefined && getMatch !== null) {
           try {
             setMatch(JSON.parse(getMatch));
@@ -181,6 +204,10 @@ const MyContextProvider = ({children} : ChildProps) =>{
       localStorage.setItem('name', name);
       console.log("the name is changed to " + name);
   },[name]);
+  useEffect(() =>{
+    localStorage.setItem('contactchat', JSON.stringify(contactChat));
+
+  },[contactChat])
   useEffect(()=>{
       localStorage.setItem('img', img.toString());
       console.log()
@@ -220,14 +247,14 @@ const MyContextProvider = ({children} : ChildProps) =>{
   useEffect(() =>{
     localStorage.setItem('login', login);
   }, [login]);
-  useEffect(() =>{
-    localStorage.setItem('message', JSON.stringify(Message));
+  // useEffect(() =>{
+  //   localStorage.setItem('message', JSON.stringify(Message));
 
-  }, [Message]);
+  // }, [Message]);
  
     const ContextValue = {name, setName, img, setImg, friends, setFriends,wins, setWins, losses, 
       setLosses,  level, setLevel,LevlPer,setLevlPer,login, setLogin, checkname, setCheckname,socket,setSocket, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck, match, setMatch
-      ,token, setToken, Message,setMessage };
+      ,token, setToken, MessageContent,setMessageContent,contactChat, setContactChat, MessageInfo, setMessageInfo };
 
 
 
