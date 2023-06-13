@@ -66,19 +66,19 @@ const AvatarOnline = ({img } : {img : StaticImageData}) =>{
 
 
 
-export default function ChatHistory({ chatHistory, login } : any) {
-  const context = useContext(MyContext);
+export default function ChatHistory({ chatHistory, login } :  any) {
   
-
-// const [Messages , setMessages] = useState([]) 
+  // console.log("this is chat history", chatHistory[0].content);
+  // const [Messages , setMessages] = useState([]) 
  
   
-    
- 
-const [messages, setMessages] = useState(chatHistory[1]);
-console.log(messages);
   
-
+ 
+  const [messages, setMessages] = useState(chatHistory);
+  console.log(messages);
+  console.log(chatHistory);
+  
+  
   const SetToMessages = (payload : any) =>{
     setMessages([...messages, {"postId": 4,
     "id": 16,
@@ -94,27 +94,27 @@ console.log(messages);
   
   
   // useEffect(() => {
-  //   async function getData() {
-  //     const response = await fetchData(props.url);
-  //     setMessages(response);
-  //   }
-  //   getData();
-  // }, []);
-
-  const [newMessage, setNewMessage] = useState("");
-
-  
-  const [inputValue, setInputValue] = useState("");
-
-  const handleInputChange = (event : any) => {
-    console.log("handel input change");
-    setInputValue(event.target.value);
-  };
-
-  const handleSubmit = (event : any) => {
+    //   async function getData() {
+      //     const response = await fetchData(props.url);
+      //     setMessages(response);
+      //   }
+      //   getData();
+      // }, []);
+      
+      const [newMessage, setNewMessage] = useState("");
+      
+      
+      const [inputValue, setInputValue] = useState("");
+      
+      const handleInputChange = (event : any) => {
+        console.log("handel input change");
+        setInputValue(event.target.value);
+      };
+      
+      const handleSubmit = (event : any) => {
     event.preventDefault();
     if (inputValue.trim() !== "") {
-
+      
       setInputValue("");
     }
   };
@@ -129,34 +129,39 @@ console.log(messages);
     socket.on("connect", () => {
       console.log("Connected to server!");
     });
-      
+    
     socket.emit("sendMessage",mes)
   }
-
-
-
-// sender right
-const [ls, setls] = (useState('hidden'));
-
-
-const clickinfo = () =>{
-  setls('block');
-
-}
-const [info, setinfo] = (useState('hidden'));
-const clickchoices = () =>{
-  if (info === 'hidden')
+  
+  
+  
+  // sender right
+  const [ls, setls] = (useState('hidden'));
+  
+  
+  const clickinfo = () =>{
+    setls('block');
+    
+  }
+  const [info, setinfo] = (useState('hidden'));
+  const clickchoices = () =>{
+    if (info === 'hidden')
     setinfo('block')
-  else
+    else
     setinfo('hidden');
-}
-
-const btnBlock = () =>{
-  //block friend
-}
-
-
-
+  }
+  
+  const btnBlock = () =>{
+    //block friend
+  }
+  
+  
+  // interface ChatType{
+  //   content : string,
+  //   fromUserA : boolean,
+  //   sendAt: string,
+  // }
+  
   return (
     <div className="flex flex-col h-full overflow-y-auto relative scrollbar scrollbar-thumb-green-400 scrollbar-w-1 scrollbar-track-slate-100 scrollbar- gap-1 bg-gray-300 rounded-2xl">
       <Lottie className={`w-[100%] h-[100%]   ${chatHistory.length == 0 ? "block" : "hidden"} `}   animationData={anim} />
@@ -179,14 +184,18 @@ const btnBlock = () =>{
         </div>
       </div>
       <div className="w-full h-[93%] flex flex-col p-2  ">
-        {/* {
-          chatHistory.map((chat : any) =>{
-            if (chat.id % 2 == 0)
-              return (<Sender msg={chat.name.toString()} />);
-            else
-              return (<Reciever msg={chat.name.toString()} />);
+        {
+          chatHistory.map((msg : any) =>{
+            if (msg.fromUserA){
+              console.log("Message content ",msg.content);
+              return (<Sender msg={msg.content} />);
+            }
+            else{
+              console.log("Message content ",msg.content);
+              return (<Reciever msg={msg.content} />);
+            }
           })
-        } */}
+        }
         
                  
       

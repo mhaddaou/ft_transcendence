@@ -16,6 +16,7 @@ import { useContext } from "react";
 import { headers } from "next/dist/client/components/headers";
 import Login from "./Login";
 import { Messsages } from "@/components/Context";
+import { msgPropType } from "@/components/Context";
 
 export default function Chat() {
   const context = useContext(MyContext);
@@ -38,7 +39,7 @@ export default function Chat() {
         context?.setMessage(message);
         message.msginfo = res.data[0];
         message.msgContent = res.data[1];
-        setChatHistory(res.data);
+        setChatHistory(res.data[1]);
         setShow('hidden');
   }
   if (context?.Message)
