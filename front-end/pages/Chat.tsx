@@ -19,6 +19,8 @@ import { MesgType } from "@/components/Context";
 
 import { msgPropType } from "@/components/Context";
 import {io} from "socket.io-client"
+import createSocketConnection from "@/components/socketConnection";
+import { useRouter } from "next/router";
 
 export default function Chat() {
   const context = useContext(MyContext);
@@ -48,6 +50,17 @@ export default function Chat() {
         setChatHistory(res.data[1]);
         setShow('hidden');
   }
+  useEffect(() =>{
+    context?.setSocket(createSocketConnection(context?.token))
+  },[context?.token])
+  
+  if (context?.socket)
+  context?.socket.on('message',(paylo) =>{
+    console.log(paylo);
+  })
+
+
+  
 
   // loginA 
   //loginB

@@ -11,6 +11,7 @@ import { type } from "os";
 import { Socket } from "dgram";
 import Lottie from "lottie-react";
 import wait from '../image/wait.json'
+import createSocketConnection from '@/components/socketConnection'
 // import use
 
 
@@ -20,18 +21,14 @@ class User{
 }
 
 const router = Router;
-async function fetchdata(tokene :string ){
+async function fetchdata(tokene :string){
 
-    const context = useContext(MyContext);
     var l : string = '';
     if (typeof(tokene) === 'string')
         l = tokene;
     localStorage.setItem('token', tokene);
-    
-    console.log("the token", tokene);
 
-    context?.setToken(tokene);
-    console.log("debug")
+    // context?.setToken(tokene);
     // try{
     //     const res = await axios.post('http://localhost:5000/user/findLogin', 
     //       {username : 'Mohamed Haddaoui'},
@@ -56,47 +53,71 @@ async function fetchdata(tokene :string ){
         }})
 
         const response = await res.data;
-        context?.setName(response.username);
-        context?.setImg(response.avatar);
-        context?.setFriends(response.friends);
-        context?.setLogin(response.login);
-        console.log("this is the login  " , response.login);
-
-        context?.setMatch(response.matches);
+        return response;
+        
         // context?.setMatch(response.matches);
         // console.log("here is");
         // console.log(context?.friends[0]);
        
      
       
-        router.push('http://localhost:3000/Dashbord');
     }catch(e){
         console.log(e)}
 }
 
 
-export default  function Profileid(){
+export default function Profileid() {
     const context = useContext(MyContext);
     const router = useRouter();
-    var id : string = '';
-    if (router.query.id){
-        
-        id  = router.query.id.toString();
-        fetchdata(id);
-    }
-    
-    
+  
+    useEffect(() => {
+      const fetchTokenAndConnectSocket = async () => {
+        if (router.query.id) {
+          const token = router.query.id.toString();
+  
+          // Create the socket connection with the token
+        //   const socket = createSocketConnection(token);
+  
+          // Connect the socket
+        //   socket.connect();
+        //   context?.setSocket(socket);
+  
+          // Store the socket in your context or use it as needed
+          // For example, if you have a socket value in your context
+          // you can set it here
+          // setSocket(socket);
+  
+          // Perform other operations with the socket as needed
+        //   socket.on('message', (data) => {
+        //     console.log('Received message:', data);
+        //   });
+  
+          // Fetch data using the id
+          const response = await fetchdata(token);
+          context?.setToken(token);
+          context?.setName(response.username);
+        context?.setImg(response.avatar);
+        context?.setFriends(response.friends);
+        context?.setLogin(response.login);
+        console.log("this is the login  " , response.login);
+
+        context?.setMatch(response.matches);
+        }
+      };
+  
+      fetchTokenAndConnectSocket();
+      router.push('http://localhost:3000/Dashbord');
+
+    }, [router.query.id]);
+  
     return (
-        <div className="min-h-screen w-screen bg-slate-200">
-            <div className="container w-screen h-screen flex justify-end items-center">
-
-                <Lottie className="w-full h-full" animationData={wait} />
-            </div>
-
-
+      <div className="min-h-screen w-screen bg-slate-200">
+        <div className="container w-screen h-screen flex justify-end items-center">
+          <Lottie className="w-full h-full" animationData={wait} />
         </div>
-    )
-}
+      </div>
+    );
+  }
   
 
 

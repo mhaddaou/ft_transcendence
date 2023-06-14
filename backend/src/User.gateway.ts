@@ -12,12 +12,13 @@ import { FriendDto, UpdateStatus, UpdateUserDto, newBlockDto, newFriendDto, newU
 import { BlockDto } from 'src/user/dto/user.dto';
 import { createHash } from 'crypto';
 import { matterNode, measurements } from './Game/game.service';
+import { PrismaService } from 'prisma/prisma.service';
 
 @WebSocketGateway(3333, {cors:true})
 @UseFilters(WebsocketExceptionsFilter)
 @UsePipes(new ValidationPipe({ transform: true }))
 export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit{
-    constructor(private readonly jwtStrategy:JwtStrategy, private readonly userService:UserService,private readonly jwtService:JwtService, private readonly chatService:ChatService){    
+    constructor(private readonly jwtStrategy:JwtStrategy, private readonly userService:UserService,private readonly jwtService:JwtService, private readonly chatService:ChatService,  private  prisma:PrismaService ){    
         this.setExistenChannels();
     }
     // server
@@ -242,6 +243,7 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
                 const socketId = this.findKeyByLogin(body.loginDeleted);
                 if (socketId)
                     this.server.in(socketId).socketsLeave(body.channelName);
+                
                 client.emit('message',`you have kicked ${body.loginDeleted} from ${body.channelName} channel`);
             }
             catch(error){
@@ -364,10 +366,8 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
             const receiverSocketId = this.findKeyByLogin(userReceiver.login);
             if (receiverSocketId)
             {
-                this.server.to(receiverSocketId).emit('PrivateMessage', {content:content,sendAt:msg.sendAt,fromUserA:msg.fromUserA});
-                this.server.to(receiverSocketId).emit('message', {content:content,sendAt:msg.sendAt,fromUserA:msg.fromUserA});
+                this.server.to(receiverSocketId).emit('PrivateMessage', {sender:userSender.login ,receiver:userReceiver.login  ,content:content,sendAt:msg.sendAt});
             }
-            console.log('msg sent', msg);
             // this.server.to(client.id).emit('PrivateMessage', {content:content,sendAt:msg.sendAt,fromUserA:msg.fromUserA});
         }
         catch(error){

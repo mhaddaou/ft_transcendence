@@ -11,6 +11,10 @@ import NavBar from '@/components/NavBar';
 import { MyContext , ContextTypes} from '@/components/Context';
 import axios from 'axios';
 import {io} from "socket.io-client";
+import createSocketConnection from '@/components/socketConnection'
+import { useRouter } from 'next/router';
+// import { initSocketConnection, getSocket } from '@/components/socketConnection';
+
 var i = 0;
 
 
@@ -22,6 +26,22 @@ var i = 0;
 
 export default function Progress() {
   const context = useContext(MyContext);
+
+  const router = useRouter();
+
+  
+
+  useEffect(() =>{
+    context?.setSocket(createSocketConnection(context?.token))
+  },[context?.token])
+  
+  if (context?.socket)
+  context?.socket.on('message',(paylo) =>{
+    console.log(paylo);
+  })
+
+
+
 
   // context?.friends.map((friend) =>{
   //   console.log(friend.username);
@@ -38,47 +58,47 @@ export default function Progress() {
 
   
 
-   if (!context?.socket){
-         if (context?.token && i == 0){
-           i++;
+  //  if (!context?.socket){
+  //        if (context?.token && i == 0){
+  //          i++;
   
-           var socket = io("http://localhost:3333", {
-                 extraHeaders: {
-                     Authorization: context?.token,
-             }
-             });
-             socket.on('message', (payload: any) => {
-                 console.log("111111111111111");
-                 console.log(`Received message: ${payload}`);
-                 // SetToMessages(payload);
-                 // setMessages([...messages, payload]);
-               });
-               socket.on('errorMessage', (payload: any) => {
-                 console.log("111111111111111");
+  //          var socket = io("http://localhost:3333", {
+  //                extraHeaders: {
+  //                    Authorization: context?.token,
+  //            }
+  //            });
+  //            socket.on('message', (payload: any) => {
+  //                console.log("111111111111111");
+  //                console.log(`Received message: ${payload}`);
+  //                // SetToMessages(payload);
+  //                // setMessages([...messages, payload]);
+  //              });
+  //              socket.on('errorMessage', (payload: any) => {
+  //                console.log("111111111111111");
     
-                 console.log(`Received message: ${payload}`);
-                 // SetToMessages(payload);
-                 // setMessages([...messages, payload]);
-               });
-               context.setSocket(socket);
-         }
-       }
-       else{
-        context.socket.on('message', (payload: any) => {
-          console.log("111111111111111");
-          console.log(`Received message: ${payload}`);
-          // SetToMessages(payload);
-          // setMessages([...messages, payload]);
-        });
-        context.socket.on('errorMessage', (payload: any) => {
-          console.log("111111111111111");
+  //                console.log(`Received message: ${payload}`);
+  //                // SetToMessages(payload);
+  //                // setMessages([...messages, payload]);
+  //              });
+  //              context.setSocket(socket);
+  //        }
+  //      }
+  //      else{
+  //       context.socket.on('message', (payload: any) => {
+  //         console.log("111111111111111");
+  //         console.log(`Received message: ${payload}`);
+  //         // SetToMessages(payload);
+  //         // setMessages([...messages, payload]);
+  //       });
+  //       context.socket.on('errorMessage', (payload: any) => {
+  //         console.log("111111111111111");
 
-          console.log(`Received message: ${payload}`);
-          // SetToMessages(payload);
-          // setMessages([...messages, payload]);
-        });
+  //         console.log(`Received message: ${payload}`);
+  //         // SetToMessages(payload);
+  //         // setMessages([...messages, payload]);
+  //       });
 
-       }
+  //      }
 
       
     
