@@ -54,30 +54,7 @@ export default function Chat() {
   // username
   // 
   
-  useEffect(() => {
-    if (context?.token){
-        var socket = io("http://localhost:3333", {
-          extraHeaders: {
-              Authorization: context?.token,
-      }
-      });
-      socket.on('message', (payload: any) => {
-        console.log("111111111111111");
-        console.log(`Received message: ${payload}`);
-        // SetToMessages(payload);
-        // setMessages([...messages, payload]);
-      });
-      socket.on('errorMessage', (payload: any) => {
-        console.log("111111111111111");
-
-        console.log(`Received message: ${payload}`);
-        // SetToMessages(payload);
-        // setMessages([...messages, payload]);
-      });
-      context.setSocket(socket);
-
-    }
-  }, [context?.token]);
+ 
 
   
     

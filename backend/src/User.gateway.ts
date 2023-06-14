@@ -357,17 +357,27 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
             // check if receiver had blocked client or opposite
             const IsEnemy = await this.userService.isBlockedMe({loginA:userSender.login,loginB:receiver});
             if (IsEnemy)
-                throw new BadRequestException(`cant send any msg to ${receiver}`)
+                throw new BadRequestException(`cant send any msg to ${receiver}`);
+            const msg = await this.chatService.addNewMessage({sender:userSender.login,receiver:userReceiver.login, content:content});
+            if (!msg)
+                throw new BadRequestException(`cant send any msg to ${receiver}`);
             const receiverSocketId = this.findKeyByLogin(userReceiver.login);
             if (receiverSocketId)
-                this.server.to(receiverSocketId).emit('PrivateMessage', {sender:userSender.login,content:content});
-            this.chatService.addNewMessage({sender:userSender.login,receiver:userReceiver.login, content:content});
+            {
+                this.server.to(receiverSocketId).emit('PrivateMessage', {content:content,sendAt:msg.sendAt,fromUserA:msg.fromUserA});
+                this.server.to(receiverSocketId).emit('message', {content:content,sendAt:msg.sendAt,fromUserA:msg.fromUserA});
+            }
+            console.log('msg sent', msg);
+            // this.server.to(client.id).emit('PrivateMessage', {content:content,sendAt:msg.sendAt,fromUserA:msg.fromUserA});
         }
         catch(error){
+            console.log(error);
             client.emit("errorMessage", error);
         }
     }
-
+    content : string;
+    sendAt: string;
+    fromUserA: boolean;
     // event to blo9 someone or .remove block
     @SubscribeMessage('block')
     async blo9User(@ConnectedSocket() client:Socket, @MessageBody() body:newBlockDto){

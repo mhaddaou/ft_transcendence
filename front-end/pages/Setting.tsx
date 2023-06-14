@@ -18,28 +18,45 @@ import InfoContact from "@/components/InfoContact";
     const context = useContext(MyContext);
     var token : string | null = '';
     useEffect(() => {
-        if (context?.token){
-            var socket = io("http://localhost:3333", {
-              extraHeaders: {
-                  Authorization: context?.token,
-          }
-          });
-          socket.on('message', (payload: any) => {
-            console.log("111111111111111");
-            console.log(`Received message: ${payload}`);
-            // SetToMessages(payload);
-            // setMessages([...messages, payload]);
-          });
-          socket.on('errorMessage', (payload: any) => {
-            console.log("111111111111111");
-    
-            console.log(`Received message: ${payload}`);
-            // SetToMessages(payload);
-            // setMessages([...messages, payload]);
-          });
-          context.setSocket(socket);
-
+      if (!context?.socket){
+        if (context?.token ){
+ 
+          var socket = io("http://localhost:3333", {
+                extraHeaders: {
+                    Authorization: context?.token,
+            }
+            });
+            socket.on('message', (payload: any) => {
+                console.log("111111111111111");
+                console.log(`Received message: ${payload}`);
+                // SetToMessages(payload);
+                // setMessages([...messages, payload]);
+              });
+              socket.on('errorMessage', (payload: any) => {
+                console.log("111111111111111");
+   
+                console.log(`Received message: ${payload}`);
+                // SetToMessages(payload);
+                // setMessages([...messages, payload]);
+              });
+              context.setSocket(socket);
         }
+      }
+      else{
+        context.socket.on('message', (payload: any) => {
+          console.log("111111111111111");
+          console.log(`Received message: ${payload}`);
+          // SetToMessages(payload);
+          // setMessages([...messages, payload]);
+        });
+        context.socket.on('errorMessage', (payload: any) => {
+          console.log("111111111111111");
+  
+          console.log(`Received message: ${payload}`);
+          // SetToMessages(payload);
+          // setMessages([...messages, payload]);
+        });
+      }
       }, [context?.token]);
     
 

@@ -108,7 +108,7 @@ export class ChatService {
                     conversationId:conv.ConvId,
                 },
             });
-            throw new BadRequestException(`${loginA} never had a conversation with ${loginB}`);
+        return null;
     }
 
     async getConversation(getConv:getConvDto){
@@ -127,7 +127,7 @@ export class ChatService {
         {
             conv =  await this.getConv(loginB, loginA);
             if (conv)
-                result.push({loginA:userA.login,loginB:userB.login,usernameA:userA.username, usernameB:userB.username, avatarA:userA.avatar, avatarB:userB.avatar});
+                result.push({loginA:userB.login,loginB:userA.login,usernameA:userB.username, usernameB:userA.username, avatarA:userB.avatar, avatarB:userA.avatar});
         }
         result.push(conv);
         return result;
@@ -696,3 +696,4 @@ export class ChatService {
     }
     
 }
+

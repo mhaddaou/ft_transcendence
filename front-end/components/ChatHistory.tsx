@@ -72,6 +72,10 @@ export default function ChatHistory({ chatHistory, login } :  {chatHistory : Mes
 
   const context = useContext(MyContext);
   const [newMsg, setNewMsg] = useState<MesgType[] >([])
+
+
+
+  
  
   
  
@@ -88,12 +92,67 @@ export default function ChatHistory({ chatHistory, login } :  {chatHistory : Mes
   const [inputValue, setInputValue] = useState("");
   const SetToMessages = (payload : MesgType) =>{
     context?.setMessageContent([...context.MessageContent, payload]);
-    console.log("setMessageContent" ,payload);
+    // console.log("setMessageContent" ,payload);
     setNewMsg([...newMsg, payload]);
     console.log("setNewMsg" ,newMsg);
 
     
   } 
+  useEffect(() => {
+    if (!context?.socket){
+      if (context?.token ){
+
+        var socket = io("http://localhost:3333", {
+              extraHeaders: {
+                  Authorization: context?.token,
+          }
+          });
+          socket.on('message', (payload: any) => {
+              console.log("111111111111111666");
+              console.log(`Received message: ${payload}`);
+              // SetToMessages(payload);
+              // setMessages([...messages, payload]);
+            });
+            
+            socket.on('errorMessage', (payload : any) =>{
+              console.log("error message: ", payload);
+      
+            })
+            socket.on('PrivateMessage', (payload: any) => {
+              if (payload)
+                console.log("ren m ren ", payload);
+            });
+            
+            context.setSocket(socket);
+      }
+    }
+    else{
+      context.socket.on('message', (payload: any) => {
+        console.log("111111111111111");
+        console.log(`Received message: ${payload}`);
+        // SetToMessages(payload);
+        // setMessages([...messages, payload]);
+      });
+      context.socket.on('errorMessage', (payload: any) => {
+        console.log("111111111111111");
+
+        console.log(`Received message: ${payload}`);
+        // SetToMessages(payload);
+        // setMessages([...messages, payload]);
+      });
+      context.socket.on('errorMessage', (payload : any) =>{
+        console.log("error message: ", payload);
+
+      })
+      context.socket.on('PrivateMessage', (payload: any) => {
+        if (payload)
+          console.log("ren m ren ", payload);
+      });
+      context.socket.on('message', (payload: any) => {
+        console.log("message: ren m ren   ", payload.data);
+      })
+    }
+    }, [context?.token]);
 
 
       const sendMsg = () =>{
@@ -105,21 +164,12 @@ export default function ChatHistory({ chatHistory, login } :  {chatHistory : Mes
               content : inputValue,
             })
             // savethemsg(login, inputValue);
-            context.socket.on('PrivateMessage', (payload: any) => {
-              if (payload.data != undefined){
-                console.log("1111111111111112");
-                console.log(`Received message: ${payload.data}`);
-                SetToMessages(payload.data);
-
-              }
-              else{
-                console.log(payload);
-                console.log("khawi khawi");
-              }
-            });
+            
+            
           
           } 
         }
+        
 
 
 
@@ -137,7 +187,7 @@ export default function ChatHistory({ chatHistory, login } :  {chatHistory : Mes
     }
   };
   
-
+ 
   
   
   
