@@ -67,6 +67,8 @@ export interface ContaType{ // for contact chat
 
 
 export interface ContextTypes{
+    chn : boolean;
+    setChn : Dispatch<SetStateAction<boolean>>;
     MessageContent : MesgType[] ; // Messages between you and others
     setMessageContent: Dispatch<SetStateAction<MesgType[]>>; // to add new messages to old messages
     MessageInfo : msgPropType | undefined; // to check the information messages
@@ -116,6 +118,7 @@ const MyContext = createContext<ContextTypes | undefined>(undefined);
 // create provider
 
 const MyContextProvider = ({children} : ChildProps) =>{
+  const [chn, setChn] = useState(false);
   const [MessageContent, setMessageContent] = useState<MesgType[]>([]);
   const [MessageInfo, setMessageInfo] = useState<msgPropType>();
   const [contactChat, setContactChat] = useState<ContaType[]>([]);
@@ -266,7 +269,7 @@ const MyContextProvider = ({children} : ChildProps) =>{
  
     const ContextValue = {name, setName, img, setImg, friends, setFriends,wins, setWins, losses, 
       setLosses,  level, setLevel,LevlPer,setLevlPer,login, setLogin, checkname, setCheckname,socket,setSocket, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck, match, setMatch
-      ,token, setToken, MessageContent,setMessageContent,contactChat, setContactChat, MessageInfo, setMessageInfo };
+      ,token, setToken, MessageContent,setMessageContent,contactChat, setContactChat, MessageInfo, setMessageInfo , chn, setChn};
 
 
 
