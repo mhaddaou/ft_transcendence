@@ -9,10 +9,12 @@ import { faTableTennisPaddleBall } from '@fortawesome/free-solid-svg-icons';
 import {DataFunction, CallBarLeft} from '@/components/Functions';
 import NavBar from '@/components/NavBar';
 import { MyContext , ContextTypes} from '@/components/Context';
+import Modal from '@/components/Modal';
 import axios from 'axios';
 import {io} from "socket.io-client";
 import createSocketConnection from '@/components/socketConnection'
 import { useRouter } from 'next/router';
+import { MesgType } from '@/components/Context';
 // import { initSocketConnection, getSocket } from '@/components/socketConnection';
 
 var i = 0;
@@ -28,6 +30,9 @@ export default function Progress() {
   const context = useContext(MyContext);
 
   const router = useRouter();
+  const [mms, setMesg] = useState('');
+  const [name, setName] = useState('');
+
 
   
 
@@ -35,10 +40,51 @@ export default function Progress() {
     context?.setSocket(createSocketConnection(context?.token))
   },[context?.token])
   
-  if (context?.socket)
-  context?.socket.on('message',(paylo) =>{
-    console.log(paylo);
-  })
+  if (context?.socket){
+    context?.socket.on('message',(paylo) =>{
+      console.log(paylo);
+    })
+  }
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+  useEffect(() => {
+    if (context?.socket) {
+      context.socket.on('PrivateMessage', (payload: any) => {
+        console.log('Received payload:', payload);
+        // Check the payload object in the browser console
+        // to see if sender and receiver properties are present and correct
+        if (payload) {
+          setMesg(payload.content);
+          setName(payload.sender);
+          console.log(payload.content, payload.sender, payload.receiver);
+          if (!document.hidden) {
+            // Show a notification
+            console.log('newMsg from ', payload.sender);
+           openModal();
+          } else {
+            console.log("msg and not in this page");
+          }
+        }
+      });
+    }
+  
+    return () => {
+      if (context?.socket) {
+        context.socket.off('PrivateMessage');
+      }
+    };
+  }, [context?.socket]);
+  
+  
+  
 
 
 
@@ -172,6 +218,7 @@ export default function Progress() {
   return (
     <div className='bg-gradient-to-t from-gray-100 to-gray-400 min-h-screen ' >
       <div className='flex flex-col container mx-auto h-screen min-h-[1100px] py-2 gap-3  '>
+      {isModalOpen && <Modal isOpen={isModalOpen} closeModal={closeModal} title={name} msg={mms} color="bg-white"/>}
       <div className=' h-1/2 flex md:space-x-2'>
         <div className="hidden md:flex md:flex-col min-w-[130px]  md:w-[15%]  bg-gray-200 shadow-2xl shadow-gray-200  rounded-2xl dark:bg-gray-700 pt-4   ">
                    <div className=" self-center">

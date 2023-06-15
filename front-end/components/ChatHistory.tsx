@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { FiSend } from 'react-icons/fi';
 import anim from '../image/chatanim.json'
 import Image, { StaticImageData } from "next/image";
@@ -13,6 +13,8 @@ import Link from "next/link";
 import InfoContact from "./InfoContact";
 import { MyContext, MesgType } from "./Context";
 import { element } from "prop-types";
+import Notification from './Notification'
+import { Stack } from "@mui/material";
 
 const Sender = ({ msg }: { msg: string }) => {
   return (
@@ -77,9 +79,14 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
     if (context?.socket) {
       context.socket.on('PrivateMessage', (payload: any) => {
         if (payload) {
-          const newMessage = createObject(payload.content);
-          setNewMsg((prevMsgs) => [...prevMsgs, newMessage]);
+          setNewMsg((prevMsgs) => [...prevMsgs, payload]);
         }
+        if (!document.hidden) {
+          // Show a notification
+          console.log('newMsg')
+        }
+        else
+          console.log("msg and not in this page");
       });
     }
   
@@ -99,27 +106,43 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
       sendAt: new Date().toISOString(),
     };
   };
+  // export interface MesgType{
+  //   content : string;
+  //   sendAt: string;
+  //   loginSender: string;
+  //   loginReceiver: string;
+  //   fromUserA: boolean;
+  // }
 
   const sendMsg = () => {
     console.log(`msg to send: ${inputValue}`);
     console.log('this is the user', login);
   
     if (context?.socket) {
-      if (inputValue !== ''){
+      if (inputValue !== '') {
         context.socket.emit('PrivateMessage', {
           receiver: login,
           content: inputValue,
         });
-      }
+        setNewMsg((old) => [
+          ...old,
+          {
+            content: inputValue,
+            sendAt: new Date().toISOString(),
+            loginSender: context.login,
+            loginReceiver: login,
+            fromUserA: true,
+          },
+        ]);
   
-      const newMessage = createObject(inputValue);
-      if (inputValue !== '') {
-        setNewMsg((prevMsgs) => [...prevMsgs, newMessage]);
+        // Check if the chat page is not active
+       
       }
     }
   
     setInputValue('');
   };
+  
   
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -131,31 +154,14 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
     sendMsg();
   };
 
-  const renderMessages = (): JSX.Element[] => {
-    const isUserALogin = context?.MessageInfo?.loginA === context?.login;
-    return newMsg.map((msg, index) => {
-      const isSender = (isUserALogin && msg.fromUserA) || (!isUserALogin && !msg.fromUserA);
-      const chatClass = isSender ? "chat-end" : "chat-start";
-      const bubbleClass = isSender ? "" : "bg-slate-400";
-      return (
-        <div className={`chat ${chatClass}`} key={index}>
-          <div className="chat-image avatar">
-            <div className="w-10 rounded-full">
-              <Image src={mhaddaou} alt="av" />
-            </div>
-          </div>
-          <div className={`chat-bubble ${bubbleClass}`}>{msg.content}</div>
-        </div>
-      );
-    });
-  };
-  
+
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
   
   const clickchoices = () => {
-    // Your logic for handling the click event goes here
+    
   };
   const btnBlock = () => {
-    // Your logic for handling the click event goes here
+    // to block
   };
     
   const [inputValue, setInputValue] = useState("");
@@ -166,7 +172,27 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
     else
       setInfo('hidden');
   };
-  
+
+// ...
+
+
+
+// ...
+
+useEffect(() => {
+  const chatContainer = chatContainerRef.current;
+  if (chatContainer) {
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  }
+}, [newMsg]);
+
+// ...
+
+// return (
+//   <div ref={chatContainerRef} style={{ maxHeight: "400px", overflowY: "auto" }}>
+//     {/* Chat history rendering */}
+//   </div>
+// )
 
 
   return (
@@ -190,8 +216,17 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
           </div>
         </div>
       </div>
-      <div className="w-full h-[93%] flex flex-col p-2">
-        {renderMessages()}
+      <div className="w-full h-[93%] flex flex-col p-2 " ref={chatContainerRef}>
+      {
+  chatHistory.length > 0 &&
+  newMsg.map((msg: MesgType) => {
+    if (msg.loginSender === context?.login) {
+      return <Sender  msg={msg.content} />;
+    } else {
+      return <Reciever  msg={msg.content} />;
+    }
+  })
+}
         <div className={`mt-auto pb-1 pl-1 ${chatHistory.length === 0 ? "hidden" : ""}`}>
           <form onSubmit={handleSubmit}>
             <div className="flex items-center">

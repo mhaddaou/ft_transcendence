@@ -24,9 +24,21 @@ export interface FriendsType{
   username: string;
   isFriends:  boolean; 
 }
+
+// {
+//   "MsgId": "0754569a-096b-4d46-ab52-e27944f987bc",
+//   "content": "nice",
+//   "sendAt": "2023-06-14T22:34:26.115Z",
+//   "loginSender": "mhaddaou",
+//   "loginReceiver": "oqatim",
+//   "fromUserA": false,
+//   "conversationId": "246f1601-209a-4124-97b4-fab685aac47b"
+// }
 export interface MesgType{
   content : string;
   sendAt: string;
+  loginSender: string;
+  loginReceiver: string;
   fromUserA: boolean;
 }
 
