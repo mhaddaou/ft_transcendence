@@ -1,0 +1,20 @@
+
+{
+  "users": [
+    {
+      "name": "mhaddaou",
+      "img" : "smia",
+      "friends": ["smia", "amya"]
+    },
+    {
+      "name": "smia",
+      "img" : "smia",
+      "friends" : "mhaddaou"
+    },
+    {
+        "name" : "amya",
+        "img" : "amya",
+        "friends" : ["smia"]
+    }
+  ]
+}

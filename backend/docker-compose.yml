@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+
+    db:
+      image: postgres
+
+      restart: always
+
+      volumes:
+        - /home/mhaddaou/db_data
+
+      ports:
+        - 5432:5432
+
+      environment:
+        - POSTGRES_DB=ft_database
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=said123
+
+    adminer:
+      image: adminer
+      restart: always
+      ports:
+        - 8080:8080
