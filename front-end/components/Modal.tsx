@@ -620,30 +620,41 @@ const ModalJoin = (props : ModaleJoin) =>{
 
 
   }
-  useEffect(() =>{
-    if (context?.socket){
-      context?.socket.on('errorJoin', (pay) =>{
-        if (pay ){
-          console.log('this is error join ' , pay);
-          setMsg(pay.message);
-          setColor('input-error')
-        }
-      })
-      context.socket.on('join', (pay) =>{
-        if (pay){
-          console.log('this for you are join channel pass ', pay);
-          props.closeModal();
-          props.closeModalSearch()
-        }
-      })
+  // useEffect(() =>{
+  //   if (context?.socket){
+  //     context?.socket.on('errorJoin', (pay) =>{
+  //       if (pay ){
+  //         console.log('this is error join ' , pay);
+  //         setMsg(pay.message);
+  //         setColor('input-error')
+  //       }
+  //     })
+  //     context.socket.on('join', (pay) =>{
+  //       if (pay){
+  //         console.log('this for you are join channel pass ', pay);
+  //         const GetDat = async () =>{
+  //           const res = await axios.post(
+  //             'http://localhost:5000/chat/channel/message/all',
+  //             {channelName: login}, 
+  //             {
+  //               headers:{
+  //                 Authorization : `Bearer ${context?.token}`,
+  //               },
+  //             }
+  //           );
+  //         }
+  //         props.closeModal();
+  //         props.closeModalSearch()
+  //       }
+  //     })
 
-    }
-    return () =>  {
-        // context?.socket?.off('join');
-        context?.socket?.off('errorJoin');
-    };
+  //   }
+  //   return () =>  {
+  //       // context?.socket?.off('join');
+  //       context?.socket?.off('errorJoin');
+  //   };
 
-  }, [context?.socket])
+  // }, [context?.socket])
   
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50  ">

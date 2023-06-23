@@ -232,3 +232,15 @@ export class gameInvite {
     @IsString()
     receiver:string;
 }
+
+export class cancelGame {
+    @IsString()
+    host:string
+}
+
+export class InviteMemberChannelDto {
+    @IsString()
+    channelName:string;
+    @IsString()
+    login:string;
+}

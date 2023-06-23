@@ -45,8 +45,8 @@ export function userInGame(login: string, worlds: {}) {
 
 export function checkQueue(worlds: {}) {
     for (const user in worlds) {
-
-        if (worlds[user] && worlds[user].openGame && !worlds[user].availablePaddle)
+        console.log("avalablepadldes" , worlds[user].availablePaddles.length)
+        if (worlds[user] && worlds[user].openGame && worlds[user].availablePaddles.length)
             return user
     }
 
@@ -146,6 +146,7 @@ export class matterNode {
             if (!this.availablePaddles.length) {
 
                 if (this.ready) {
+
                     this.server.to(this.roomId).emit('ready', { msg: true });
 
                     if (this.ball.position.x == -155) {
@@ -157,13 +158,6 @@ export class matterNode {
                         }, 5000);
 
                     }
-                    //     // allow computer to control the free paddle
-                    //     const availablePaddle = this.availablePaddles[0]
-                    //     Body.setPosition(this.paddles[availablePaddle], { x: this.ball.position.x, y: this.paddles[availablePaddle].position.y });
-                    //     this.server.to(this.roomId).emit(availablePaddle, { x: this.ball.position.x, y: this.paddles[availablePaddle].position.y });
-                    // }
-                    // emit the ball position to the channel
-
                     // limit the speed of the ball so it doesnt leave the boundries 
                     const speed = Math.sqrt(this.ball.velocity.x ** 2 + this.ball.velocity.y ** 2);
                     if (speed > 20) {
@@ -175,7 +169,6 @@ export class matterNode {
                         this.ball.velocity.y *= scalingFactor;
                         Body.setVelocity(this.ball, { x: this.ball.velocity.x * scalingFactor, y: this.ball.velocity.y * scalingFactor });
                     }
-
                     // put the ball back in the middle after a player scored
                     if (this.ball.position.y < 0) {
                         Body.setVelocity(this.ball, { x: 0, y: 0 });
@@ -221,8 +214,11 @@ export class matterNode {
                     this.server.to(this.roomId).emit('ballPosition', { x: this.ball.position.x, y: this.ball.position.y });
 
                 }
-                else
+                else{
+                    this.server.to(this.roomId).emit('ready', { msg: true});
+
                     this.server.to(this.roomId).emit('gameOver', { gameOver: this.winner });
+                }
             }
             else{
                 Body.setVelocity(this.ball, { x: 0, y: 0 });
@@ -243,7 +239,7 @@ export class matterNode {
         if (room) {
             roomArray = Array.from(room.keys())
         }
-        console.log("client id", client.id)
+        console.log("client id", client.id, this.availablePaddles)
         // console.log("connected to room are: ", roomArray)
         // console.log("available paddles", this.availablePaddles)
         this.updateConnectedUsers(user, client)
@@ -261,6 +257,7 @@ export class matterNode {
                 if (data.restart) {
                     this.server.to(this.roomId).emit('restart', { restart: true });
                     this.score = { left: 0, right: 0 }
+                    console.log("game restarted")
                     this.ready = true
                     Body.setPosition(this.ball, { x: -155, y: this.obj.divHeight / 2 });
                 }
@@ -278,22 +275,22 @@ export class matterNode {
         // console.log({ user: user, client: client.id })
         // console.log(this.players.player1)
     }
-    handleDisconnect(client: Socket) {
-        if (client.id === this.players.player1.client) {
-            this.server.to(this.roomId).emit('ownerLeft', { ownerLeft: true });
+    // handleDisconnect(client: Socket) {
+    //     if (client.id === this.players.player1.client) {
+    //         this.server.to(this.roomId).emit('ownerLeft', { ownerLeft: true });
 
-            console.log("deleting the game")
-            // this.clearGame()
-        }
-        else {
-            console.log("second player left, putting back their paddle in the list")
-            if (this.availablePaddles.length == 1)
-                this.availablePaddles.push("right")
-        }
-    }
+    //         console.log("deleting the game")
+    //         // this.clearGame()
+    //     }
+    //     else {
+    //         console.log("second player left, putting back their paddle in the list")
+    //         if (this.availablePaddles.length == 1)
+    //             this.availablePaddles.push("right")
+    //     }
+    // }
     clearGame() {
         clearInterval(this.intervalId)
-        console.log("clearing game instance")
+        console.log("clearing game instance", this.intervalId)
 
         World.clear(this.world);
         Engine.clear(this.engine);

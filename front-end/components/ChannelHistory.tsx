@@ -12,6 +12,7 @@ import History from "./HIstory";
 import Router from "next/router";
 import { useRouter } from "next/router";
 import axios from "axios";
+import { Socket } from "socket.io-client";
 
 interface recvProps{
   msg : string;
@@ -157,8 +158,8 @@ const AddMember = () =>{
   }
   const AddFriend = (friend : FriendType) =>{
     console.log(context?.channelInfo?.channelName)
+    context?.socket?.emit('inviteMember',{channelName: context.channelInfo?.channelName, login : friend.login})
     console.log('context memebers ', context?.membersChannel);
-    
     console.log(friend.login);
     openModal();
 
@@ -170,7 +171,7 @@ const AddMember = () =>{
             <FontAwesomeIcon tabIndex={0} icon={faUserPlus}  className="text-slate-600 w-7 h-6 cursor-pointer hover:text-blue-900" /> 
         <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
           {
-            context?.friends.map((friend) =>{
+            context?.friends && context?.friends.length > 0 ? context?.friends.map((friend) =>{
               return (
                   <li><button onClick={() =>AddFriend(friend)} className="flex">
                     <GetAvatarAddFriend avatar={friend.avatar} />
@@ -178,7 +179,7 @@ const AddMember = () =>{
                       </button></li>
 
               );
-            })
+            }) : "don't have any friend to add it"
           }
               
         </ul>
@@ -278,8 +279,15 @@ const ChannelHistor = ({history, id} : {history : msgChannel[], id : string}) =>
     router.reload();
 
   }
-
+  
   // for check when use delete  or leave channel 
+  const [isOpenMember, setIsOpenMember] = useState(false);
+  const closeMember = () =>{
+    setIsOpenMember(false);
+  }
+  const openMember = () =>{
+    setIsOpenMember(true);
+  }
   const [valueCheck, setValueCheck] = useState(false);
   //delete Channel
   const deleteChannel = () =>{
@@ -292,6 +300,56 @@ const ChannelHistor = ({history, id} : {history : msgChannel[], id : string}) =>
     // router.push(useRouter.pathname());
 
   }
+
+  const memberChannel = () =>{
+    const GetDat = async () =>{
+      try{
+        const res = await axios.post('http://localhost:5000/chat/channel/members',
+        {channelName : context?.channelInfo?.channelName},
+        {
+          headers:{
+            Authorization : `Bearer ${context?.token}`,
+          }
+        }
+        )
+        // console.log(res.data);
+        context?.setMembersChannel(res.data);
+
+      }catch(e){
+        console.log(e);
+      }
+    }
+    GetDat();
+    console.log(context?.channelInfo);
+    console.log('conte ', context?.membersChannel);
+    setIsOpenMember(true);
+  }
+
+  interface propMember{
+    isOpen : boolean;
+    closeMember : () => void;
+  }
+
+  const ModalMembers = (props : propMember) =>{
+    if (!props.isOpen)
+      return null;
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50  ">
+
+        <div className={`bg-white p-6 rounded-md w-[400px] h-[600px] min-w-[400px] min-h-[600px]  flex flex-col gap-1 overflow-y-auto `}>
+          <div className="w-full h-[90%]">
+            nice
+
+          </div>
+          <div className="w-full h-[10%]">
+
+            <button onClick={props.closeMember}>close</button>
+          </div>
+
+        </div>
+        </div>
+    )
+  }
   
   //info
   const Info = () =>{
@@ -301,7 +359,7 @@ const ChannelHistor = ({history, id} : {history : msgChannel[], id : string}) =>
               <FontAwesomeIcon tabIndex={0} className="w-7 h-6 text-slate-700 hover:text-blue-900 cursor-pointer" onClick={clickInfo} icon={faBars} flip />
           <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
               <li><button onClick={openMd}>Update Channel</button></li>
-              <li><button>Members Channel</button></li>
+              <li><button onClick={memberChannel}>Members Channel</button></li>
               <li><button onClick={leaveChannel}>Leave Channel</button></li>
               <li><button onClick={deleteChannel}>Delete Channel</button></li>
           </ul>
@@ -361,6 +419,7 @@ const ChannelHistor = ({history, id} : {history : msgChannel[], id : string}) =>
         {
           openModal && <ModalUpdateChannel isOpen={openModal} closeModal={closeMd}/>
         }
+        <ModalMembers isOpen={isOpenMember} closeMember={closeMember} />
       <div className={`w-full h-[7%]  flex chat chat-start  border-b-2 border-slate-500 items-center justify-between px-4  `}>
         <div>
         <div >

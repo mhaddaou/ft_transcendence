@@ -27,9 +27,7 @@ constructor(private readonly userSrevice:UserService, private readonly achieveme
             const friends = await this.userSrevice.getUserFriends({login:login});
             const matches = await this.userSrevice.getHistoryUserMatchs({login:login});
             const acheivement = await this.userSrevice.getAcheivments({login:login});
-            // get porcentages
             const porcentages = matches.pop();
-            // get acheivement also ;
             const result = {...user, friends, porcentages, matches, acheivement};
             response.status(200).json(result);
         }

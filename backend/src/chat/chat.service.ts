@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
-import { ChannelDto, DeleteMemberChannelDto, MemberChannelDto, channeDto, deleteChannelDto, getConvDto, leaveChannel, msgChannelDto, sendMsgDto, updateChannelDto, updateMemberShipDto } from './Dto/chat.dto';
+import { ChannelDto, DeleteMemberChannelDto, InviteMemberChannelDto, MemberChannelDto, channeDto, deleteChannelDto, getConvDto, leaveChannel, msgChannelDto, sendMsgDto, updateChannelDto, updateMemberShipDto } from './Dto/chat.dto';
 import { PrismaService } from 'prisma/prisma.service';
 import * as bcrypt from 'bcrypt'
 import { findUserDto } from 'src/user/dto/user.dto';
@@ -275,6 +275,53 @@ export class ChatService {
         return channel;
     }
  
+    async addMember(body:InviteMemberChannelDto, loginAdmin:string){
+        const { channelName, login} = body;
+        const user = await this.userService.findUser({login:login});
+        const userAdmin = await this.userService.findUser({login:loginAdmin});
+        // check if there already an channel with same channelName
+        const channel = await this.prisma.client.channel.findFirst({
+            where:{
+                channelName:channelName,
+            },
+        });
+        if (!channel)
+            throw new NotFoundException(`no such channel with the name ${channelName}`);
+        const memberShip = await this.prisma.client.membershipChannel.findFirst({
+            where:{
+                userId:user.UserId,
+                channelId:channel.ChannelId,
+            },
+        });
+        if (memberShip)
+            throw new NotFoundException(`already member in channel ${channelName}`);
+        const memberShipAdmin = await this.prisma.client.membershipChannel.findFirst({
+                where:{
+                    login:loginAdmin,
+                    channelId:channel.ChannelId,
+                },
+            });
+        if (!memberShipAdmin)
+            throw new NotFoundException(`${loginAdmin} is not memeber on ${channelName}`);
+        if (!memberShipAdmin.isAdmin)
+            throw new NotFoundException(`${loginAdmin} is not an admin on ${channelName}`);
+        return await this.prisma.client.membershipChannel.create({
+                data:{
+                    channel:{
+                        connect:{
+                            ChannelId:channel.ChannelId,
+                        },
+                    },
+                    channelName:channel.channelName,
+                    login:user.login,
+                    user:{
+                        connect:{
+                            UserId:user.UserId
+                        },
+                    },
+                },
+            });
+    }
     // create new MemberChannel
     async createMemberChannel(memberChannelDto:MemberChannelDto){
         const { channelName, login, password} = memberChannelDto;
@@ -287,7 +334,6 @@ export class ChatService {
         });
         if (!channel)
             throw new NotFoundException(`no such channel with the name ${channelName}`)
-
         // check if user is already on that channel
         const memberShip = await this.prisma.client.membershipChannel.findFirst({
             where:{

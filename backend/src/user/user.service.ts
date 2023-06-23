@@ -253,6 +253,7 @@ export class UserService {
         })};
         return false;
     }
+    
     // annuler intation
     async removeInvite(dto:invitationDto){
         const {senderLogin, receiverLogin} = dto;

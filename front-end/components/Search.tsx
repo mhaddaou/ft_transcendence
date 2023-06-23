@@ -47,15 +47,84 @@ const closeModale = () =>{
 
   useEffect(() =>{
     if (context?.socket){
-        context?.socket.on('join', (pay)=>{
-            if (pay){
-                console.log(pay);
-                context.setChannels((prev) =>[...prev, {avatar : pay.avatar, channelName: pay.channelName}]);
-            }
+        context?.socket.on('joinOther', (pay) =>{
+          if (pay){
+            console.log('her channel name ', pay)
+            const fetchData = async () => {
+              try {
+                const res = await axios.post(
+                  'http://localhost:5000/chat/memberships',
+                  { login: context?.login },
+                  {
+                    headers: {
+                      Authorization: `Bearer ${context?.token}`,
+                    },
+                  }
+                );
+                // context?.setContactChat(res.data);
+                context?.setChannels(res.data);
+        
+              } catch (error) {
+                console.error('Error fetching data:', error);
+              }
+            };
+          
+            fetchData();
+            // const GetDat = async () =>{
+            //   const res = await axios.post(
+            //     'http://localhost:5000/chat/channel/message/all',
+            //     {channelName: pay.channelName}, 
+            //     {
+            //       headers:{
+            //         Authorization : `Bearer ${context?.token}`,
+            //       },
+            //     }
+            //   );
+            // }
+          }
         })
+        context?.socket.on('join', (pay)=>{
+          if (pay){
+            console.log('her channel name ', pay)
+            const fetchData = async () => {
+              try {
+                const res = await axios.post(
+                  'http://localhost:5000/chat/memberships',
+                  { login: context?.login },
+                  {
+                    headers: {
+                      Authorization: `Bearer ${context?.token}`,
+                    },
+                  }
+                );
+                // context?.setContactChat(res.data);
+                context?.setChannels(res.data);
+        
+              } catch (error) {
+                console.error('Error fetching data:', error);
+              }
+            };
+          
+            fetchData();
+            // const GetDat = async () =>{
+            //   const res = await axios.post(
+            //     'http://localhost:5000/chat/channel/message/all',
+            //     {channelName: pay.channelName}, 
+            //     {
+            //       headers:{
+            //         Authorization : `Bearer ${context?.token}`,
+            //       },
+            //     }
+            //   );
+            // }
+          }
+        })
+        
         context.socket.on('errorJoin' , (pay) =>{
-            if (pay)
-                console.log(pay)
+            if (pay){
+              console.log(pay)
+              console.log('this is error')
+            }
         })
     }
 

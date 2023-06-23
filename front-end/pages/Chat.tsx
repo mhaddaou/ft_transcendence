@@ -77,6 +77,7 @@ export default function Chat() {
       setId(login);
       context?.setChannelInfo(res.data[0]);
       setChatHistory(res.data[1]);
+      console.log(context?.channelInfo , '  this is info')
     }
     else {
       console.log("inside users");
