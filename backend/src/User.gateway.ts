@@ -301,13 +301,13 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
             const user = this.connectedUsers.get(client.id)
             if (!user)
                 throw new NotFoundException('no such user');
-            const dto:deleteChannelDto = {channelName:body.channelName, LoginOwner:user.login }
+            const dto:deleteChannelDto = {channelName:body.channelName, LoginOwner:user.login };
             await this.chatService.deleteChannel(dto);
             this.existChannels.delete(body.channelName);
-            client.emit('message',`you have been delete ${body.channelName} channel`);
+            this.server.to(body.channelName).emit('channelRemoved',{channelName:body.channelName});
         }
         catch(error){
-            client.emit('errorMessage',error);  
+            client.emit('errorMessage',error);
         }
     }
 
@@ -347,7 +347,11 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
             // client.emit('join',{message:`you have been Joined to ${channel.channelName} channel`, channelName:channel.channelName, avatar:channel.avatar});
             const socketId = this.findKeyByLogin(body.login);
             if (socketId)
+            {
+                const sock = this.connectedSocket.get(socketId);
+                sock.join(body.channelName);
                 this.server.to(socketId).emit('joinOther',{message:`you have been Joined to ${channel.channelName} channel`, channelName:channel.channelName, avatar:channel.avatar});;
+            }
         }catch(error){
             client.emit('errorMessage',error);
         }
@@ -367,7 +371,6 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
                 const socketId = this.findKeyByLogin(body.loginDeleted);
                 if (socketId)
                     this.server.in(socketId).socketsLeave(body.channelName);
-                
                 client.emit('message',`you have kicked ${body.loginDeleted} from ${body.channelName} channel`);
             }
             catch(error){
@@ -405,10 +408,15 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
                 throw new BadRequestException('no such user');
             const dto:updateMemberShipDto = {userLogin:user.login,channelName:body.channelName,loginMemberAffected:body.loginAffected, isMute:body.isMute, timeMute:body.timeMute, isBlacklist:body.isBlacklist, isAdmin:body.isAdmin}
             let memberShip = await this.chatService.updateMemberShip(dto);
+            const ik = memberShip.userAffectedMemberShip;
             const actValues: string[] = Object.values(memberShip.acts);
             const separator: string = " , ";
             const msgAct: string = actValues.join(separator);
-            this.server.in(channel.channelName).emit('message',`${user.login}  had  ${msgAct} ${memberShip.userAffectedMemberShip.login}`)
+            const socketId = this.findKeyByLogin(body.loginAffected);
+            if (socketId)
+            {
+                this.server.to(socketId).emit('Update',{message:`${user.login}  had  ${msgAct} ${ik.login}`,login:ik.login, channelName:ik.channelName,isAdmin:ik.isAdmin, isMute:ik.isMute, isBlacklist:ik.isBlacklist, isOwner:ik.isOwner});
+            }
         }
         catch(error){
             client.emit('errorMessage',error);

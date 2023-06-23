@@ -1,4 +1,4 @@
-import { faBars, faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faEllipsisVertical, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FiSend } from "react-icons/fi";
 import defaul from '../image/avatar.webp'
@@ -135,60 +135,123 @@ function GetAvatarAddFriend ({avatar } : {avatar : string}) {
 
 
 /// to add members to channel
-const AddMember = () =>{
+// const AddMember = () =>{
+//   const context = useContext(MyContext)
+//   console.log(context?.friends);
+//   const [hidden, setHidden] = useState('hidden')
+//   const openModal = () =>{
+//     setHidden('block');
+//   }
+//   const closeModal = () =>{
+//     setHidden('hidden');
+//   }
+//   const Modal = () =>{
+//     return (
+//       <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ${hidden}`}>
+//         <div className="bg-white w-60 h-60 z-50">
+//           <div>this is modal</div>
+//           <button onClick={() =>closeModal()}>close</button>
+
+//         </div>
+//       </div>
+//     );
+//   }
+//   const AddFriend = (friend : FriendType) =>{
+//     console.log(context?.channelInfo?.channelName)
+//     context?.socket?.emit('inviteMember',{channelName: context.channelInfo?.channelName, login : friend.login})
+//     console.log('context memebers ', context?.membersChannel);
+//     console.log(friend.login);
+//     openModal();
+
+//   }
+//     return(
+//       <>
+//           <Modal />
+//         <div className="dropdown dropdown-bottom dropdown-end z-40 ">
+//             <FontAwesomeIcon tabIndex={0} icon={faUserPlus}  className="text-slate-600 w-7 h-6 cursor-pointer hover:text-blue-900" /> 
+//         <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+//           {
+//             context?.friends && context?.friends.length > 0 ? context?.friends.map((friend) =>{
+//               return (
+//                   <li><button onClick={() =>AddFriend(friend)} className="flex">
+//                     <GetAvatarAddFriend avatar={friend.avatar} />
+//                       <p>{friend.username}</p>
+//                       </button></li>
+
+//               );
+//             }) : "don't have any friend to add it"
+//           }
+              
+//         </ul>
+//         </div>
+//       </>
+//     );
+
+// }
+const AddMember = () => {
   const context = useContext(MyContext)
   console.log(context?.friends);
   const [hidden, setHidden] = useState('hidden')
-  const openModal = () =>{
+  const [alreadyMember, setAlreadyMember] = useState(false)
+  const openModal = () => {
     setHidden('block');
   }
-  const closeModal = () =>{
+  const closeModal = () => {
     setHidden('hidden');
+    setAlreadyMember(false)
   }
-  const Modal = () =>{
+  const Modal = () => {
     return (
       <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ${hidden}`}>
         <div className="bg-white w-60 h-60 z-50">
-          <div>this is modal</div>
-          <button onClick={() =>closeModal()}>close</button>
+          <div>{ alreadyMember ? "User is already a member" : "this is modal"}</div>
+          <button onClick={() => closeModal()}>close</button>
 
         </div>
       </div>
     );
   }
-  const AddFriend = (friend : FriendType) =>{
+  const AddFriend = (friend: FriendType) => {
     console.log(context?.channelInfo?.channelName)
-    context?.socket?.emit('inviteMember',{channelName: context.channelInfo?.channelName, login : friend.login})
-    console.log('context memebers ', context?.membersChannel);
-    console.log(friend.login);
-    openModal();
-
+    if (context?.membersChannel) {
+      const hasLoginAmya = context?.membersChannel.some((obj) => obj.login === friend.login);
+      console.log(hasLoginAmya);
+      if (!hasLoginAmya) {
+        context?.socket?.emit('inviteMember', { channelName: context.channelInfo?.channelName, login: friend.login })
+        console.log('context memebers ', context?.membersChannel);
+        console.log(friend.login);
+        openModal();
+      }
+      else{
+        setAlreadyMember(true)
+        openModal() 
+      }
+    }
   }
-    return(
-      <>
-          <Modal />
-        <div className="dropdown dropdown-bottom dropdown-end z-40 ">
-            <FontAwesomeIcon tabIndex={0} icon={faUserPlus}  className="text-slate-600 w-7 h-6 cursor-pointer hover:text-blue-900" /> 
+  return (
+    <>
+      <Modal />
+      <div className="dropdown dropdown-bottom dropdown-end z-40 ">
+        <FontAwesomeIcon tabIndex={0} icon={faUserPlus} className="text-slate-600 w-7 h-6 cursor-pointer hover:text-blue-900" />
         <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
           {
-            context?.friends && context?.friends.length > 0 ? context?.friends.map((friend) =>{
+            context?.friends && context?.friends.length > 0 ? context?.friends.map((friend) => {
               return (
-                  <li><button onClick={() =>AddFriend(friend)} className="flex">
-                    <GetAvatarAddFriend avatar={friend.avatar} />
-                      <p>{friend.username}</p>
-                      </button></li>
+                <li><button onClick={() => AddFriend(friend)} className="flex">
+                  <GetAvatarAddFriend avatar={friend.avatar} />
+                  <p>{friend.username}</p>
+                </button></li>
 
               );
             }) : "don't have any friend to add it"
           }
-              
+
         </ul>
-        </div>
-      </>
-    );
+      </div>
+    </>
+  );
 
 }
-
 
 interface TypeModal{
   isOpenModal : boolean;
@@ -337,13 +400,47 @@ const ChannelHistor = ({history, id} : {history : msgChannel[], id : string}) =>
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50  ">
 
         <div className={`bg-white p-6 rounded-md w-[400px] h-[600px] min-w-[400px] min-h-[600px]  flex flex-col gap-1 overflow-y-auto `}>
-          <div className="w-full h-[90%]">
-            nice
+          <div className="text-center font-mono font-semibold">{context?.channelInfo?.channelName}  Members</div>
+          <div className="w-full h-[90%] ">
+            <ul className="w-full h-full  flex flex-col gap-1">
+             {
+              context?.membersChannel.map(user =>{
+                if (context.login !== user.login){
+                  return (
+                    <li key={user.login} className="flex items-center justify-around bg-slate-200 rounded-xl min-h-[60px] w-full h-[60px]">
+                    {/* <div>image</div> */}
+                    <GetAvatarAddFriend avatar={user.avatar} />
+                    <div>{user.username}</div>
+                    <div className="dropdown dropdown-end hidden">
+                    {/* <label tabIndex={0} className="btn m-1">Click</label> */}
+                    <FontAwesomeIcon className=" cursor-pointer" tabIndex={0} icon={faEllipsisVertical} />
+                    <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                      <li><a>Add Friend</a></li>
+                      <li><a>Send Message</a></li>
+                    </ul>
+                  </div>
+                  <div className="dropdown dropdown-end ">
+                    {/* <label tabIndex={0} className="btn m-1">Click</label> */}
+                    <FontAwesomeIcon className=" cursor-pointer" tabIndex={0} icon={faEllipsisVertical} />
+                    <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                      <li><a>Kick</a></li>
+                      <li><a>Meut</a></li>
+                    </ul>
+                  </div>
+                  </li>
+                  );
+                }
+                
+              })
+             }
+              
+              
+            </ul>
 
           </div>
-          <div className="w-full h-[10%]">
+          <div className="w-full h-[10%] flex justify-end items-center">
 
-            <button onClick={props.closeMember}>close</button>
+            <button className="bg-slate-400 px-2 py-1 rounded  "  onClick={props.closeMember}>close</button>
           </div>
 
         </div>

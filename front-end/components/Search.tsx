@@ -44,9 +44,38 @@ const closeModale = () =>{
     setInputValue('')
     setIsOpen(false)
   }
+  const removeChat = (channel : string) =>{
+    context?.setChannels(prevcontact =>
+      prevcontact.filter(chat => chat.channelName !== channel))
+  }
 
   useEffect(() =>{
     if (context?.socket){
+        context.socket.on('channelRemoved', (pay) =>{
+          if (pay){
+            const fetchData = async () => {
+              try {
+                const res = await axios.post(
+                  'http://localhost:5000/chat/memberships',
+                  { login: context?.login },
+                  {
+                    headers: {
+                      Authorization: `Bearer ${context?.token}`,
+                    },
+                  }
+                );
+                // context?.setContactChat(res.data);
+                context?.setChannels(res.data);
+        
+              } catch (error) {
+                console.error('Error fetching data:', error);
+              }
+            };
+          
+            fetchData();
+
+          }
+        })
         context?.socket.on('joinOther', (pay) =>{
           if (pay){
             console.log('her channel name ', pay)

@@ -57,7 +57,7 @@ export class ChatController {
         return await this.chatService.getAllChannels();
     }
     
-    // get all memberShips of channels info that a user join to
+    // get channel of user;
     @UseGuards(AuthGuard('jwt'))
     @Post('memberships')
     async getUserChannels(@Body() userDto:findUserDto, @Res() response:Response){
@@ -70,12 +70,25 @@ export class ChatController {
         }
     }
 
-    // get members  of a channel
+
     @UseGuards(AuthGuard('jwt'))
     @Post('channel/members')
     async getMembersOfChannel(@Body() chDto:channeDto, @Res() response:Response){
         try{
             const result = await this.chatService.getMembersOfChannel(chDto);
+            response.status(200).json(result);
+        }
+        catch(error){
+            response.status(400).json(error);
+        }
+    }
+
+    // get members  of a channel
+    @UseGuards(AuthGuard('jwt'))
+    @Post('channel/memberShips')
+    async getMembersOfChannelII(@Body() chDto:channeDto, @Res() response:Response){
+        try{
+            const result = await this.chatService.getMembersOfChannelII(chDto);
             response.status(200).json(result);
         }
         catch(error){

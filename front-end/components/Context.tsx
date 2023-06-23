@@ -87,16 +87,12 @@ export interface ContaType{ // for contact chat
 
 
 export interface MembersType{
-  MembershipId : string;
-  channelId : string;
+  
   channelName : string;
-  createdAt : string;
-  isAdmin : boolean;
-  isBlacklist : boolean;
-  isMute : boolean;
   login : string;
-  timeMute : string;
-  userId : string;
+  username: string;
+  avatar: string;
+  
 }
 
 export interface FriendType{

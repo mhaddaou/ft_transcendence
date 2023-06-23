@@ -545,20 +545,23 @@ export class ChatService {
             if (isMute)
             {
                 array.push('Mute');
-                if (timeMute != undefined && timeMute >= 1)
-                {
-                    let timeToMute:Date = new Date();
-                    timeToMute.setMinutes(timeToMute.getMinutes() + timeMute);
-                    userAffectedMemberShip = await this.prisma.client.membershipChannel.update({
-                        where:{
-                            MembershipId:userAffectedMemberShip.MembershipId,
-                        },
-                        data:{
-                            isMute:isMute,
-                            timeMute:timeToMute,
-                        },
-                    });
-                }
+                let time:number = 0;
+                if ((timeMute == undefined || timeMute < 1))
+                    time = 5;
+                else
+                    time = timeMute;
+                let timeToMute:Date = new Date();
+                timeToMute.setMinutes(timeToMute.getMinutes() + time);
+                userAffectedMemberShip = await this.prisma.client.membershipChannel.update({
+                    where:{
+                        MembershipId:userAffectedMemberShip.MembershipId,
+                    },
+                    data:{
+                        isMute:isMute,
+                        timeMute:timeToMute,
+                    },
+                });
+                
             }
             else{
                 array.push('unMute');
@@ -669,7 +672,42 @@ export class ChatService {
     }
 
     // members of a channel
-    async getMembersOfChannel(chDto:channeDto){
+        // members of a channel
+        async getMembersOfChannel(chDto:channeDto){
+            let result:any[] = [];
+            const {channelName} = chDto;
+            const channel = await this.prisma.client.channel.findFirst({
+                where:{
+                    channelName:channelName,
+                },
+            });
+            if (!channel)
+                throw new NotFoundException(`no such channel with the name ${channelName}`);
+            let members = await this.prisma.client.membershipChannel.findMany({
+                select:{
+                    login:true,
+                    isAdmin:true,
+                    isOwner:true,
+                    isMute:true,
+                    isBlacklist:true,
+                    channelName:true,
+                },
+                where:{
+                    channelName:channel.channelName,
+                },
+            });
+            for(let i = 0; i < members.length; ++i){
+                let us = await this.userService.findUser({login:members[i].login});
+                const  {login, isAdmin, isMute,isOwner, isBlacklist } = members[i];
+                result.push({login:login, username:us.username, avatar:us.avatar,channelName:channelName})
+            }
+            return result;
+        }
+
+    async getMembersOfChannelII(chDto:channeDto){
+        let result:any[] = [];
+        let admin:any[] = [];
+        let regular:any[] = [];
         const {channelName} = chDto;
         const channel = await this.prisma.client.channel.findFirst({
             where:{
@@ -678,11 +716,47 @@ export class ChatService {
         });
         if (!channel)
             throw new NotFoundException(`no such channel with the name ${channelName}`);
-        return await this.prisma.client.membershipChannel.findMany({
+        let admins = await this.prisma.client.membershipChannel.findMany({
+            select:{
+                login:true,
+                isAdmin:true,
+                isOwner:true,
+                isMute:true,
+                isBlacklist:true,
+                channelName:true,
+            },
             where:{
                 channelName:channel.channelName,
+                isAdmin:true,
             },
         });
+        for(let i = 0; i < admins.length; ++i){
+            let us = await this.userService.findUser({login:admins[i].login});
+            const  {login, isAdmin, isMute,isOwner, isBlacklist } = admins[i];
+            admin.push({login:login, username:us.username, avatar:us.avatar,channelName:channelName, isOwner:isOwner, isAdmin:isAdmin, isMute:isMute, isBlacklist:isBlacklist })
+        }
+        result.push({admins:admin});
+        const members = await this.prisma.client.membershipChannel.findMany({
+            select:{
+                login:true,
+                isAdmin:true,
+                isOwner:true,
+                isBlacklist:true,
+                isMute:true,
+                channelName:true,
+            },
+            where:{
+                channelName:channel.channelName,
+                isAdmin:false,
+            },
+        });   
+        for(let i = 0; i < members.length; ++i){
+            let us = await this.userService.findUser({login:members[i].login});
+            const  {login, isAdmin, isMute,isOwner, isBlacklist } = members[i];
+            regular.push({login:login, username:us.username, avatar:us.avatar,channelName:channelName, isOwner:isOwner, isAdmin:isAdmin, isMute:isMute, isBlacklist:isBlacklist })
+        }
+        result.push({members:regular});
+        return result;
     }
 
     // get conversation  channel 
