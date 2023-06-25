@@ -54,6 +54,11 @@ interface Score {
     right: number;
 }
 
+interface Players {
+    p1: string,
+    p2: string
+}
+
 interface SetScoreFn {
     (score: Score): void;
 }
@@ -63,6 +68,9 @@ interface setModal {
 }
 interface SetCountDownfn {
     (countDown: number): void;
+}
+interface setPlayersFn {
+    (players: Players): void;
 }
 interface gameTexture {
     leftP: string,
@@ -103,7 +111,7 @@ export class MatterJsModules {
     colors: gameTexture
     oldDim: { w: number, h: number }
     // solids : solidBodies
-    constructor(roomId: string | string[] | undefined, queue : boolean, socket: Socket | undefined) {
+    constructor(roomId: string | string[] | undefined, queue: boolean, socket: Socket | undefined) {
         const windowHeight = window.innerHeight;
         this.oldDim = { w: this.matterContainer.clientWidth, h: this.matterContainer.clientHeight }
         this.socket = socket
@@ -401,9 +409,13 @@ export class MatterJsModules {
         }
     }
 
-    updateGameScore(setScore: SetScoreFn, setCountDown: SetCountDownfn) {
+    updateGameScore(setScore: SetScoreFn, setCountDown: SetCountDownfn, setPlayer: setPlayersFn) {
         this.socket?.on('score', (data) => {
             const receivedScore = data.score;
+            const players = data.players;
+            console.log(players)
+            if (players)
+                setPlayer({ p1: players.player1.user.login, p2: players.player2.user.login })
             setScore(receivedScore);
             setCountDown(0)
             console.log(receivedScore)
@@ -429,24 +441,22 @@ export class MatterJsModules {
             setIsModalOpen(false);
         });
     }
-    
+
     gameStatusListener(setGameStatus: setGameStatus, setGameStatusMsg: setGameStatusMsg) {
         this.socket?.on('ready', (data) => {
-            console.log("readiness ", data.msg)
-            const {msg} = data
+            const { msg } = data
             setGameStatus(msg);
         });
         this.socket?.on('gameStatus', (data) => {
-            const {msg} = data
+            const { msg } = data
             setGameStatusMsg(msg);
         });
         this.socket?.on('cancelGame', (data) => {
-            const {msg} = data
-            setGameStatusMsg( `${`${msg} canceled the invitation, fuck off`}`);
+            const { msg } = data
+            setGameStatusMsg(`${`${msg} canceled the invitation, fuck off`}`);
         });
     }
 
 }
-
 
 

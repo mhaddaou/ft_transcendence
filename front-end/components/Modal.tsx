@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { MyContext, channelSearchProps } from "./Context";
-import {Star} from 'react-feather'
+import { InfoChannelProp, MyContext, channelSearchProps } from "./Context";
+import { Star, AlertCircle } from 'react-feather'
 import Avatar from '../image/avatar.webp'
 import Image, { StaticImageData } from "next/image";
 import { FriendType } from "./Context";
@@ -10,16 +10,17 @@ import Router from "next/router";
 interface ModalProps {
   isOpen: boolean;
   closeModal: () => void;
-  title : string;
+  title: string;
   msg: string;
-  color : string
+  color: string
 
 }
-import  { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import axios from "axios";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { send } from "process";
+import { Socket } from "socket.io-client";
 
 
 
@@ -39,7 +40,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, closeModal, title, msg, color }) 
         <div className="flex justify-end">
           <button
             className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-            onClick={() =>{
+            onClick={() => {
               closeModal()
               context?.setChn(true);
             }}
@@ -55,29 +56,29 @@ const Modal: React.FC<ModalProps> = ({ isOpen, closeModal, title, msg, color }) 
 
 
 interface ModalChatProps {
-  
+
   isOpen: boolean;
   closeModal: () => void;
-  name : string;
-  login : string;
+  name: string;
+  login: string;
 
 }
 
 const ModalChat: React.FC<ModalChatProps> = ({ isOpen, closeModal, name, login }) => {
   const context = useContext(MyContext);
-  const value = useRef<HTMLTextAreaElement| null >(null);
+  const value = useRef<HTMLTextAreaElement | null>(null);
 
 
 
   if (!isOpen) {
     return null; // If isOpen is false, don't render the modal
   }
-  const sendMsg = () =>{
-    if (value.current){
-      if (context?.socket){
+  const sendMsg = () => {
+    if (value.current) {
+      if (context?.socket) {
         context.socket.emit('PrivateMessage', {
-          receiver : login,
-          content : value.current.value
+          receiver: login,
+          content: value.current.value
         })
         context.socket.on('message', (payload: any) => {
           console.log("111111111111111");
@@ -85,25 +86,19 @@ const ModalChat: React.FC<ModalChatProps> = ({ isOpen, closeModal, name, login }
           // SetToMessages(payload);
           // setMessages([...messages, payload]);
         });
-        context.socket.on('errorMessage', (payload: any) => {
-          console.log("22222222222");
-  
-          console.log(`Received message: ${payload}`);
-          // SetToMessages(payload);
-          // setMessages([...messages, payload]);
-        });
-      } 
+
+      }
       closeModal();
     }
   }
 
   return (
     <div className="fixed  inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ">
-      <div className={`bg-white p-6 rounded-md flex flex-col gap-3 ` }>
+      <div className={`bg-white p-6 rounded-md flex flex-col gap-3 `}>
         <h2 className="text-2xl font-bold mb-4 text-center">New message to @{name}</h2>
         <div className="w-full h-[70%] bg-blu-400 flex justify-center ">
-        <textarea  ref={value} className=" textarea textarea-ghost h-full w-full max-h-[250px] sm:max-h-[300px]" placeholder="Type a message..."></textarea>
-          
+          <textarea ref={value} className=" textarea textarea-ghost h-full w-full max-h-[250px] sm:max-h-[300px]" placeholder="Type a message..."></textarea>
+
 
         </div>
         <div className="flex justify-end gap-2">
@@ -120,7 +115,7 @@ const ModalChat: React.FC<ModalChatProps> = ({ isOpen, closeModal, name, login }
   );
 };
 
-interface ModalChannel{
+interface ModalChannel {
   isOpen: boolean;
   closeModal: () => void;
 
@@ -165,6 +160,27 @@ const ModalUpdateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
               setUrl(result.data.secure_url);
               // context?.setImg(result.data.secure_url);
               setAvatar(result.data.secure_url);
+              // export interface InfoChannelProp{
+              //   ChannelId : string;
+              //   LoginOwner: string;
+              //   avatar: string;
+              //   channelName : string;
+              //   createdAt: string;
+              //   isPrivate : boolean;
+              //   ispassword: boolean;
+              // }
+              if (context?.channelInfo) {
+                const obt = {
+                  ChannelId: context?.channelInfo?.ChannelId,
+                  LoginOwner: context?.channelInfo?.LoginOwner,
+                  avatar: result.data.secure_url,
+                  channelName: context?.channelInfo?.channelName,
+                  createdAt: context?.channelInfo?.createdAt,
+                  isPrivate: context?.channelInfo?.isPrivate,
+                  ispassword: context?.channelInfo?.ispassword,
+                }
+                context?.setChannelInfo(obt)
+              }
               setColor('bg-green-500');
               setMsg('The image was successfully uploaded');
               setTitle('Success!');
@@ -187,31 +203,34 @@ const ModalUpdateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
   };
   const passref = useRef<HTMLInputElement | null>(null);
   const chanref = useRef<HTMLInputElement | null>(null);
-const [msg , setMsg] = useState('');
-const [color, setColor] = useState('');
-const [title, setTitle] = useState('');
+  const [msg, setMsg] = useState('');
+  const [color, setColor] = useState('');
+  const [title, setTitle] = useState('');
   const context = useContext(MyContext);
-  useEffect(() =>{
+  useEffect(() => {
     if (context?.socket)
-    context?.socket.on('message', (pay) =>{
-      console.log(pay);
-      setMsg(pay);
-      setColor('bg-green-400');
-      setTitle('Success');
-      openModal()
-    })
+      context?.socket.on('message', (pay) => {
+        console.log(pay);
+        setMsg(pay);
+        setColor('bg-green-400');
+        setTitle('Success');
+        openModal()
+      })
     if (context?.socket)
-    context?.socket.on('errorMessage', (pay)=>{
-      console.log(pay)
-      setMsg(pay.message);
-      setColor('bg-orange-400');
-      setTitle('Failed');
-      openModal()
-    })
+      context?.socket.on('errorMessage', (pay) => {
+        console.log(pay)
+        setMsg(pay.message);
+        setColor('bg-orange-400');
+        setTitle('Failed');
+        openModal()
+      })
+    return () => {
+      context?.socket?.off('errorMessage');
+    }
 
   }, [context?.socket])
 
-  useEffect(() =>{
+  useEffect(() => {
     if (context?.chn)
       closeModal()
     context?.setChn(false);
@@ -221,99 +240,99 @@ const [title, setTitle] = useState('');
     return null; // If isOpen is false, don't render the modal
   }
 
-  
+
   interface newChannel {
     avatar: string;
     channelName: string;   // Required
     isPrivate: boolean;    // Required
     ispassword: boolean;   // Required
     password?: string;     // Optional
-    }
+  }
 
-    const[check, setCheck] = useState(false);
-    const [pass,setPass ] = useState(false);
-    const clickPass = () =>{
-      setPass(!pass);
-    }
+  const [check, setCheck] = useState(false);
+  const [pass, setPass] = useState(false);
+  const clickPass = () => {
+    setPass(!pass);
+  }
 
-    const clickcheck = () =>{
-      setCheck(!check);
-    }
+  const clickcheck = () => {
+    setCheck(!check);
+  }
 
-    const Update = () => {
-      if (pass && check) {
-        if (chanref.current && passref.current)
-          updateChannel(chanref.current.value, check, pass, passref.current.value)
-      }
-      else if (pass) {
-        if (chanref.current && passref.current)
-          updateChannel(chanref.current.value, check, pass, passref.current.value)
-      }
-      else if (check) {
-        if (context?.channelInfo)
-          updateChannel(context.channelInfo.channelName, check, pass, "")
-      }
-      else {
-        if (chanref.current) {
-          updateChannel(chanref.current.value, check, pass, "")
-        }
-      }
+  const Update = () => {
+    if (pass && check) {
+      if (chanref.current && passref.current)
+        updateChannel(chanref.current.value, check, pass, passref.current.value)
     }
-  
-    function updateChannel(channel: string, isPrivat: boolean, pass: boolean, password: string) {
-      var msg: newChannel | string = '';
+    else if (pass) {
+      if (chanref.current && passref.current)
+        updateChannel(chanref.current.value, check, pass, passref.current.value)
+    }
+    else if (check) {
+      if (context?.channelInfo)
+        updateChannel(context.channelInfo.channelName, check, pass, "")
+    }
+    else {
       if (chanref.current) {
-        uploadImage().then((secureUrl) => {
-          if (chanref.current) {
-            msg = {
-              avatar: `${secureUrl}`,
-              channelName: channel,
-              isPrivate: isPrivat,
-              ispassword: pass,
-              password: password,
-            }
-            context?.socket?.emit('updateChannel', msg)
-            const removeChannelByName = (channelName: string) => {
-              context?.setChannels(prevChannels =>
-                prevChannels.filter(channel => channel.channelName !== channelName)
-              );
-            };
-            removeChannelByName(channel)
-            context?.setChannels((prev) => [...prev, { avatar: `${secureUrl}`, channelName: channel }])
-          }
-        })
+        updateChannel(chanref.current.value, check, pass, "")
       }
     }
+  }
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const openModal = () => {
-      setIsModalOpen(true);
-    };
-    const closeModale = () => {
-      setIsModalOpen(false);
-    };
-    const [value, setValue] = useState(context?.channelInfo?.channelName); 
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setValue(e.target.value)
+  function updateChannel(channel: string, isPrivat: boolean, pass: boolean, password: string) {
+    var msg: newChannel | string = '';
+    if (chanref.current) {
+      uploadImage().then((secureUrl) => {
+        if (chanref.current) {
+          msg = {
+            avatar: `${secureUrl}`,
+            channelName: channel,
+            isPrivate: isPrivat,
+            ispassword: pass,
+            password: password,
+          }
+          context?.socket?.emit('updateChannel', msg)
+          const removeChannelByName = (channelName: string) => {
+            context?.setChannels(prevChannels =>
+              prevChannels.filter(channel => channel.channelName !== channelName)
+            );
+          };
+          removeChannelByName(channel)
+          context?.setChannels((prev) => [...prev, { avatar: `${secureUrl}`, channelName: channel }])
+        }
+      })
     }
-  
-    const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-      console.log("tries to upload")
-      if (e.target.files)
-        setFile(e.target.files[0]);
-  
-  
-    }    
+  }
 
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ">
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+  const closeModale = () => {
+    setIsModalOpen(false);
+  };
+  const [value, setValue] = useState(context?.channelInfo?.channelName);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value)
+  }
+
+  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("tries to upload")
+    if (e.target.files)
+      setFile(e.target.files[0]);
+
+
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ">
       {isModalOpen && <Modal isOpen={isModalOpen} closeModal={closeModale} title={title} msg={msg} color={color} />}
       <div className={`bg-white p-6 rounded-md`}>
         <h2 className="text-2xl font-bold mb-4 text-center border-b-2 pb-4">Update Channel</h2>
         <div className="bg-re mb-5 flex flex-col gap-2 pt-4">
-        <div className="font-semibold mb-2 font-mono">
+          <div className="font-semibold mb-2 font-mono">
             <p className="mb-1" >Avatar <span className="text-xs">
               (optional)
             </span>
@@ -330,17 +349,17 @@ const [title, setTitle] = useState('');
           </div>
           <div className="form-control font-semibold font-mono">
             <label className="label cursor-pointer">
-              <span className="label-text">Password</span> 
+              <span className="label-text">Password</span>
               <input type="checkbox" ref={passref} onClick={clickPass} checked={pass} className="checkbox" />
             </label>
           </div>
           <input type="password" placeholder="Password" className="input input-bordered input-sm w-full max-w-xs" />
 
-         
-          
+
+
           <div className="form-control font-semibold font-mono">
             <label className="label cursor-pointer">
-              <span className="label-text">Private Channel</span> 
+              <span className="label-text">Private Channel</span>
               <input type="checkbox" onClick={clickcheck} checked={check} className="checkbox" />
             </label>
           </div>
@@ -367,38 +386,41 @@ const [title, setTitle] = useState('');
 const ModalCreateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
   const passref = useRef<HTMLInputElement | null>(null);
   const chanref = useRef<HTMLInputElement | null>(null);
-const [msg , setMsg] = useState('');
-const [color, setColor] = useState('');
-const [title, setTitle] = useState('');
+  const [msg, setMsg] = useState('');
+  const [color, setColor] = useState('');
+  const [title, setTitle] = useState('');
   const context = useContext(MyContext);
-  useEffect(() =>{
+  useEffect(() => {
     if (context?.socket)
-    context?.socket.on('message', (pay) =>{
-      console.log(pay);
-      setMsg(pay);
-      setColor('bg-green-400');
-      setTitle('Success');
-      openModal()
-      if (chanref.current){
-        const chann = {
-          avatar: "0",
-          channelName: chanref.current.value,
+      context?.socket.on('message', (pay) => {
+        console.log(pay);
+        setMsg(pay);
+        setColor('bg-green-400');
+        setTitle('Success');
+        openModal()
+        if (chanref.current) {
+          const chann = {
+            avatar: "0",
+            channelName: chanref.current.value,
+          }
+          context.setChannels((old) => [...old, chann]);
         }
-        context.setChannels((old) =>[...old, chann]);
-      }
-    })
+      })
     if (context?.socket)
-    context?.socket.on('errorMessage', (pay)=>{
-      console.log(pay)
-      setMsg(pay.message);
-      setColor('bg-orange-400');
-      setTitle('Failed');
-      openModal()
-    })
+      context?.socket.on('errorMessage', (pay) => {
+        console.log(pay)
+        setMsg(pay.message);
+        setColor('bg-orange-400');
+        setTitle('Failed');
+        openModal()
+      })
+    return () => {
+      context?.socket?.off('erroMessage');
+    }
 
   }, [context?.socket])
 
-  useEffect(() =>{
+  useEffect(() => {
     if (context?.chn)
       closeModal()
     context?.setChn(false);
@@ -408,104 +430,104 @@ const [title, setTitle] = useState('');
     return null; // If isOpen is false, don't render the modal
   }
 
-  
+
   interface newChannel {
     channelName: string;   // Required
     isPrivate: boolean;    // Required
     ispassword: boolean;   // Required
     password?: string;     // Optional
-    }
+  }
 
-    const[check, setCheck] = useState(false);
-    const [pass,setPass ] = useState(false);
-    const clickPass = () =>{
-      setPass(!pass);
-    }
+  const [check, setCheck] = useState(false);
+  const [pass, setPass] = useState(false);
+  const clickPass = () => {
+    setPass(!pass);
+  }
 
-    const clickcheck = () =>{
-      setCheck(!check);
-    }
+  const clickcheck = () => {
+    setCheck(!check);
+  }
 
-    const Create = () =>{
-      if (pass && check){
-        var msg : newChannel | string = '';
-        if (chanref.current && passref.current){
-          msg  = {
-            channelName: chanref.current.value,
-            isPrivate: check,
-            ispassword : pass,
-            password: passref.current.value,
-          }
+  const Create = () => {
+    if (pass && check) {
+      var msg: newChannel | string = '';
+      if (chanref.current && passref.current) {
+        msg = {
+          channelName: chanref.current.value,
+          isPrivate: check,
+          ispassword: pass,
+          password: passref.current.value,
         }
-        context?.socket?.emit('newChannel',msg)
+      }
+      context?.socket?.emit('newChannel', msg)
       // closeModal()
 
-      }
-      else if (pass){
-        var msg : newChannel | string = '';
+    }
+    else if (pass) {
+      var msg: newChannel | string = '';
 
-        if (chanref.current && passref.current){
-          msg  = {
-            channelName: chanref.current.value,
-            isPrivate: check,
-            ispassword : pass,
-            password: passref.current.value,
-          }
-          console.log('this what i send ', msg)
-
-          context?.socket?.emit('newChannel',msg)
+      if (chanref.current && passref.current) {
+        msg = {
+          channelName: chanref.current.value,
+          isPrivate: check,
+          ispassword: pass,
+          password: passref.current.value,
         }
+        console.log('this what i send ', msg)
+
+        context?.socket?.emit('newChannel', msg)
+      }
       // closeModal()
       openModal();
 
 
-      }
-      else if(check){
-        var msg : newChannel | string = '';
+    }
+    else if (check) {
+      var msg: newChannel | string = '';
 
-        if (chanref.current ){
-          const msg : newChannel = {
-            channelName: chanref.current.value,
-            isPrivate: check,
-            ispassword : pass,
-            password: '',
-          }
-
-          context?.socket?.emit('newChannel',msg)
+      if (chanref.current) {
+        const msg: newChannel = {
+          channelName: chanref.current.value,
+          isPrivate: check,
+          ispassword: pass,
+          password: '',
         }
+
+        context?.socket?.emit('newChannel', msg)
+      }
       // closeModal()
 
-      }
-      else{
+    }
+    else {
 
-        var msg : newChannel | string = '';
+      var msg: newChannel | string = '';
 
-        if (chanref.current ){
-          console.log(chanref.current.value);
-          msg  = {
-            channelName: chanref.current.value,
-            isPrivate: check,
-            ispassword : pass,
-            password: '',
-          }
+      if (chanref.current) {
+        console.log(chanref.current.value);
+        msg = {
+          channelName: chanref.current.value,
+          isPrivate: check,
+          ispassword: pass,
+          password: '',
         }
-        context?.socket?.emit('newChannel',msg)
       }
-      
+      context?.socket?.emit('newChannel', msg)
     }
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
+  }
 
-    const openModal = () => {
-      setIsModalOpen(true);
-    };
-    const closeModale = () => {
-      setIsModalOpen(false);
-    };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+  const closeModale = () => {
+    setIsModalOpen(false);
+  };
 
 
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ">
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ">
       {isModalOpen && <Modal isOpen={isModalOpen} closeModal={closeModale} title={title} msg={msg} color={color} />}
       <div className={`bg-white p-6 rounded-md`}>
         <h2 className="text-2xl font-bold mb-4 text-center border-b-2 pb-4">Create Channel</h2>
@@ -516,17 +538,17 @@ const [title, setTitle] = useState('');
           </div>
           <div className="form-control font-semibold font-mono">
             <label className="label cursor-pointer">
-              <span className="label-text">Password</span> 
-              <input type="checkbox"  onClick={clickPass} checked={pass} className="checkbox" />
+              <span className="label-text">Password</span>
+              <input type="checkbox" onClick={clickPass} checked={pass} className="checkbox" />
             </label>
           </div>
           <input type="password" ref={passref} placeholder="Password" className="input input-bordered input-sm w-full max-w-xs" />
 
-         
-          
+
+
           <div className="form-control font-semibold font-mono">
             <label className="label cursor-pointer">
-              <span className="label-text">Private Channel</span> 
+              <span className="label-text">Private Channel</span>
               <input type="checkbox" onClick={clickcheck} checked={check} className="checkbox" />
             </label>
           </div>
@@ -563,10 +585,10 @@ const [title, setTitle] = useState('');
 //           </div>
 
 
-export interface dataProp{
+export interface dataProp {
   UserId: string;
   login: string,
-  username:string;
+  username: string;
   email: string,
   avatar: string;
   enableTwoFa: boolean,
@@ -575,14 +597,14 @@ export interface dataProp{
   lvl: number
 }
 
-interface ModaleJoin{
-  isOpen : boolean;
-  closeModal : () => void;
-  channel : channelSearchProps;
-  closeModalSearch : () => void;
+interface ModaleJoin {
+  isOpen: boolean;
+  closeModal: () => void;
+  channel: channelSearchProps;
+  closeModalSearch: () => void;
 }
 
-const ModalJoin = (props : ModaleJoin) =>{
+const ModalJoin = (props: ModaleJoin) => {
   if (!props.isOpen) {
     return null; // If isOpen is false, don't render the modal
   }
@@ -592,20 +614,20 @@ const ModalJoin = (props : ModaleJoin) =>{
   const [color, setColor] = useState('')
 
   const value = useRef<HTMLInputElement | null>(null);
-  const Res = () =>{
-    if (props.channel.ispassword){
+  const Res = () => {
+    if (props.channel.ispassword) {
       setHidden('block')
-      return(
+      return (
         <div className="flex flex-col gap-2">
           <p>this channel with pass</p>
-          <input type="password" placeholder="Type Password"  onClick={() => setColor('input-success')} ref={value} className={`input input-bordered  w-full max-w-xs ${color} `} />
+          <input type="password" placeholder="Type Password" onClick={() => setColor('input-success')} ref={value} className={`input input-bordered  w-full max-w-xs ${color} `} />
           <p>{msg}</p>
-          
+
         </div>
       );
     }
-    else{
-      context?.socket?.emit('joinChannel', {channelName : props.channel.channelName})
+    else {
+      context?.socket?.emit('joinChannel', { channelName: props.channel.channelName })
       setHidden('hidden')
       return (
         <div>your are joined</div>
@@ -613,10 +635,10 @@ const ModalJoin = (props : ModaleJoin) =>{
     }
   }
 
-  const JoinChannelPass = () =>{
+  const JoinChannelPass = () => {
     if (value.current)
-    context?.socket?.emit('joinChannel', {channelName : props.channel.channelName, password: value.current.value})
-    
+      context?.socket?.emit('joinChannel', { channelName: props.channel.channelName, password: value.current.value })
+
 
 
   }
@@ -655,51 +677,51 @@ const ModalJoin = (props : ModaleJoin) =>{
   //   };
 
   // }, [context?.socket])
-  
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50  ">
 
-        <div className={`bg-white p-6 rounded-md w-60 h-60  flex flex-col gap-1`}>
-          <div className="w-full h-full">
-            <div className="w-full h-[80%]">
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50  ">
+
+      <div className={`bg-white p-6 rounded-md w-60 h-60  flex flex-col gap-1`}>
+        <div className="w-full h-full">
+          <div className="w-full h-[80%]">
             <Res />
-            </div>
-            <div className="w-full h-[10%] flex justify-end items-center gap-4">
-        <button onClick={props.closeModal} className="bg-slate-400 px-2 py-1 rounded-xl border-2 border-slate-700 text-white font-semibold">close</button>
-        <button className={`bg-blue-400 px-2 py-1 rounded-lg border-2 border-blue-800 text-white font-semibold ${hidden}`} onClick={JoinChannelPass}>join</button>
-
-            </div>
           </div>
-        
+          <div className="w-full h-[10%] flex justify-end items-center gap-4">
+            <button onClick={props.closeModal} className="bg-slate-400 px-2 py-1 rounded-xl border-2 border-slate-700 text-white font-semibold">close</button>
+            <button className={`bg-blue-400 px-2 py-1 rounded-lg border-2 border-blue-800 text-white font-semibold ${hidden}`} onClick={JoinChannelPass}>join</button>
+
+          </div>
         </div>
-        </div>
 
-    );
-  }
+      </div>
+    </div>
+
+  );
+}
 
 
-interface ModalSearchProps{
-  isOpen : boolean;
-  closeModal : () => void;
- 
+interface ModalSearchProps {
+  isOpen: boolean;
+  closeModal: () => void;
+
 
 }
 
 
 
 
-const ModalSearch= (props : ModalSearchProps) => {
+const ModalSearch = (props: ModalSearchProps) => {
   const context = useContext(MyContext);
 
-  const GetAvatar = ({avat } : {avat : string | undefined}) =>{
+  const GetAvatar = ({ avat }: { avat: string | undefined }) => {
     if (avat === '0')
       return (
         <Image src={Avatar} alt="ava" />
       );
     else
-        return (
-          <img src={avat} alt="ava" />
-        );
+      return (
+        <img src={avat} alt="ava" />
+      );
   }
 
 
@@ -707,27 +729,27 @@ const ModalSearch= (props : ModalSearchProps) => {
     return null; // If isOpen is false, don't render the modal
   }
 
-  const removeChat = (login : string) =>{
+  const removeChat = (login: string) => {
     context?.setWaitToAccept(prevcontact =>
       prevcontact.filter(chat => chat.login !== login))
   }
- 
 
-  const sendInvite = (user : userSearchProps) =>{
 
-    if (user.login){
-      context?.socket?.emit('inviteFriend',{
-        login : user.login,
+  const sendInvite = (user: userSearchProps) => {
+
+    if (user.login) {
+      context?.socket?.emit('inviteFriend', {
+        login: user.login,
       })
       // if (user)
-      
-      const friend : FriendType = {
-        login : user.login,
-        username : user.username,
-        avatar : user.avatar,
+
+      const friend: FriendType = {
+        login: user.login,
+        username: user.username,
+        avatar: user.avatar,
       }
       removeChat(user.login)
-      context?.setWaitToAccept((prev)=>[...prev, friend])
+      context?.setWaitToAccept((prev) => [...prev, friend])
 
       // when i add this
     }
@@ -737,16 +759,13 @@ const ModalSearch= (props : ModalSearchProps) => {
   }
 
 
-  useEffect(() =>{
-    if (context?.socket){
-      context.socket.on('message', (pay) =>{
+  useEffect(() => {
+    if (context?.socket) {
+      context.socket.on('message', (pay) => {
         if (pay)
           console.log(pay);
       })
-      context.socket.on('errorMessage', (pay) =>{
-        if (pay)
-          console.log(pay);
-      })
+
     }
   }, [context?.socket])
   const [name, setName] = useState('');
@@ -754,46 +773,46 @@ const ModalSearch= (props : ModalSearchProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openModalJoin, setOpenModalJoin] = useState(false);
 
-  const openModaleJoin = () =>{
+  const openModaleJoin = () => {
     setOpenModalJoin(true);
   }
-  const closeModalJoin = () =>{
+  const closeModalJoin = () => {
     setOpenModalJoin(false);
   }
 
-  const sendMsg = (login : string, username : string, )=>{
-     
+  const sendMsg = (login: string, username: string,) => {
+
     setName(username);
     setLogin(login);
-      setIsModalOpen(true);
+    setIsModalOpen(true);
 
   }
-  const openModal = () =>{
+  const openModal = () => {
     setIsModalOpen(true);
   }
-  const closeModal = () =>{
+  const closeModal = () => {
     setIsModalOpen(false);
   }
   interface PropsClickJoin {
-    channel : channelSearchProps;
-    closeModal : () => void;
+    channel: channelSearchProps;
+    closeModal: () => void;
   }
-  const clickJoin = (channel : channelSearchProps) =>{
+  const clickJoin = (channel: channelSearchProps) => {
     console.log('click')
     setChannel(channel);
     // props.closeModal();
     openModaleJoin();
   }
-  const [channel , setChannel] = useState<channelSearchProps>()
+  const [channel, setChannel] = useState<channelSearchProps>()
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50  ">
-      <ModalChat  isOpen={isModalOpen} closeModal={closeModal} name={name} login={login}/>
-      { channel && <ModalJoin isOpen={openModalJoin} closeModal={closeModalJoin} channel={channel} closeModalSearch={props.closeModal} />}
+      <ModalChat isOpen={isModalOpen} closeModal={closeModal} name={name} login={login} />
+      {channel && <ModalJoin isOpen={openModalJoin} closeModal={closeModalJoin} channel={channel} closeModalSearch={props.closeModal} />}
 
       <div className={`bg-white p-6 rounded-md w-[700px] h-[700px] flex flex-col gap-1`}>
         <div className="w-full h-[5%]">
-        <h2 className="text-2xl font-bold mb-4 text-center">Search</h2>
+          <h2 className="text-2xl font-bold mb-4 text-center">Search</h2>
         </div>
         {/* this for users */}
         <div className="w-full h-[45%]   flex-col">
@@ -801,30 +820,30 @@ const ModalSearch= (props : ModalSearchProps) => {
             <h1 className="font-mono  font-semibold border-b-2">Users</h1>
           </div>
           <div className="w-full h-[90%] flex flex-col gap-1 overflow-y-auto">
-          {
-            context?.userSearch && context.userSearch.map((user : userSearchProps) =>{
-              return (
-                <div className="w-full min-h-[60px] bg-slate-100 flex items-center rounded-xl justify-around">
-              <div className="avatar">
-              <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-              <GetAvatar avat={user.avatar} />
+            {
+              context?.userSearch && context.userSearch.map((user: userSearchProps) => {
+                return (
+                  <div className="w-full min-h-[60px] bg-slate-100 flex items-center rounded-xl justify-around">
+                    <div className="avatar">
+                      <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                        <GetAvatar avat={user.avatar} />
 
-              </div>
-              </div>
-              <div>
-                <p className="font-bold">{user.username}</p>
-              </div>
-              <div className="dropdown dropdown-end">
-                <button tabIndex={0}><FontAwesomeIcon icon={faBars} /></button>
-                <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                  <li><button onClick={() => sendInvite(user)}>Add Friend</button></li>
-                  <li><button onClick={() => sendMsg(user.login, user.username)}>Send Message</button></li>
-                </ul>
-              </div>
-            </div>
-              );
-            }) 
-          }
+                      </div>
+                    </div>
+                    <div>
+                      <p className="font-bold">{user.username}</p>
+                    </div>
+                    <div className="dropdown dropdown-end">
+                      <button tabIndex={0}><FontAwesomeIcon icon={faBars} /></button>
+                      <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                        <li><button onClick={() => sendInvite(user)}>Add Friend</button></li>
+                        <li><button onClick={() => sendMsg(user.login, user.username)}>Send Message</button></li>
+                      </ul>
+                    </div>
+                  </div>
+                );
+              })
+            }
           </div>
         </div>
         {/* this for channels */}
@@ -833,42 +852,42 @@ const ModalSearch= (props : ModalSearchProps) => {
             <h1 className="font-mono  font-semibold border-b-2">Channels</h1>
           </div>
           <div className="w-full h-[90%] flex flex-col gap-1 overflow-y-auto">
-          {
-            context?.channelSearch && context.channelSearch.map((channel : channelSearchProps) =>{
-              return (
-                <div className="w-full min-h-[60px] bg-slate-100 flex items-center rounded-xl justify-around">
-              <div className="avatar">
-              <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-              <GetAvatar avat={channel.avatar} />
+            {
+              context?.channelSearch && context.channelSearch.map((channel: channelSearchProps) => {
+                return (
+                  <div className="w-full min-h-[60px] bg-slate-100 flex items-center rounded-xl justify-around">
+                    <div className="avatar">
+                      <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                        <GetAvatar avat={channel.avatar} />
 
-              </div>
-              </div>
-              <div>
-                <p className="font-bold">{channel.channelName}</p>
-              </div>
-              <button onClick={()=> clickJoin(channel)} className={`hover:bg-blue-200 hover:text-black bg-slate-500 text-white px-3 py-1 rounded-2xl border-2 border-slate-300 `}>Join</button>
-            </div>
-              );
-            }) 
-          }
+                      </div>
+                    </div>
+                    <div>
+                      <p className="font-bold">{channel.channelName}</p>
+                    </div>
+                    <button onClick={() => clickJoin(channel)} className={`hover:bg-blue-200 hover:text-black bg-slate-500 text-white px-3 py-1 rounded-2xl border-2 border-slate-300 `}>Join</button>
+                  </div>
+                );
+              })
+            }
           </div>
         </div>
         <div className="w-full h-[5%] flex justify-end  items-center">
-        <button
-          className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-          onClick={() =>{
-            props.closeModal()
-            context?.setChn(true);
-          }}
-        >
-          Close
-        </button>
+          <button
+            className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+            onClick={() => {
+              props.closeModal()
+              context?.setChn(true);
+            }}
+          >
+            Close
+          </button>
         </div>
-        
-        
 
-          
-        
+
+
+
+
       </div>
     </div>
   );
@@ -885,25 +904,25 @@ const ModalGame: React.FC<ModalProps> = ({ isOpen, closeModal, title, msg, color
           title.length ? (
 
             <div className="flex justify-center gap-2">
-            <Star fill="gold" color='gold' />
-            <Star className="pt-1" fill="gold" color='gold' />
-            <Star fill="gold" color='gold' />
-          </div>
-            ) : null
+              <Star fill="gold" color='gold' />
+              <Star className="pt-1" fill="gold" color='gold' />
+              <Star fill="gold" color='gold' />
+            </div>
+          ) : null
         }
         <h2 className="text-2xl text-white font-bold mt-6 text-center">{title}</h2>
-        <h2 className={`text-2xl ${ title.length ? `text-[#FFD700]` : `text-[#e9e8e2]`} font-bold mb-6 text-center`}>{msg}</h2>
+        <h2 className={`text-2xl ${title.length ? `text-[#FFD700]` : `text-[#e9e8e2]`} font-bold mb-6 text-center`}>{msg}</h2>
         <div className="flex justify-end gap-2">
           {
             title.length ? (
 
               <button
-              className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-              onClick={closeModal}
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                onClick={closeModal}
               >
-              Replay
-            </button>
-              ) : null
+                Replay
+              </button>
+            ) : null
           }
           <button className="px-4 py-2 bg-red-200 text-gray-700 rounded hover:bg-red-300">Leave</button>
         </div>
@@ -920,10 +939,10 @@ const ModalInvite: React.FC<ModalProps> = ({ isOpen, closeModal, title, msg, col
   }
 
   const handleDecline = () => {
-    if(context?.socket)
-    context?.socket.emit("cancelGame", {
-      host: color
-    })
+    if (context?.socket)
+      context?.socket.emit("cancelGame", {
+        host: color
+      })
     closeModal()
   }
   if (!isOpen) {
@@ -959,5 +978,55 @@ const ModalInvite: React.FC<ModalProps> = ({ isOpen, closeModal, title, msg, col
     </div>
   );
 };
+const ModalQRcode: React.FC<ModalProps> = ({ isOpen, closeModal, title, msg, color }) => {
+  if (!isOpen) {
+    return null; // If isOpen is false, don't render the modal
+  }
+
+  return (
+    <div className=" absolute inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ">
+      <div className={`bg-green-50 rounded-md`}>
+        <div className="flex bg-orange-300 rounded-t-md w-full py-2 justify-center gap-2">
+          <AlertCircle size="40" color='white' />
+        </div>
+        <div className="p-3">
+
+          <h2 className="text-2xl text-gray-700 mx-7 font-semibold mt-6 text-center">{title}</h2>
+        </div>
+
+        <div className="flex justify-end gap-2">
+          <button onClick={closeModal} className="px-4 py-2 m-2 bg-red-200 text-gray-700 rounded hover:bg-red-300">Close</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+
+
+const ModalError = () => {
+  const context = useContext(MyContext);
+
+  return (
+    <div className={`absolute inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50  ${context?.error ? 'block' : 'hidden'}`}>
+      <div className={`bg-orange-500 rounded-md flex flex-col w-[400px] h-[200px] p-6`}>
+        <div className="text-center text-xl font-mono font-semibold">Error</div>
+        <div className="w-full h-[80%] text-center text-lg flex justify-center items-center">
+          <p >
+
+            {context?.messageError}
+          </p>
+        </div>
+        <div className="w-full h-[20%] flex items-center justify-end">
+
+          <button className="bg-orange-600 px-2 py-1 rounded-lg text-white" onClick={() => context?.setError(false)}>close</button>
+        </div>
+
+      </div>
+    </div>
+  )
+
+}
 export default Modal;
- export {ModalChat,ModalInvite, ModalCreateChannel, ModalUpdateChannel, ModalSearch, ModalGame, ModalJoin};
+export { ModalChat, ModalInvite, ModalCreateChannel, ModalUpdateChannel, ModalSearch, ModalGame, ModalJoin, ModalQRcode, ModalError };

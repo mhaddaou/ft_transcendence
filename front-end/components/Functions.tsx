@@ -1,9 +1,10 @@
 import GetDataHistory, {GetDataAchievement, GetDataFriend, DatSend, DataRecieved, BlackList} from '@/components/GetData';
 import BarLeft from './BarLeft';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { MyContext } from './Context';
 import avatar from '../image/avatar.webp'
 import Image from 'next/image';
+import axios from 'axios';
 
 interface PropsCallBarLeft{
   page : string;
@@ -67,5 +68,42 @@ export function CallBarLeft(props: PropsCallBarLeft){
             <BarLeft name="Logout" check={false} page={props.page}/> 
         </>
     );
+
+}
+
+export function  GetAvatarChannel (){
+  const context = useContext(MyContext);
+  // useEffect (() =>{
+  //   const GetData =  async () => {
+  //     try{
+  //       const res = await axios.post(
+  //         'http://localhost:5000/chat/channel/message/all',
+  //         {channelName: context?.channelInfo?.channelName}, 
+  //         {
+  //           headers:{
+  //             Authorization : `Bearer ${context?.token}`,
+  //           },
+  //         }
+  //       );
+  //       context?.setChannelInfo(res.data[0]);
+  //     }catch(e){
+  //       console.log(e);
+  //     }
+  //     }
+  
+  //   GetData();
+    
+  // },[context?.channelInfo?.avatar])
+  
+
+  if (context?.channelInfo?.avatar === '0')
+  return (
+    <Image className="w-12 h-12 rounded-full border-4 border-slate-400 cursor-pointer hover:border-slate-900" src={avatar} alt="ava" />
+  );
+else
+  return (
+    <img className="w-12 h-12 rounded-full border-4 border-slate-400 cursor-pointer hover:border-slate-900" src={context?.channelInfo?.avatar} alt="ava" />
+  );
+
 
 }

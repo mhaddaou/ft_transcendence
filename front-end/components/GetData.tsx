@@ -9,6 +9,17 @@ import { MyContext, MatchType } from "./Context";
 import avatar from '../image/avatar.webp'
 import {ModalChat} from "./Modal";
 import { FriendType } from "./Context";
+import Router from "next/router";
+import axios from "axios";
+
+import { Award} from "react-feather"
+interface Achievements {
+  avatar: string
+  condition: string
+  description: string
+  id: string
+  title: string
+}
 
 
 
@@ -28,7 +39,6 @@ const getImgSrc = (name : string)  =>{
 
 
 export default function GetDataHistory({matches } : {matches : MatchType[]}){
-  console.log('this is matches ', matches)
   const [Img, setImg] = useState<string | StaticImageData>('');
     const context = useContext(MyContext);
     const TreatImage = (img : string)=>{
@@ -116,32 +126,63 @@ export default function GetDataHistory({matches } : {matches : MatchType[]}){
         }
 }
 
-export  function GetDataAchievement(){
-    const [Data, setData] = useState([]);
-    useEffect(() =>{
-        //here for fetching data
-        // and here for setting the tade to usestate data
-        console.log('data');
-    })
-        if (Data.length == 0){
-            return (
-                <p className=' text-center text-4xl mx-auto my-auto text-slate-700 font-semibold font-mono '>
-                    Not have Achievement yet
+export function GetDataAchievement() {
+  const [Data, setData] = useState([]);
+  const context = useContext(MyContext);
 
-                </p>
-            )
+  useEffect(() => {
+    //here for fetching data
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:5000/user/achievements",
+          {
+            headers: {
+              Authorization: `Bearer ${context?.token}`,
+            },
+          }
+        );
+        console.log(res.data)
+        setData(res.data.achievements)
+        // http://localhost:5000/auth/2-FA post login code
+      } catch (error) {
+        // Handle the error here
+        console.error(error);
+      }
+    };
+    // and here for setting the tade to usestate data
+    console.log('data for achievments ');
+    fetchData()
+  })
+  if (Data.length == 0) {
+    return (
+      <p className=' text-center text-4xl mx-auto my-auto text-slate-700 font-semibold font-mono '>
+        Not have Achievement yet
+      </p>
+    )
+  }
+  else {
+    return (
+      <div>
+        <div className="grid grid-cols-3 items-center m-5 gap-4">
+        {
+          Data.map((e: Achievements) => (
+            <div className="p-2 text-center bg-green-200  flex  items-center justify-around">
+               <Award/>{ e.title}</div>
+
+          ))
         }
-        else{
-            return (
-                <div>
-                    datahere;
-                </div>
-            );
-        }
+            </div>
+
+      </div>
+    );
+  }
 }
 
 export function GetDataFriend() {
     const context = useContext(MyContext);
+  const router = Router;
+
     console.log()
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [login, setLogin] = useState('');
@@ -195,7 +236,8 @@ export function GetDataFriend() {
       removefriend(friend.login);
     }
     const viewProfile = (friend : FriendType) =>{
-      
+      context?.setProfileuser(friend.login);
+      router.push(`http://localhost:3000/Profile/${context?.profileuser}`)
     }
   
     if (context?.friends.length === 0) {

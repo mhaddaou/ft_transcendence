@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 import React, { useContext, useEffect, useState } from "react";
 const { log } = console;
-import { MatterJsModules } from '../utils/MatterJsModules'
+import { MatterJsModules } from '../../utils/MatterJsModules'
 import { MyContext } from '@/components/Context';
 import { io } from "socket.io-client"
 import Barl from "@/components/Barl";
@@ -23,6 +23,7 @@ export default function Game() {
   const [roomName, setRoomName] = useState<string>("")
   const [height, setHeight] = useState<number>(400)
   const [score, setScore] = useState({ left: 0, right: 0 })
+  const [players, setPlayers] = useState({p1: "player1", p2:"player2"})
   const [countDown, setCountDown] = useState(5);
   const [animations, setAnimations] = useState(1)
   const [matterjsInstance, setMatterjsInstance] = useState<MatterJsModules>()
@@ -53,13 +54,7 @@ export default function Game() {
         // SetToMessages(payload);
         // setMessages([...messages, payload]);
       });
-      socket.on('errorMessage', (payload: any) => {
-        console.log("111111111111111");
-
-        console.log(`Received message: ${payload}`);
-        // SetToMessages(payload);
-        // setMessages([...messages, payload]);
-      });
+     
       context.setSocket(socket);
 
     }
@@ -123,7 +118,7 @@ export default function Game() {
         MatterNode.events()
         MatterNode.run()
         MatterNode.socketStuff()
-        MatterNode.updateGameScore(setScore, setCountDown)
+        MatterNode.updateGameScore(setScore, setCountDown, setPlayers)
         MatterNode.gameOverListener(setIsModalOpen, setWinner)
         MatterNode.restartGameListener(setIsModalOpen)
       }
@@ -145,6 +140,10 @@ export default function Game() {
 
   };
 
+  const handleReplay = ()=>{
+    closeModal()
+    setRestart(true)
+  }
 
   useEffect(() => {
     if (restart) {
@@ -180,16 +179,16 @@ export default function Game() {
             <div className="w-full h-full relative rounded-2xl flex flex-col  gap-2 ">
               <NavBar page="Game" />
 
-              {isModalOpen && <ModalGame isOpen={isModalOpen} closeModal={closeModal} title={gameStatus ? "WINNER" : ""} msg={gameStatus ? winner : gameStatusMsg} color='bg-white' />}
+              {isModalOpen && <ModalGame isOpen={isModalOpen} closeModal={handleReplay} title={gameStatus ? "WINNER" : ""} msg={gameStatus ? winner : gameStatusMsg} color='bg-white' />}
               {
                 <div className="relative flex justify-center items-center flex-col">
                   <div className="relative h-[50px] w-[375px] rounded-t flex items-center border-double border-4 border-black  bg-[#9575DE]">
                     <div className='absolute left-5 flex flex-col items-center justify-center'>
-                      <span className="text-white font-semibold"> player1 </span>
+                      <span className="text-white font-semibold"> {players.p1} </span>
                       <span className="text-white"> {score.left}</span>
                     </div>
                     <div className='absolute right-5 flex flex-col items-center justify-center'>
-                      <span className="text-white font-semibold"> player2 </span>
+                      <span className="text-white font-semibold"> {players.p2} </span>
                       <span className="text-white">{score.right}</span>
                     </div>
                   </div>

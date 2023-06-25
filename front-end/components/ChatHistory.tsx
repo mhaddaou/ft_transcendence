@@ -223,7 +223,7 @@ useEffect(() => {
 //   </div>
 // )
 const [hidden, setHidden] = useState('hidden');
-const router = Router;
+const router = useRouter();
 
 const clickPro = (): void => {
   if (hidden === 'hidden')
@@ -234,11 +234,11 @@ const clickPro = (): void => {
 const handleGameInvite = () => {
   if (context?.socket) {
     const url = `Game?room=${context.login}&queue=false`;
-    console.log("emiting invite")
+    console.log("emiting invite", url)
     context.socket.emit('gameInvitation', {
       receiver: login,
     });
-    router.push(`http://localhost:3000/${url}`)
+    window.location.href = (`http://localhost:3000/${url}`)
     
   }
 }

@@ -35,7 +35,6 @@ function saveMeasurements(div: { height: number, width: number }) {
 }
 export function userInGame(login: string, worlds: {}) {
     for (const user in worlds) {
-
         if (worlds[user] && worlds[user].players.player2.user && worlds[user].players.player2.user.login === login)
             return user
     }
@@ -45,7 +44,6 @@ export function userInGame(login: string, worlds: {}) {
 
 export function checkQueue(worlds: {}) {
     for (const user in worlds) {
-        console.log("avalablepadldes" , worlds[user].availablePaddles.length)
         if (worlds[user] && worlds[user].openGame && worlds[user].availablePaddles.length)
             return user
     }
@@ -152,7 +150,7 @@ export class matterNode {
                     if (this.ball.position.x == -155) {
                         Body.setPosition(this.ball, { x: this.obj.divWidth / 2, y: this.obj.divHeight / 2 });
 
-                        this.server.to(this.roomId).emit('score', { score: this.score });
+                        this.server.to(this.roomId).emit('score', {score: this.score, players: this.players});
                         setTimeout(() => {    // after seconds launch the ball again
                             Body.setVelocity(this.ball, { x: 5, y: 6 });
                         }, 5000);
@@ -174,7 +172,7 @@ export class matterNode {
                         Body.setVelocity(this.ball, { x: 0, y: 0 });
                         Body.setPosition(this.ball, { x: this.obj.divWidth / 2, y: this.obj.divHeight / 2 });
                         this.score.right++
-                        this.server.to(this.roomId).emit('score', { score: this.score });
+                        this.server.to(this.roomId).emit('score', { score: this.score, players: this.players });
                         if (this.score.right >= 2) {
                             this.ready = false
                             this.winner = this.players.player2.user.login
@@ -194,7 +192,7 @@ export class matterNode {
                         Body.setVelocity(this.ball, { x: 0, y: 0 });
                         Body.setPosition(this.ball, { x: this.obj.divWidth / 2, y: this.obj.divHeight / 2 });
                         this.score.left++
-                        this.server.to(this.roomId).emit('score', { score: this.score });
+                        this.server.to(this.roomId).emit('score', { score: this.score, players: this.players });
                         if (this.score.left >= 2) {
                             this.ready = false
                             this.winner = this.players.player1.user.login

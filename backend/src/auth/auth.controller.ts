@@ -19,7 +19,7 @@ export class AuthController {
         try{
           let access = await this.authService.login42(req);
           console.log(access);
-          response.redirect(`http://localhost:3000/${access}`);
+          response.redirect(`http://localhost:3000/GetData/${access}`);
         }
         catch(error){
           response.status(400).json(error);

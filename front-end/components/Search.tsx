@@ -112,6 +112,7 @@ const closeModale = () =>{
             // }
           }
         })
+        
         context?.socket.on('join', (pay)=>{
           if (pay){
             console.log('her channel name ', pay)
@@ -165,6 +166,11 @@ const closeModale = () =>{
       prev.filter(friend => friend.login !== login)
     );
   };
+  // const removeChannelByName = (login: string) => {
+  //   context?.setWaitToAccept(prev =>
+  //     prev.filter(friend => friend.login !== login)
+  //   );
+  // };
   const rmvFriend = (login: string) => {
     context?.setFriends(prev =>
       prev.filter(friend => friend.login !== login)
@@ -247,6 +253,44 @@ const closeModale = () =>{
           rmvPend(pay.login)
         }
       })
+      context.socket.on('kick',(pay)=>{
+        if (pay){
+          const fetchData = async () => {
+            try {
+              const res = await axios.post(
+                'http://localhost:5000/chat/memberships',
+                { login: context?.login },
+                {
+                  headers: {
+                    Authorization: `Bearer ${context?.token}`,
+                  },
+                }
+              );
+              // context?.setContactChat(res.data);
+              context?.setChannels(res.data);
+      
+            } catch (error) {
+              console.error('Error fetching data:', error);
+            }
+          };
+        
+          fetchData();
+
+        }
+      })
+      context.socket.on('Update', (pay) =>{
+        if (pay)
+          console.log(pay);
+      })
+      context.socket.on('errorMessage', (pay) =>{
+        if (pay){
+          context.setMessageError(pay.message);
+          context.setError(true);
+
+        }
+          // console.log(pay);
+      })
+      
     }
 
   
@@ -256,6 +300,9 @@ const closeModale = () =>{
         context.socket.off('invite');
         context.socket.off('accept');
         context.socket.off('delete');
+        context.socket.off('kick');
+        context.socket.off('Update');
+        context.socket.off('errorMessage');
         context.socket.off('cancelInvitation');
         // context.socket.off('gameInvitation');
       }
@@ -265,7 +312,7 @@ const closeModale = () =>{
 
   
   return (
-<div className="container relative left-0 z-50 flex w-3/4 h-auto md:h-full ">
+<div className="container relative left-0 z-40 flex w-3/4 h-auto md:h-full ">
     {isOpen && <ModalSearch isOpen={isOpen} closeModal={closeModale}   />}
                             <div className="relative flex items-center w-full h-20 lg:w-64 group">
                                 <div className="absolute z-50 flex items-center justify-center  w-auto h-10 p-3 pr-2 text-sm text-gray-500 uppercase cursor-pointer sm:hidden">

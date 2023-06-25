@@ -242,6 +242,7 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
          }
      }
 
+
 // channel
     findKeyByLogin(login: string): string | undefined {
         for (const [key, user] of this.connectedUsers) {
@@ -370,8 +371,12 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
                 await this.chatService.deleteMemberShip(dto);
                 const socketId = this.findKeyByLogin(body.loginDeleted);
                 if (socketId)
+                {
                     this.server.in(socketId).socketsLeave(body.channelName);
-                client.emit('message',`you have kicked ${body.loginDeleted} from ${body.channelName} channel`);
+                    this.server.to(socketId).emit('kick',{message:`you have been kicked from ${body.channelName}`, channelName:body.channelName});
+                }
+                
+                // client.emit('message',`you have kicked ${body.loginDeleted} from ${body.channelName} channel`);
             }
             catch(error){
                 client.emit('errorMessage', error);

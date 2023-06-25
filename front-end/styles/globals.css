@@ -29,9 +29,9 @@
     rgb(var(--background-start-rgb));
 } */
 
-body{
+/* body{
     background-color: black;
-}
+} */
 @keyframes med {
   0%{
     background: red;

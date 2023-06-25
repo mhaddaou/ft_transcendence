@@ -85,6 +85,27 @@ export interface ContaType{ // for contact chat
   avatar: string;
 }
 
+export interface adminsChannelType{
+  avatar: string;
+  channelName : string;
+  isAdmin: boolean;
+  isBlacklist : boolean;
+  isMute : boolean;
+  isOwner : boolean;
+  login : string;
+  username: string;
+}
+export interface membersChannelType{
+  avatar: string;
+  channelName : string;
+  isAdmin: boolean;
+  isBlacklist : boolean;
+  isMute : boolean;
+  isOwner : boolean;
+  login : string;
+  username: string;
+}
+
 
 export interface MembersType{
   
@@ -109,6 +130,18 @@ export interface profileType{
 
 
 export interface ContextTypes{
+  profileuser : string;
+  setProfileuser : Dispatch<SetStateAction<string>>;
+  owner : boolean;
+  setOwner : Dispatch<SetStateAction<boolean>>;
+  admin : boolean;
+  setAdmin : Dispatch<SetStateAction<boolean>>;
+  adminsChannel : adminsChannelType[];
+  setAdminChannel : Dispatch<SetStateAction<adminsChannelType[]>>;
+  error : boolean;
+  setError : Dispatch<SetStateAction<boolean>>;
+  messageError : string;
+  setMessageError : Dispatch<SetStateAction<string>>;
   membersChannel : MembersType[];
   setMembersChannel : Dispatch<SetStateAction<MembersType[]>>
   pendingInvitation : FriendType[];
@@ -184,7 +217,13 @@ const MyContext = createContext<ContextTypes | undefined>(undefined);
 // create provider
 
 const MyContextProvider = ({children} : ChildProps) =>{
+    const [owner, setOwner] = useState(false);
+    const [profileuser, setProfileuser] = useState<string>('');
+    const [admin, setAdmin] = useState(false);
+    const [adminsChannel, setAdminChannel] = useState<adminsChannelType[]>([])
     const [membersChannel, setMembersChannel] = useState<MembersType[]>([])
+    const [error, setError] = useState(false);
+    const [messageError, setMessageError] = useState('');
     const [profile, setProfile] = useState<profileType | undefined>(undefined)
     const [userSearch, setUserSearch] = useState<userSearchProps[]>([]);
     const [channelSearch, setChannelSearch] = useState<channelSearchProps[]>([]);
@@ -240,6 +279,13 @@ const MyContextProvider = ({children} : ChildProps) =>{
         const GetBlock = localStorage.getItem('blocked');
         const GetChannelSearch = localStorage.getItem('channelSearch');
         const GetMembers = localStorage.getItem('members');
+        const GetAdmin = localStorage.getItem('admin');
+        const GetProfileuser = localStorage.getItem('profileuser');
+        if (GetProfileuser){
+          setProfileuser(GetProfileuser);
+        }
+        if (GetAdmin)
+          setAdmin(GetAdmin === "true");
         if (GetMembers !== undefined && GetMembers !== null && GetMembers !== 'undefined'){
           setMembersChannel(JSON.parse(GetMembers));
         }
@@ -389,17 +435,23 @@ const MyContextProvider = ({children} : ChildProps) =>{
   useEffect(() =>{
     localStorage.setItem('members', JSON.stringify(membersChannel));
   },[membersChannel])
- 
-    const ContextValue = {name, setName, img, setImg, friends, setFriends,wins, setWins, losses, 
-      setLosses,  level, setLevel,LevlPer,setLevlPer,login, setLogin, checkname, setCheckname,socket,setSocket, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck, match, setMatch
-      ,token, setToken, MessageContent,userSearch, setUserSearch,channelSearch, setChannelSearch, waitToAccept, pendingInvitation, setPendingInvitation, setWaitToAccept, channelInfo, Channels,setClickChannel, setChannelInfo,clickChat, setClickChat, clickChannel, setChannels, setMessageContent,contactChat, enableTwoFa, setEnableTwofa, setContactChat, MessageInfo, setMessageInfo , chn, setChn}
+  useEffect(() =>{
+    localStorage.setItem('admin', String(admin));
+  },[admin])
+  useEffect(() =>{
+    localStorage.setItem('profileuser', profileuser);
+  },[profileuser])
 
+  // context value
+ 
+    const ContextValue = {name, setName, img, setImg, friends, setFriends,wins, setWins, losses, setLosses,  level, setLevel,LevlPer,setLevlPer,login, setLogin, checkname, 
+      setCheckname,socket,setSocket, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck, match, setMatch,token, setToken,blackList,adminsChannel, setAdminChannel, 
+      setBlackList,error, setError, messageError, setMessageError, membersChannel, setMembersChannel,userSearch, setUserSearch,channelSearch, setChannelSearch,MessageContent, 
+      waitToAccept,profile, setProfile, pendingInvitation, setPendingInvitation, setWaitToAccept, channelInfo, Channels,setClickChannel, setChannelInfo,clickChat, setClickChat,
+      clickChannel, setChannels,owner, profileuser, setProfileuser,setOwner, admin, setAdmin, setMessageContent,contactChat, enableTwoFa, setEnableTwofa, setContactChat, MessageInfo, setMessageInfo , chn, setChn}
 
     return (
-        <MyContext.Provider value={{name, setName, img, setImg, friends, setFriends,wins, setWins, losses, 
-          setLosses,  level, setLevel,LevlPer,setLevlPer,login, setLogin, checkname, setCheckname,socket,setSocket, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck, match, setMatch
-          ,token, setToken,blackList, setBlackList, membersChannel, setMembersChannel,userSearch, setUserSearch,channelSearch, setChannelSearch,MessageContent, waitToAccept,profile, setProfile, pendingInvitation, setPendingInvitation, setWaitToAccept, channelInfo, Channels,setClickChannel, setChannelInfo,clickChat, setClickChat, clickChannel, setChannels, setMessageContent,contactChat, enableTwoFa, setEnableTwofa, setContactChat, MessageInfo, setMessageInfo , chn, setChn}
-    }>
+        <MyContext.Provider value={ContextValue}>
             {children}
         </MyContext.Provider>
     );

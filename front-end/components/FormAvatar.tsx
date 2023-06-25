@@ -3,7 +3,7 @@ import { MyContext } from "./Context";
 
 import axios from "axios";
 import {io} from "socket.io-client"
-import Upload from "@/pages/Upload";
+import Upload from "@/pages/ft_transcendence/Upload";
 
 function checkFile(file : File){
   // max size 10mb

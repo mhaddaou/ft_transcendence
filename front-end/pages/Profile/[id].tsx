@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import Statics from '../image/statics.svg'
 import 'react-circular-progressbar/dist/styles.css';
@@ -13,11 +14,10 @@ import Modal from '@/components/Modal';
 import axios from 'axios';
 import {io} from "socket.io-client";
 import createSocketConnection from '@/components/socketConnection'
-import { useRouter } from 'next/router';
 import { MesgType } from '@/components/Context';
 import mhaddaou from '../image/mhaddaou.jpg'
-import Sky from '../image/sky.png'
-import avatar from '../image/avatar.webp'
+import Sky from '../../image/sky.png'
+import avatar from '../../image/avatar.webp'
 import GetDataHistory from '@/components/GetData';
 
 
@@ -32,8 +32,33 @@ const GetAvatar = ({name} : {name : string}) =>{
 
 
 const Other = () =>{
+  const context = useContext(MyContext)
+  const userLogin = useRouter()?.query?.id;
+  // const [user, setUser] = useState();
+  // const getUser = async () =>{
+  //   if (userLogin){
+  //     try{
+  //       const res = await axios.post('http://localhost:5000/user/find',
+  //       {login : userLogin},{
+  //         headers:{
+  //           Authorization: `Bearer ${context?.token}`
+  //         }
+  //       }
+  //       )
+  //       console.log('here herkldjfkj ')
+  //       console.log(res.data);
+  //       setUser(res.data);
+
+  //     }catch(e){
+  //       console.log(e);
+  //     }
+  //   }
+
+  // }
+  // getUser();
+
+
   const [check, setCheck] = useState(0);
-    const context = useContext(MyContext)
 
   const GetData = (check : number) =>{
     if (check === 1){
@@ -53,13 +78,14 @@ const Other = () =>{
       const fetchData = async  () =>{
         try{
           const res = await axios.post('http://localhost:5000/user/profile',{
-            login: "smia"
+            login: context?.profileuser
           },
           {
             headers:{
               Authorization : `Bearer ${context?.token}`
             }
           })
+          // context?.setProfileuser(JSON.stringify(userLogin));
           console.log("respnse profile  ", res.data);
           context?.setProfile(res.data);
           console.log(res.data.avatar)
@@ -80,7 +106,7 @@ const clickAchievement = ()=>{
   setCheck(2);
 }
 
-if (context?.profile){
+if (context?.profile ){
   
   return(
       <div className='bg-gradient-to-t from-gray-100 to-gray-400 min-h-screen ' >
@@ -150,3 +176,12 @@ if (context?.profile){
 }
 
 export default Other;
+
+// const MyScreen = () =>{
+//     const page = useRouter()?.query?.id ?? "1";
+//     // Default value = "1"
+
+//     return (<>id is: {page}</>);
+// }
+
+// export default MyScreen 

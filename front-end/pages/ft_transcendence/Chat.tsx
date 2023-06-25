@@ -18,7 +18,7 @@ import createSocketConnection from "@/components/socketConnection";
 import { useRouter } from "next/router";
 import ChannelHistor from "@/components/ChannelHistory";
 import History from "@/components/HIstory";
-import { ModalInvite } from "@/components/Modal";
+import { ModalInvite, ModalError } from "@/components/Modal";
 
 
 export default function Chat() {
@@ -112,9 +112,10 @@ export default function Chat() {
 
   return (
     <div className="bg-gradient-to-t from-gray-100 to-gray-400 min-h-screen">
+      <ModalError />
        {isModalOpen && <ModalInvite isOpen={isModalOpen} closeModal={closeModal} title="Invitation to Game" msg={`you've been invited to join a game against ${gameRoom}`} color={gameRoom}  />}
        
-      <div className="container w-full mx-auto h-screen min-h-[1024px] flex flex-row py-2 gap-2">
+      <div className="container w-full mx-auto h-screen min-h-[1024px] flex flex-row py-2 gap-2 z-30">
         <Barl page="Chat" />
         <div className="w-full h-full rounded-2xl flex flex-col  gap-2 ">
           <NavBar page="Chat" />

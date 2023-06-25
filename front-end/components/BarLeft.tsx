@@ -73,13 +73,13 @@ const BarLeft = (props: BarLeftProps) => {
 
   const click = () => {
     if (props.name === "Profile")
-      router.push('http://localhost:3000/Dashbord');
+      router.push('http://localhost:3000/ft_transcendence/Dashbord');
     if (props.name === "Setting")
-      router.push('http://localhost:3000/Setting');
+      router.push('http://localhost:3000/ft_transcendence/Setting');
     if (props.name === "Chat")
-      router.push('http://localhost:3000/Chat')
+      router.push('http://localhost:3000/ft_transcendence/Chat')
     if (props.name === "Game")
-    router.push(`http://localhost:3000/Game/?room=${context?.login}&queue=true`)
+    router.push(`http://localhost:3000/ft_transcendence/Game/?room=${context?.login}&queue=true`)
     
   }
 
