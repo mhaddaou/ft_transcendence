@@ -1,8 +1,9 @@
 import React from "react";
 import Image from "next/image";
-import Logo from '../../image/42_logo.svg'
+import Logo from '../image/42_logo.svg'
+// import Logo from '../'
 import Login from "./Login";
-import Datausers from '../../components/users.json'
+// import Datausers from '../../components/users.json'
 import axios from "axios";
 import Router from "next/router";
 export default function Modal( ) {

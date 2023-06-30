@@ -30,7 +30,8 @@ function containsSpecialChars(str : string) : boolean {
         if (context?.socket) {
           context?.socket.emit("updateUser",{username : name});
           context.socket.on('message', (msg: string) => {
-            console.log(msg);
+
+            console.log('her here ', msg);
           })
           context.socket.on("errorMessage", (msg: string) => {
             console.log(msg);

@@ -110,7 +110,7 @@ model MsgChannel {
 
 model Acheivement {
   acheivementId    String @id @default(uuid())
-  Id               Int 
+  Id               Int
   user             User   @relation("Acheivement", fields: [userId], references: [UserId], onDelete: Cascade)
   userId           String 
   //

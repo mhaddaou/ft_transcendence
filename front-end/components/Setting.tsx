@@ -2,7 +2,7 @@ import Barl from "@/components/Barl";
 import NavBar from "@/components/NavBar";
 import setting2 from '../../image/setting2.svg'
 import Lottie from "lottie-react";
-import Anim from '../../image/paramanimation.json'
+import Anim from '../image/paramanimation.json'
 import Image from "next/image";
 import { UpdateName, UpdateAvatar, Twofactor } from "@/components/Updates";
 import RealFooter from "@/components/RealFooter";

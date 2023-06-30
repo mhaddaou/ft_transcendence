@@ -1,5 +1,5 @@
 import React, { use, useContext, useEffect, useState } from 'react';
-import Statics from '../../image/statics.svg'
+import Statics from '../image/statics.svg'
 import 'react-circular-progressbar/dist/styles.css';
 import LevelStatics, {Stats} from '@/components/Statics'
 import RealFooter from '@/components/RealFooter';

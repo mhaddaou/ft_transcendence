@@ -9,6 +9,7 @@ import { ftAuthGuard } from './oauth42/oauth.guard';
 import { UserService } from 'src/user/user.service';
 import { UserModule } from 'src/user/user.module';
 import { PrismaService } from 'prisma/prisma.service';
+import { Achievements } from 'src/user/achievement.service';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { PrismaService } from 'prisma/prisma.service';
     UserModule,
 
   ],
-  providers: [AuthService, JwtStrategy,QuaranteDeuxStrategy,ftAuthGuard, UserService,PrismaService ],
+  providers: [AuthService, JwtStrategy,QuaranteDeuxStrategy,ftAuthGuard, UserService, Achievements, PrismaService ],
   controllers: [AuthController]
 })
 export class AuthModule {}

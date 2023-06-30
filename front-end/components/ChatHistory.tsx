@@ -238,7 +238,7 @@ const handleGameInvite = () => {
     context.socket.emit('gameInvitation', {
       receiver: login,
     });
-    window.location.href = (`http://localhost:3000/${url}`)
+    window.location.href = (`http://localhost:3000/ft_transcendence/${url}`)
     
   }
 }

@@ -279,8 +279,10 @@ const closeModale = () =>{
         }
       })
       context.socket.on('Update', (pay) =>{
-        if (pay)
-          console.log(pay);
+        if (pay){
+          console.log('this is update usename ', pay);
+
+        }
       })
       context.socket.on('errorMessage', (pay) =>{
         if (pay){

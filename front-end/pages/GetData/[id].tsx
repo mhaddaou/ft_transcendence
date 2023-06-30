@@ -33,7 +33,7 @@ async function fetchdata(tokene :string){
         }})
 
         const response = await res.data;
-        console.log('res ', response);
+        console.log('this is me res ', response);
         
         
         return response;      
@@ -87,9 +87,9 @@ export default function Profileid() {
         context?.setMatch(response.matches);
         console.log("well the 2f is actually", context?.enableTwoFa)
         if (response.enableTwoFa)
-        router.push('http://localhost:3000/ft_transcendence/QrCode');
+        router.push('http://localhost:3000/QrCode');
       else
-        router.push('http://localhost:3000/ft_transcendence/Dashbord');
+        router.push('http://localhost:3000/Dashbord');
         // response.enableTwoFa
         }
       };

@@ -134,8 +134,11 @@ export function GetDataAchievement() {
     //here for fetching data
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:5000/user/achievements",
+        const res = await axios.post(
+          "http://localhost:5000/user/acheivement",
+          {
+            login: context?.login,
+          },
           {
             headers: {
               Authorization: `Bearer ${context?.token}`,
@@ -143,7 +146,7 @@ export function GetDataAchievement() {
           }
         );
         console.log(res.data)
-        setData(res.data.achievements)
+        setData(res.data)
         // http://localhost:5000/auth/2-FA post login code
       } catch (error) {
         // Handle the error here

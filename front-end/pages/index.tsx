@@ -28,7 +28,7 @@ import axios from 'axios';
 import HBest from '@/components/HBest';
 import Link from 'next/link';
 import { useRef } from 'react';
-import Modal from './ft_transcendence/Pop';
+import Modal from '@/components/Pop';
 
 
 class Data{

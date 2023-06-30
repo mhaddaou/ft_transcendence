@@ -3,7 +3,6 @@ import { Body, Controller, Get,Req, Post, UseGuards, Res, UseInterceptors, Uploa
 import { AuthGuard } from '@nestjs/passport';
 import { FriendDto ,findUserDto, findUserOrChannel, storeMatchDto, usernameDto } from './dto/user.dto';
 import { Response } from 'express';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { Achievements } from './achievement.service';
 
 @Controller('user')
@@ -223,24 +222,24 @@ constructor(private readonly userSrevice:UserService, private readonly achieveme
     }
 
     // get achievement by id
-    @UseGuards(AuthGuard('jwt'))
-    @Post('achievement/:id')
-    async storeachiev(@Param('id') id:number, @Res() response:Response){
-        try {
-            const result = await  this.achievements.getAchievementById(id);
-            response.status(200).json(result);
-        }   
-        catch(error){
-            response.status(400).json(error);
-        }
-    }
+    // @UseGuards(AuthGuard('jwt'))
+    // @Post('achievement/:id')
+    // async storeachiev(@Param('id') id:number, @Res() response:Response){
+    //     try {
+    //         const result = await  this.achievements.getAchievementById(id);
+    //         response.status(200).json(result);
+    //     }   
+    //     catch(error){
+    //         response.status(400).json(error);
+    //     }
+    // }
 
-    //get all achievement
-    @UseGuards(AuthGuard('jwt'))
-    @Get('achievements')
-    async getAllAchievements(){
-        return this.achievements.getData();
-    }
+    // //get all achievement
+    // @UseGuards(AuthGuard('jwt'))
+    // @Get('achievements')
+    // async getAllAchievements(){
+    //     return this.achievements.getData();
+    // }
 
 
 

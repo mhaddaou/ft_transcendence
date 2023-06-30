@@ -935,7 +935,7 @@ const ModalInvite: React.FC<ModalProps> = ({ isOpen, closeModal, title, msg, col
   const context = useContext(MyContext);
   const handleAccept = () => {
     const url = `Game?room=${color}&queue=false`;
-    router.push(`http://localhost:3000/${url}`)
+    router.push(`http://localhost:3000/ft_transcendence/${url}`)
   }
 
   const handleDecline = () => {

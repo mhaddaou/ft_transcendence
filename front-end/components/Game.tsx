@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 import React, { useContext, useEffect, useState } from "react";
 const { log } = console;
-import { MatterJsModules } from '../../utils/MatterJsModules'
+import { MatterJsModules } from '../utils/MatterJsModules'
 import { MyContext } from '@/components/Context';
 import { io } from "socket.io-client"
 import Barl from "@/components/Barl";
@@ -23,7 +23,7 @@ export default function Game() {
   const [roomName, setRoomName] = useState<string>("")
   const [height, setHeight] = useState<number>(400)
   const [score, setScore] = useState({ left: 0, right: 0 })
-  const [players, setPlayers] = useState({p1: "player1", p2:"player2"})
+  const [players, setPlayers] = useState({ p1: "player1", p2: "player2" })
   const [countDown, setCountDown] = useState(5);
   const [animations, setAnimations] = useState(1)
   const [matterjsInstance, setMatterjsInstance] = useState<MatterJsModules>()
@@ -39,6 +39,22 @@ export default function Game() {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+  useEffect(() => {
+
+
+    const handleLeavePage = () => {
+      if (matterjsInstance && matterjsInstance.socket){
+        matterjsInstance.socket.emit('gameDisconnection', 'User has navigated from the page');
+      }
+    }
+
+    router.events.on('routeChangeStart', handleLeavePage);
+    return () => {
+      router.events.off('routeChangeStart', handleLeavePage);
+    };
+   
+  });
+
 
   var token: string | null = '';
   useEffect(() => {
@@ -54,7 +70,7 @@ export default function Game() {
         // SetToMessages(payload);
         // setMessages([...messages, payload]);
       });
-     
+
       context.setSocket(socket);
 
     }
@@ -140,7 +156,7 @@ export default function Game() {
 
   };
 
-  const handleReplay = ()=>{
+  const handleReplay = () => {
     closeModal()
     setRestart(true)
   }
