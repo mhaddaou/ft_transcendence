@@ -121,7 +121,7 @@ export default function ContactList({  onContactClick } : any) {
           <div className='  text-center border-b-2 font-mono font-semibold w-full h-[10%]'>Channels</div>
           <div className='w-full h-[90%] overflow-y-auto pt-3'>
           {context?.Channels.map((channel : ChannelsType) => (
-            <button onClick={() => handleClickCh(channel.channelName)} className=" flex flex-col h-14 bg-slate-200 mb-1 w-full px-2 rounded-lg" >
+            <button key={channel.channelName} onClick={() => handleClickCh(channel.channelName)} className=" flex flex-col h-14 bg-slate-200 mb-1 w-full px-2 rounded-lg" >
               <div className='flex flex-row items-center p-2 space-x-2'>
               {
                 (() =>{
@@ -146,7 +146,7 @@ export default function ContactList({  onContactClick } : any) {
         <div className='  text-center border-b-2 font-mono font-semibold w-full h-[10%]'>Contacts</div>
           <div className='w-full h-[90%] overflow-y-auto pt-3'> 
                 {context?.contactChat.map((contact) => (
-                      <button onClick={() => handleClick(contact.login)} className=" flex flex-col h-14 bg-slate-200 mb-1 w-full px-2 rounded-lg" >
+                      <button key={contact.login} onClick={() => handleClick(contact.login)} className=" flex flex-col h-14 bg-slate-200 mb-1 w-full px-2 rounded-lg" >
                         <div className='flex flex-row items-center p-2 space-x-2'>
                         {
                           (() =>{

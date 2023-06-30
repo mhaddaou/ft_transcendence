@@ -286,9 +286,9 @@ const handleGameInvite = () => {
   (chatHistory.length > 0 ) &&
   newMsg.map((msg: MesgType) => {
     if (msg.loginSender === context?.login) {
-      return <Sender  msg={msg.content} />;
+      return <Sender key={msg.loginSender} msg={msg.content} />;
     } else {
-      return <Reciever  msg={msg.content} />;
+      return <Reciever key={msg.loginReceiver}  msg={msg.content} />;
     }
   })
 }

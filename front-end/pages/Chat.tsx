@@ -9,6 +9,7 @@ import Footer from "@/components/Footer";
 import RealFooter from "@/components/RealFooter";
 import Barl from "@/components/Barl";
 import NavBar from "@/components/NavBar";
+import Router from "next/router";
 import { MyContext } from "@/components/Context";
 import { useContext } from "react";
 import { MesgType } from "@/components/Context";
@@ -19,6 +20,8 @@ import { useRouter } from "next/router";
 import ChannelHistor from "@/components/ChannelHistory";
 import History from "@/components/HIstory";
 import { ModalInvite, ModalError } from "@/components/Modal";
+const router = Router;
+var token : string | null = null;
 
 
 export default function Chat() {
@@ -30,9 +33,13 @@ export default function Chat() {
   const [show, setShow] = useState("block");
   const [gameRoom, setGameRoom] = useState("")
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  useEffect(() =>{
+    token = localStorage.getItem('token');
+    token ? router.push('/Chat') : router.push('/');
+  },[])
   useEffect(()=>{
     if (context?.socket){
+      
 
       context.socket.on('gameInvitation', (payload: any) => {
         
@@ -110,6 +117,7 @@ export default function Chat() {
       console.log(paylo);
     });
 
+if (token){
   return (
     <div className="bg-gradient-to-t from-gray-100 to-gray-400 min-h-screen">
       <ModalError />
@@ -142,4 +150,5 @@ export default function Chat() {
       <RealFooter />
     </div>
   );
+}
 }

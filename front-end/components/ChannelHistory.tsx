@@ -246,7 +246,7 @@ const AddMember = () => {
           {
             context?.friends && context?.friends.length > 0 ? context?.friends.map((friend) => {
               return (
-                <li><button onClick={() => AddFriend(friend)} className="flex">
+                <li key={friend.login} ><button onClick={() => AddFriend(friend)} className="flex">
                   <GetAvatarAddFriend avatar={friend.avatar} />
                   <p>{friend.username}</p>
                 </button></li>
@@ -671,9 +671,9 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
       <div className="w-full h-[93%] flex flex-col p-2 " >
         {msg.map((msg: msgChannel) => {
           if (msg.login === context?.login)
-            return <Sender msg={msg.content} time={msg.sendAt} avatar={msg.avatar} name={msg.username} />
+            return <Sender key={msg.login} msg={msg.content} time={msg.sendAt} avatar={msg.avatar} name={msg.username} />
           else
-            return <Reciever msg={msg.content} time={msg.sendAt} avatar={msg.avatar} name={msg.username} />
+            return <Reciever key={msg.login} msg={msg.content} time={msg.sendAt} avatar={msg.avatar} name={msg.username} />
         })}
 
 

@@ -70,7 +70,7 @@ export default function Profileid() {
   
           // Fetch data using the id
           const response = await fetchdata(token);
-          console.log("2f response is ", response.enableTwoFa)
+          // console.log("2f response is ", response.enableTwoFa)
           console.log('this is response ', response);
           context?.setToken(token);
           context?.setName(response.username);

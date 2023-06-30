@@ -823,7 +823,7 @@ const ModalSearch = (props: ModalSearchProps) => {
             {
               context?.userSearch && context.userSearch.map((user: userSearchProps) => {
                 return (
-                  <div className="w-full min-h-[60px] bg-slate-100 flex items-center rounded-xl justify-around">
+                  <div key={user.login} className="w-full min-h-[60px] bg-slate-100 flex items-center rounded-xl justify-around">
                     <div className="avatar">
                       <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                         <GetAvatar avat={user.avatar} />
@@ -855,7 +855,7 @@ const ModalSearch = (props: ModalSearchProps) => {
             {
               context?.channelSearch && context.channelSearch.map((channel: channelSearchProps) => {
                 return (
-                  <div className="w-full min-h-[60px] bg-slate-100 flex items-center rounded-xl justify-around">
+                  <div key={channel.channelName} className="w-full min-h-[60px] bg-slate-100 flex items-center rounded-xl justify-around">
                     <div className="avatar">
                       <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                         <GetAvatar avat={channel.avatar} />

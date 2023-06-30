@@ -1,72 +1,30 @@
-import { motion } from 'framer-motion';
-import Head from 'next/head';
 import Image from 'next/image';
-import Header from '@/components/Header';
-import Icon from '@/images/icon.png'
-import Form from '@/components/Form';
-import Img from './pong.png'
-import Bgin from '../image/Bgin.webp'
 import First from '../image/first.png'
-import Sky from '../image/sky.png'
-import Intra from '../image/intra.png'
-import Qua from '../image/number-42-16.png'
-import Logo from '../image/42_logo.svg'
-import Logos from '../image/logos.png'
 import Game from '../image/index.svg'
 import Mhaddaou from '../image/mhaddaou.jpg'
 import Smia from '../image/smia.jpg'
 import Amya from '../image/amya.jpg'
 import Hastid from '../image/hastid.jpg'
-import Sm from '../image/smv.svg'
 import Cards from '@/components/Cards';
-import Router from 'next/router';
-
 import React, { useState } from 'react';
 import Footer from '@/components/Footer';
-import { GetServerSideProps } from 'next';
-import axios from 'axios';
 import HBest from '@/components/HBest';
-import Link from 'next/link';
-import { useRef } from 'react';
 import Modal from '@/components/Pop';
 
 
-class Data{
-  id : string = "";
-  node_id: string = "";
-  full_name : string = "";
-
-  constructor(_id: string, _node_id: string, _full_name: string){
-    this.id = _id;
-    this.node_id = _node_id;
-    this.full_name = _full_name;
-  }
-}
 export default function HomePage({pro}:any) {
 
 
 
-  const value = useRef<HTMLInputElement | null>(null);
 
-  const router = Router;
-  const [text, setText] = useState("");
+  // const router = Router;
+  // const [text, setText] = useState("");
   const images = [Smia, Amya, Hastid, Mhaddaou];
   const Names = ["Said Mia", "Abderrahmane Mya", "Hamza Astid", "Mohamed Haddaoui"];
  
 
-  const [modal , setModal] = useState('modal-toggle')
-    const [hid, setHid] = useState('block')
-    
-    const [showModal, setModadl] = useState(false);
-    const click = () =>{
-       setModadl(true);
-    }
-    const Sing = () =>{
-      if (value.current){
-        console.log(value.current.value);
-        router.push('http://localhost:3000/Dashbord');
-      }
-    }
+  
+   
   
   return (
 
@@ -93,7 +51,7 @@ export default function HomePage({pro}:any) {
                 (()=>{
                   let elements = [];
                   for (let i = 0;  i < 4; i++){
-                    elements.push(<Cards name={Names[i]} img={images[i]} />);
+                    elements.push(<Cards key={i} name={Names[i]} img={images[i]} />);
                   }
                   return (elements);
                 }

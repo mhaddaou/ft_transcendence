@@ -170,7 +170,7 @@ export function GetDataAchievement() {
         <div className="grid grid-cols-3 items-center m-5 gap-4">
         {
           Data.map((e: Achievements) => (
-            <div className="p-2 text-center bg-green-200  flex  items-center justify-around">
+            <div key={e.id} className="p-2 text-center bg-green-200  flex  items-center justify-around">
                <Award/>{ e.title}</div>
 
           ))
@@ -262,7 +262,7 @@ x        </p>
             {
               context?.friends.map((friend : FriendType) =>{
                 return (
-                  <div className="h-[16%] max-h-[16%] bg-gray-200 flex justify-around items-center my-2" >
+                  <div key={friend.login} className="h-[16%] max-h-[16%] bg-gray-200 flex justify-around items-center my-2" >
                       <ModalChat  isOpen={isModalOpen} closeModal={closeModal} name={name} login={login}/>
                       <div className="h-full w-1/3 flex justify-center items-center">
                         <Image className="mask mask-squircle w-8 h-8 sm:w-12 sm:h-12" src={getImgSrc(friend.avatar)} alt="avatar" />

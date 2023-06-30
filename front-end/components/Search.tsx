@@ -200,23 +200,7 @@ const closeModale = () =>{
     //     console.log(payload)
     //   });
       
-      context.socket.on('PrivateMessage', (payload: any) => {
-        console.log('Received payload:', payload);
-        // Check the payload object in the browser console
-        // to see if sender and receiver properties are present and correct
-        if (payload) {
-          setMesg(payload.content);
-          setName(payload.sender);
-          console.log(payload.content, payload.sender, payload.receiver);
-          if (!document.hidden) {
-            // Show a notification
-            console.log('newMsg from ', payload.sender);
-           openModal();
-          } else {
-            console.log("msg and not in this page");
-          }
-        }
-      });
+      
       context.socket.on('invite',(pay : any) =>{
         if (pay){
           console.log(pay);
@@ -279,10 +263,8 @@ const closeModale = () =>{
         }
       })
       context.socket.on('Update', (pay) =>{
-        if (pay){
-          console.log('this is update usename ', pay);
-
-        }
+        if (pay)
+          console.log(pay);
       })
       context.socket.on('errorMessage', (pay) =>{
         if (pay){
@@ -298,7 +280,6 @@ const closeModale = () =>{
   
     return () => {
       if (context?.socket) {
-        context.socket.off('PrivateMessage');
         context.socket.off('invite');
         context.socket.off('accept');
         context.socket.off('delete');
