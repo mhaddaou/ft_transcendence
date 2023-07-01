@@ -569,13 +569,16 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
             const updatedUser = await this.userService.updateUser(dto);
             if (updatedUser) {
                 this.connectedUsers.set(login, updatedUser);
-                this.sendMsgToUser(login, updatedUser, 'message');
+                console.log("send");
+                this.sendMsgToUser(login, updatedUser, 'updateUser');
             }
-            else
-                client.emit('message', 'you had changed anything');
+            else{
+                console.log("send");    
+                client.emit('updateUser', 'you had changed anything');
+            }
         }
         catch (error) {
-            client.emit('errorMessage', error);
+            client.emit('errorMessageUpdateUser', error);
         }
     }
 

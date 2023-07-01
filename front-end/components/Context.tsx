@@ -130,6 +130,8 @@ export interface profileType{
 
 
 export interface ContextTypes{
+  changeName : boolean;
+  setChangeName : Dispatch<SetStateAction<boolean>>;
   profileuser : string;
   setProfileuser : Dispatch<SetStateAction<string>>;
   owner : boolean;
@@ -218,6 +220,7 @@ const MyContext = createContext<ContextTypes | undefined>(undefined);
 
 const MyContextProvider = ({children} : ChildProps) =>{
     const [owner, setOwner] = useState(false);
+    const [changeName, setChangeName] = useState(false);
     const [profileuser, setProfileuser] = useState<string>('');
     const [admin, setAdmin] = useState(false);
     const [adminsChannel, setAdminChannel] = useState<adminsChannelType[]>([])
@@ -304,6 +307,10 @@ const MyContextProvider = ({children} : ChildProps) =>{
         const GetPending = localStorage.getItem('pending')
         if (GetPending !== undefined && GetPending != null){
           setPendingInvitation(JSON.parse(GetPending));
+        }
+        const GetChangeName = localStorage.getItem('changeName');
+        if (GetChangeName){
+          setChangeName(GetChangeName === "true");
         }
         if (GetClickCha)
           setClickChannel(GetClickCha === "true");
@@ -441,6 +448,9 @@ const MyContextProvider = ({children} : ChildProps) =>{
   useEffect(() =>{
     localStorage.setItem('profileuser', profileuser);
   },[profileuser])
+  useEffect(() =>{
+    localStorage.setItem('changeName', String(changeName))
+  },[changeName])
 
   // context value
  
@@ -448,7 +458,7 @@ const MyContextProvider = ({children} : ChildProps) =>{
       setCheckname,socket,setSocket, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck, match, setMatch,token, setToken,blackList,adminsChannel, setAdminChannel, 
       setBlackList,error, setError, messageError, setMessageError, membersChannel, setMembersChannel,userSearch, setUserSearch,channelSearch, setChannelSearch,MessageContent, 
       waitToAccept,profile, setProfile, pendingInvitation, setPendingInvitation, setWaitToAccept, channelInfo, Channels,setClickChannel, setChannelInfo,clickChat, setClickChat,
-      clickChannel, setChannels,owner, profileuser, setProfileuser,setOwner, admin, setAdmin, setMessageContent,contactChat, enableTwoFa, setEnableTwofa, setContactChat, MessageInfo, setMessageInfo , chn, setChn}
+      clickChannel,changeName, setChangeName, setChannels,owner, profileuser, setProfileuser,setOwner, admin, setAdmin, setMessageContent,contactChat, enableTwoFa, setEnableTwofa, setContactChat, MessageInfo, setMessageInfo , chn, setChn}
 
     return (
         <MyContext.Provider value={ContextValue}>

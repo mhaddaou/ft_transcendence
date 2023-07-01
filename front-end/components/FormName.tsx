@@ -1,5 +1,5 @@
 
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { RiSendPlaneFill } from "react-icons/ri";
 import { MyContext } from "./Context";
 import { Socket } from "socket.io-client";
@@ -22,37 +22,65 @@ function containsSpecialChars(str : string) : boolean {
     const context = useContext(MyContext);
     const [msg, setMsg] = useState('') // msg for modal
     const [num, setNum] = useState(false);
+    const [valueName, setValue] = useState<string>(''); // Initialize with an empty string
     const [color, setColor] = useState(''); // color for modal
+    var name = context?.name;
     const [title, setTitle] = useState(''); // title for modal
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const openModal = () => {
+      setIsModalOpen(true);
+    };
+    const closeModal = () => {
+      setIsModalOpen(false);
+    };
+
+    useEffect(() =>{
+      context?.socket?.on('updateUser', (pay : any) =>{
+        if (pay){
+            setMsg("the name is changed");
+            setColor("bg-green-400");
+            setTitle("Success");
+            context.setName(pay.username);
+            setValue('');
+            openModal();
+          
+        }
+      })
+      context?.socket?.on('errorMessageUpdateUser', (pay : any) =>{
+        if (pay){
+            setMsg(pay.message);
+            setColor("bg-orange-400");
+            setTitle("Failed")
+            setValue('');
+            openModal();
+
+        }
+      })
+
+      return () =>{
+        context?.socket?.off('updateUser');
+        context?.socket?.off('errorMessageUpdateUser');
+      }
+      
+    }, [context?.socket])
     
     function checkInputName(name: string): void {
+      // setNum(true);
       if (!containsSpecialChars(name) && name.length > 7) {
         if (context?.socket) {
+          console.log('dkhelt ....');
           context?.socket.emit("updateUser",{username : name});
-          context.socket.on('message', (msg: string) => {
-            console.log(msg);
-          })
-          context.socket.on("errorMessage", (msg: string) => {
-            console.log(msg);
-          })
         }
-          
-        setMsg("send data");
-        setColor("bg-green-400");
-        setTitle("Success");
-        context?.setName(name);
       } else {
         // data is malicious code
         setMsg("the name is small or not valid");
         setColor("bg-orange-400");
         setTitle("Failed");
-        console.warn(`name is ${name}`);
+        openModal();
       }
     }
     
     const value = useRef<HTMLInputElement | null>(null);
-    const [valueName, setValue] = useState<string>(''); // Initialize with an empty string
-    var name = context?.name;
     
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setValue(event.target.value); // Update the valueName state as you type
@@ -70,8 +98,6 @@ function containsSpecialChars(str : string) : boolean {
       if (value.current) {
         checkInputName(value.current.value);
       }
-      cancel();
-      context?.setCheckname(1);
     };
     
     const cancel = () => {
@@ -79,13 +105,6 @@ function containsSpecialChars(str : string) : boolean {
       if (value.current) {
         value.current.value = '';
       }
-    };
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const openModal = () => {
-      setIsModalOpen(true);
-    };
-    const closeModal = () => {
-      setIsModalOpen(false);
     };
         
 
@@ -109,10 +128,7 @@ function containsSpecialChars(str : string) : boolean {
           {/* <SubmitName /> */}
            <button
             onClick={() =>{
-              submit();
-              openModal();
-
-              
+              submit();              
             }}
             className="flex-shrink-0 bg-slate-500 hover:bg-slate-700 border-slate-500 hover:border-slate-700 text-sm border-4 text-white py-1 px-2 rounded"
             type="button"

@@ -227,6 +227,7 @@ const closeModale = () =>{
           }
         }
       })
+      // context.socket.on('updateUser', )
       context?.socket.on('delete', (pay) =>{
         if (pay){
           rmvFriend(pay.login);
