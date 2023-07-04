@@ -33,15 +33,15 @@ const ChatConversation = ({num } : {num : number}) =>{
                                 <div className=" w-1/2 h-full flex flex-col items-end justify-center pr-8 ">
                                     <button onClick={clickPro} className="relative">
                                         <FontAwesomeIcon icon={faBars} flip style={{color: "#f0f2f5",}} />
-                                        <ul className={`${hidden} bg-white absolute -left-24 z-20 rounded-lg y-2 text-sm text-gray-700 dark:text-gray-400 flex flex-col font-mono font-semibold`} aria-labelledby="dropdownLargeButton">
+                                        <ul className={`${hidden} bg-white absolute -left-24 z-20 rounded-lg y-2 text-sm text-gray-700  flex flex-col font-mono font-semibold`} aria-labelledby="dropdownLargeButton">
                                             <li>
-                                                <Link href="#" className=" hover:text-cyan-700 pl- text-left  rounded-t-lg block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">info</Link>
+                                                <Link href="#" className=" hover:text-cyan-700 pl- text-left  rounded-t-lg block px-4 py-2 hover:bg-gray-100 -600 ite">info</Link>
                                             </li>
                                             <li>
-                                                <Link href="#" className=" hover:text-cyan-700 text-left block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">block</Link>
+                                                <Link href="#" className=" hover:text-cyan-700 text-left block px-4 py-2 hover:bg-gray-100 -600 ite">block</Link>
                                             </li>
                                             <li>
-                                                <Link href="#" className="hover:text-cyan-700 text-left rounded-b-lg block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Earnings</Link>
+                                                <Link href="#" className="hover:text-cyan-700 text-left rounded-b-lg block px-4 py-2 hover:bg-gray-100 -600 ite">Earnings</Link>
                                             </li>
                                         </ul>
                                     </button>

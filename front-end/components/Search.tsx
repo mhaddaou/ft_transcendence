@@ -269,8 +269,10 @@ const closeModale = () =>{
       })
       context.socket.on('errorMessage', (pay) =>{
         if (pay){
-          context.setMessageError(pay.message);
-          context.setError(true);
+          if (pay.message !== 'jwt must be provided'){
+            context.setMessageError(pay.message);
+            context.setError(true);
+          }
 
         }
           // console.log(pay);
