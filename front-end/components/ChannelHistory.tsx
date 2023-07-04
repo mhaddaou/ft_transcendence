@@ -320,34 +320,28 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
   const kickMember = (user : MembersType) =>{
     
     context?.socket?.emit('kickMember',{channelName : user.channelName, loginDeleted : user.login});
-
-    
-    const GetDat = async () => {
-      try {
-        const res = await axios.post('http://localhost:5000/chat/channel/members',
-          { channelName: context?.channelInfo?.channelName },
-          {
-            headers: {
-              Authorization: `Bearer ${context?.token}`,
-            }
-          }
-        )
-        context?.setMembersChannel(res.data);
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    GetDat();
-
+    setIsOpenMember(false);
+  }
+  const [promoteuser, setPromote] = useState('Promote');
+  const Ban = (user : MembersType) =>{
+    context?.socket?.emit('updateMember', {channelName: user.channelName, loginAffected : user.login, isBlacklist : false})
   }
   const promote = (user : MembersType) =>{
-    context?.socket?.emit('updateMember',{channelName : user.channelName,loginAffected : user.login,isAdmin : true})
+    if (promoteuser === 'Promote'){
+      context?.socket?.emit('updateMember',{channelName : user.channelName,loginAffected : user.login,isAdmin : true})
+      setPromote('Un promote');
+    }
+    else{
+      context?.socket?.emit('updateMember',{channelName : user.channelName,loginAffected : user.login,isAdmin : false})
+      setPromote('Promote');
+    }
   }
   const [meut, setMeut] = useState('hidden');
   const timeMeut = useRef<HTMLInputElement | null>(null)
   const meute = (user : MembersType) =>{
     if (timeMeut.current){
       context?.socket?.emit('updateMember',{channelName : user.channelName,loginAffected : user.login,isMute : true,timeMute : +timeMeut.current.value})
+    setIsOpenMember(false);
     }
 
   }
@@ -397,6 +391,9 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
       setIsModalOpen(true);
 
   }
+
+
+  /// here here
   const Choices = ({user}:{user : MembersType}) =>{
     const owner = context?.channelInfo?.LoginOwner;
     console.log('this is owner ',owner);
@@ -405,10 +402,16 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
       return <li><button onClick={() => sendMsg(user.login, user.username)}>Send Message</button></li>
     return (
      <>
-      <li><button >helllo</button></li> 
-      <li><button >{user.login}</button></li> 
-      <li><button >{user.login}</button></li> 
-      <li><button >{user.login}</button></li> 
+      {isAdmin && <li><button onClick={() =>promote(user)}>{promoteuser}</button></li>}
+      {isAdmin && <li><button onClick={() => kickMember(user)} >Kick</button></li>}
+      {isAdmin && <li><button onClick={() => Ban(user)} >Ban</button></li>}
+      <li className="flex flex-row"> 
+        <div className="w-1/2 h-full"><input ref={timeMeut} type="text" className="w-full h-full input-bordered"  /></div>
+        <div className="w-1/2 h-full" onClick={() =>meute(user)}>Meute</div>
+      </li>
+      {/* <li><button >{user.login}</button></li>  */}
+      {/* <li><button >{user.login}</button></li>  */}
+      {/* <li><button >{user.login}</button></li>  */}
 
      </>
     );
@@ -494,6 +497,10 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
 
     fetchData();
   }, []);
+
+  const ListBan = () =>{
+
+  }
   //info
   const Info = () => {
     return (
@@ -503,6 +510,7 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
         <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
           <li><button onClick={memberChannel}>Members Channel</button></li>
           {isAdmin && <li><button onClick={openMd}>Update Channel</button></li>}
+          {isAdmin && <li><button>List Banned</button></li>}
           <li><button onClick={leaveChannel}>Leave Channel</button></li>
           {isAdmin && <li><button onClick={deleteChannel}>Delete Channel</button></li>}
 
