@@ -42,14 +42,11 @@ export default function Chat() {
       
 
       context.socket.on('gameInvitation', (payload: any) => {
-        
-        console.log("game invite response ")
         if (payload && payload.sender) {
           setGameRoom(payload.sender)
           setIsModalOpen(true)
           
         }
-        console.log(payload)
       });
     }
     })
@@ -78,16 +75,23 @@ export default function Chat() {
         }
       })
       context?.setMembersChannel(response.data);
-      console.log("onclik channel this is response ", context?.membersChannel);
-
+      const resp = await axios.post('http://localhost:5000/chat/channel/memberShips',
+      {
+        channelName : login,
+      }, {
+        headers:{
+          Authorization: `Bearer ${context?.token}`
+        }
+      })
+      context?.setAdminChannel(resp.data[0].admins);
+      context?.setMembersChannel(resp.data[1].members);
+      console.log('here is memebers channel ', context?.membersChannel);
       setCheck('channel');
       setId(login);
       context?.setChannelInfo(res.data[0]);
       setChatHistory(res.data[1]);
-      console.log(context?.channelInfo , '  this is info')
     }
     else {
-      console.log("inside users");
 
        const res = await axios.post(
         "http://localhost:5000/chat/findConversation",
@@ -112,10 +116,7 @@ export default function Chat() {
     context?.setSocket(createSocketConnection(context?.token));
   }, [context?.token]);
 
-  if (context?.socket)
-    context?.socket.on("message", (paylo) => {
-      console.log(paylo);
-    });
+  
 
 if (token){
   return (

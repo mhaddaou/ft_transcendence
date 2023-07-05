@@ -349,31 +349,7 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
   const ModalMembers = (props: propMember) => {
     if (!props.isOpen)
       return null;
-      const [isAdmin, setIsAdmin] = useState(false)
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.post(
-          'http://localhost:5000/chat/channel/memberShips',
-          { channelName: context?.channelInfo?.channelName },
-          {
-            headers: {
-              Authorization: `Bearer ${context?.token}`,
-            },
-          }
-        );
-        if (res.data) {
-          const isadmin = res.data[0].admins.some((obj : any) => obj.login === context?.login);
-          setIsAdmin(isadmin)
-        }
 
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
   const [name, setName] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [login, setLogin] = useState('');
@@ -393,27 +369,86 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
   }
 
 
-  /// here here
-  const Choices = ({user}:{user : MembersType}) =>{
-    const owner = context?.channelInfo?.LoginOwner;
-    console.log('this is owner ',owner);
-    console.log('this is a user ', user.login)
-    if (user.login === owner || !isAdmin)
-      return <li><button onClick={() => sendMsg(user.login, user.username)}>Send Message</button></li>
-    return (
-     <>
-      {isAdmin && <li><button onClick={() =>promote(user)}>{promoteuser}</button></li>}
-      {isAdmin && <li><button onClick={() => kickMember(user)} >Kick</button></li>}
-      {isAdmin && <li><button onClick={() => Ban(user)} >Ban</button></li>}
-      <li className="flex flex-row"> 
-        <div className="w-1/2 h-full"><input ref={timeMeut} type="text" className="w-full h-full input-bordered"  /></div>
-        <div className="w-1/2 h-full" onClick={() =>meute(user)}>Meute</div>
-      </li>
-      {/* <li><button >{user.login}</button></li>  */}
-      {/* <li><button >{user.login}</button></li>  */}
-      {/* <li><button >{user.login}</button></li>  */}
 
-     </>
+  const GetOwner = () =>{
+    const user = context?.adminsChannel.find(user => user.isOwner === true)
+    // console.log(' this is the owner ', user);
+    return(
+      <li className="flex items-center justify-between px-4 bg-slate-200 rounded-xl min-h-[60px] w-full h-[60px]">
+        {user && <GetAvatarAddFriend avatar={user.avatar} />}
+        <div>{user?.username}</div>
+        <div>Owner</div>
+        <div className="dropdown dropdown-left">
+        <FontAwesomeIcon className=" cursor-pointer" tabIndex={0} icon={faEllipsisVertical} />
+          <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+            <li><a>Item 1</a></li>
+            <li><a>Item 2</a></li>
+          </ul>
+        </div>
+    
+      </li>);
+  }
+
+  const GetAdmins = () => {
+    return (
+      <>
+        {context?.adminsChannel.map((user) => {
+          if (user.login !== context.channelInfo?.LoginOwner) {
+            return (
+              <li className="flex items-center justify-between px-4 bg-slate-200 rounded-xl min-h-[60px] w-full h-[60px]" key={user.login}>
+                {user && <GetAvatarAddFriend avatar={user.avatar} />}
+                <div>{user?.username}</div>
+                <div>Admin</div>
+                <div className="dropdown dropdown-left">
+                <FontAwesomeIcon className=" cursor-pointer" tabIndex={0} icon={faEllipsisVertical} />
+                  <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a>Item 1</a></li>
+                    <li><a>Item 2</a></li>
+                  </ul>
+                </div>
+              </li>
+            );
+          }
+          return null; // Add a return statement for cases when the condition is not met
+        })}
+      </>
+    );
+  };
+
+  const GetUsers = () => {
+    if (!context || !context.membersChannel) {
+      return null; // Return null if context or channelUsers is undefined
+    }
+  
+    return (
+      <>
+        {context.membersChannel.map((user) => (
+         <li className="flex items-center justify-between px-4 bg-slate-200 rounded-xl min-h-[60px] w-full h-[60px]" key={user.login}>
+         {user && <GetAvatarAddFriend avatar={user.avatar} />}
+         <div>{user?.username}</div>
+         <div>Member</div>
+         <div className="dropdown dropdown-left">
+         <FontAwesomeIcon className=" cursor-pointer" tabIndex={0} icon={faEllipsisVertical} />
+           <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+             <li><a>Item 1</a></li>
+             <li><a>Item 2</a></li>
+           </ul>
+         </div>
+       </li>
+        ))}
+      </>
+    );
+  };
+  
+  
+
+  const GetMem = () =>{
+    return (
+      <ul className="flex flex-col gap-2">
+        <GetOwner />
+        <GetAdmins />
+        <GetUsers />
+      </ul>
     );
   }
 
@@ -421,45 +456,10 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
     return (
       <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ${context?.error ? 'hidden' : 'block'}`}>
                       <ModalChat  isOpen={isModalOpen} closeModal={closeModal} name={name} login={login}/>
-        <div className={`bg-white p-6 rounded-md w-[400px] h-[600px] min-w-[400px] min-h-[600px]  flex flex-col gap-1 overflow-y-auto `}>
-          <div className="text-center font-mono font-semibold">{context?.channelInfo?.channelName}  Members</div>
+        <div className={`bg-white p-6 rounded-md w-[500px] h-[600px] min-w-[400px] min-h-[600px]  flex flex-col gap-1 overflow-y-auto `}>
+          <div className="text-center font-mono font-semibold">{context?.channelInfo?.channelName} Channel , All Members</div>
           <div className="w-full h-[90%] ">
-            <ul className="w-full h-full  flex flex-col gap-1">
-              {
-                context?.membersChannel.map((user : MembersType )=> {
-                  if (context.login !== user.login) {
-                    return (
-                      <li key={user.login} className="flex items-center justify-around bg-slate-200 rounded-xl min-h-[60px] w-full h-[60px]">
-                        <GetAvatarAddFriend avatar={user.avatar} />
-                        <div>{user.username }</div>
-                        <div className="dropdown dropdown-end hidden">
-                          <FontAwesomeIcon className=" cursor-pointer" tabIndex={0} icon={faEllipsisVertical} />
-                          
-                        </div>
-                        <div className="dropdown dropdown-end ">
-                          <FontAwesomeIcon onClick={() =>{
-                            console.log(user.login);
-                          }} className=" cursor-pointer" tabIndex={0} icon={faEllipsisVertical} />
-                          <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                            {/* <li><button onClick={() => kickMember(user)}>Kick</button></li> 
-                            <li><button onClick={() =>promote(user)}>Promote</button></li>
-                            <li className="flex flex-row"> 
-                              <div className="w-1/2 h-full"><input ref={timeMeut} type="text" className="w-full h-full input-bordered"  /></div>
-                              <div className="w-1/2 h-full" onClick={() =>meute(user)}>Meute</div>
-                            </li> */}
-                            <Choices user={user} />
-                            
-                          </ul>  
-                        </div>
-                      </li>
-                    );
-                  }
-
-                })
-              }
-
-
-            </ul>
+            <GetMem />
 
           </div>
           <div className="w-full h-[10%] flex justify-end items-center">

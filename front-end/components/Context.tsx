@@ -109,12 +109,17 @@ export interface membersChannelType{
 
 export interface MembersType{
   
+  avatar: string;
   channelName : string;
+  isAdmin: boolean;
+  isBlacklist : boolean;
+  isMute : boolean;
+  isOwner : boolean;
   login : string;
   username: string;
-  avatar: string;
+};
   
-}
+
 
 export interface FriendType{
   login : string;
