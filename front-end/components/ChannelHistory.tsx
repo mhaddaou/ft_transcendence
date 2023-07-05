@@ -4,7 +4,7 @@ import { FiSend } from "react-icons/fi";
 import defaul from '../image/avatar.webp'
 import Image from "next/image";
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
-import { FriendType, MembersType, MyContext, membersChannelType } from "./Context";
+import { FriendType, MembersType, MyContext, adminsChannelType, membersChannelType, userSearchProps } from "./Context";
 // import { Reciever, Sender } from "./ChatHistory";
 import { ModalUpdateChannel } from "./Modal";
 import { Contrail_One } from "next/font/google";
@@ -345,6 +345,21 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
     }
 
   }
+  const sendInvite = (user: FriendType) => {
+
+    if (user.login) {
+      context?.socket?.emit('inviteFriend', {
+        login: user.login,
+      })
+      // if (user)
+
+     
+      // removeChat(user.login)
+      context?.setWaitToAccept((prev) => [...prev, user])
+
+      // when i add this
+    }
+  }
 
   const ModalMembers = (props: propMember) => {
     if (!props.isOpen)
@@ -360,38 +375,65 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
   const closeModal = () =>{
       setIsModalOpen(false)
     }
-  const sendMsg = (login : string, username : string, )=>{
-     
-    setName(username);
-    setLogin(login);
-      setIsModalOpen(true);
+  const sendMsg = (login : string | undefined, username : string | undefined, )=>{
+    if (login && username){
+      setName(username);
+      setLogin(login);
+        setIsModalOpen(true);
+    }
 
   }
 
 
-
   const GetOwner = () =>{
+
+    const [check, setCheck] = useState(false);
     const user = context?.adminsChannel.find(user => user.isOwner === true)
     // console.log(' this is the owner ', user);
+
+    const checkis = (login : string) =>{
+      context?.friends.map((user) =>{
+        if (user.login == login){
+          setCheck(true);
+        }
+      })
+    }
+
+
+    if (user){
     return(
       <li className="flex items-center justify-between px-4 bg-slate-200 rounded-xl min-h-[60px] w-full h-[60px]">
         {user && <GetAvatarAddFriend avatar={user.avatar} />}
         <div>{user?.username}</div>
         <div>Owner</div>
         <div className="dropdown dropdown-left">
-        <FontAwesomeIcon className=" cursor-pointer" tabIndex={0} icon={faEllipsisVertical} />
+        { (context?.login !== user?.login )&&    <FontAwesomeIcon onClick={() => checkis(user.login)} className=" cursor-pointer" tabIndex={0} icon={faEllipsisVertical} />}
           <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-            <li><a>Item 1</a></li>
-            <li><a>Item 2</a></li>
+            <li><button onClick={ ()=> sendMsg(user?.login, user?.username) }>Send Msg</button></li>
+            {!check && <li><button onClick={() => sendInvite(user)}>Add Friend</button></li>}
           </ul>
         </div>
-    
-      </li>);
-  }
+        
+        </li>);
+    }
+    else
+      return null;
+      }
 
   const GetAdmins = () => {
+    const [check , setCheck] = useState(false);
+
+    const checkis = (login : string) =>{
+      context?.friends.map((user) =>{
+        if (user.login == login){
+          setCheck(true);
+        }
+      })
+    }
+
+
     return (
-      <>
+       <>
         {context?.adminsChannel.map((user) => {
           if (user.login !== context.channelInfo?.LoginOwner) {
             return (
@@ -400,10 +442,10 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
                 <div>{user?.username}</div>
                 <div>Admin</div>
                 <div className="dropdown dropdown-left">
-                <FontAwesomeIcon className=" cursor-pointer" tabIndex={0} icon={faEllipsisVertical} />
+                { (context.login !== user.login )&&    <FontAwesomeIcon className=" cursor-pointer" tabIndex={0} icon={faEllipsisVertical} />}
                   <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                    <li><a>Item 1</a></li>
-                    <li><a>Item 2</a></li>
+                  <li><button onClick={ ()=> sendMsg(user?.login, user?.username) }>Send Msg</button></li>
+                  {!check && <li><button onClick={() => sendInvite(user)}>Add Friend</button></li>}
                   </ul>
                 </div>
               </li>
@@ -416,8 +458,13 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
   };
 
   const GetUsers = () => {
+    const [check, setCheck] = useState(false);
+    
     if (!context || !context.membersChannel) {
       return null; // Return null if context or channelUsers is undefined
+    }
+    const checkThisUser = (user : adminsChannelType) =>{
+
     }
   
     return (
@@ -428,7 +475,7 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
          <div>{user?.username}</div>
          <div>Member</div>
          <div className="dropdown dropdown-left">
-         <FontAwesomeIcon className=" cursor-pointer" tabIndex={0} icon={faEllipsisVertical} />
+         { (context.login !== user.login )&&    <FontAwesomeIcon onClick={() => checkThisUser(user)} className=" cursor-pointer" tabIndex={0} icon={faEllipsisVertical} />}
            <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
              <li><a>Item 1</a></li>
              <li><a>Item 2</a></li>
