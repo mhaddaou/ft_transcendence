@@ -471,7 +471,6 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
     }
     const [isFriend, setIsFriend] = useState(false);
     const checkisFriend = (login : string) =>{
-      console.log(login, ' this is login ');
       const user = context.friends.find((user) => user.login === login);
       if (user)
         setIsFriend(true);
@@ -490,28 +489,18 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
           checkThisUser(user)
           checkisFriend(user.login)}
           } className=" cursor-pointer" tabIndex={0} icon={faEllipsisVertical} />}
-          {!check && <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"> 
-          <li>is member</li>
-          {!isFriend && <li>is member</li>}
-
-          <li></li>
-          </ul>}
-          {check && <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-          <li>is admin</li> 
-            {!isFriend && <li>is admin</li>} 
-            </ul>}
-           {/* {!check && <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+           {!check && <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
              <li><button onClick={() => sendMsg(user?.login, user?.username)}>Send Msg</button></li>
              {!isFriend && <li><button onClick={() => sendInvite(user)} >Add Friend</button></li>}
-           </ul>} */}
-           {/* {check && <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+           </ul>} 
+            {check && <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
              <li><button onClick={() => sendMsg(user?.login, user?.username)}>Send Msg</button></li>
              {!isFriend && <li><button onClick={() => sendInvite(user)} >Add Friend</button></li>}
              <li><button>promote</button></li>
-             <li><button>kick</button></li>
+             <li><button onClick={()=>kickMember(user)} >kick</button></li>
              <li><button>ban</button></li>
              <li><button>mute</button></li>
-           </ul>} */}
+           </ul>}
          </div>
        </li>
         ))}
