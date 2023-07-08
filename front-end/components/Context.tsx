@@ -20,6 +20,11 @@ export interface MatchType {
   avatarA : string;
   avatarB: string;
 }
+export interface BanedType{
+  avatar: string;
+  login: string;
+  username: string;
+}
 
 export interface userSearchProps{
   avatar : string;
@@ -135,6 +140,8 @@ export interface profileType{
 
 
 export interface ContextTypes{
+  channelBanner : BanedType[];
+  setChannelBanner : Dispatch<SetStateAction<BanedType[]>>;
   changeName : boolean;
   setChangeName : Dispatch<SetStateAction<boolean>>;
   profileuser : string;
@@ -225,6 +232,7 @@ const MyContext = createContext<ContextTypes | undefined>(undefined);
 
 const MyContextProvider = ({children} : ChildProps) =>{
     const [owner, setOwner] = useState(false);
+    const [channelBanner, setChannelBanner] = useState<BanedType[]>([])
     const [changeName, setChangeName] = useState(false);
     const [profileuser, setProfileuser] = useState<string>('');
     const [admin, setAdmin] = useState(false);
@@ -289,6 +297,10 @@ const MyContextProvider = ({children} : ChildProps) =>{
         const GetMembers = localStorage.getItem('members');
         const GetAdmin = localStorage.getItem('admin');
         const GetProfileuser = localStorage.getItem('profileuser');
+        const GetChannelBanner = localStorage.getItem('channelBanner');
+        if (GetChannelBanner != undefined && GetChannelBanner !== null && GetChannelBanner !== "undefined") {
+          setChannelBanner(JSON.parse(GetChannelBanner));
+        }
         if (GetProfileuser){
           setProfileuser(GetProfileuser);
         }
@@ -456,6 +468,9 @@ const MyContextProvider = ({children} : ChildProps) =>{
   useEffect(() =>{
     localStorage.setItem('changeName', String(changeName))
   },[changeName])
+  useEffect(() =>{
+    localStorage.setItem('channelBanner', JSON.stringify(channelBanner));
+  }, [channelBanner])
 
   // context value
  
@@ -463,7 +478,7 @@ const MyContextProvider = ({children} : ChildProps) =>{
       setCheckname,socket,setSocket, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck, match, setMatch,token, setToken,blackList,adminsChannel, setAdminChannel, 
       setBlackList,error, setError, messageError, setMessageError, membersChannel, setMembersChannel,userSearch, setUserSearch,channelSearch, setChannelSearch,MessageContent, 
       waitToAccept,profile, setProfile, pendingInvitation, setPendingInvitation, setWaitToAccept, channelInfo, Channels,setClickChannel, setChannelInfo,clickChat, setClickChat,
-      clickChannel,changeName, setChangeName, setChannels,owner, profileuser, setProfileuser,setOwner, admin, setAdmin, setMessageContent,contactChat, enableTwoFa, setEnableTwofa, setContactChat, MessageInfo, setMessageInfo , chn, setChn}
+      clickChannel,changeName,channelBanner, setChannelBanner, setChangeName, setChannels,owner, profileuser, setProfileuser,setOwner, admin, setAdmin, setMessageContent,contactChat, enableTwoFa, setEnableTwofa, setContactChat, MessageInfo, setMessageInfo , chn, setChn}
 
     return (
         <MyContext.Provider value={ContextValue}>

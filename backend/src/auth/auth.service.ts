@@ -30,15 +30,19 @@ export class AuthService {
         const user = await this.userService.findUser(userDto);
         if (!(user.enableTwoFa))
             throw new NotFoundException("user had not enable twoFA");
-        const secret = await authenticator.generateSecret();
-        await this.prisma.client.user.update({
-            where:{
-                UserId:user.UserId,
-            },
-            data:{
-                twoFactorSecret:secret,
-            }
-        });
+        let secret = user.twoFactorSecret
+        if (user.twoFactorSecret == null)
+        {
+            secret = await authenticator.generateSecret();
+            await this.prisma.client.user.update({
+                where:{
+                    UserId:user.UserId,
+                },
+                data:{
+                    twoFactorSecret:secret,
+                }
+            });
+        }
         const otpauthUrl = await authenticator.keyuri(user.email,'PigPonG', secret);  
         const qrImg = await toDataURL(otpauthUrl);
         return {qrImg};

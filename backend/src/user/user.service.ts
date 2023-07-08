@@ -382,7 +382,6 @@ export class UserService {
             },
           });
         pendingFriends = pending.map((pending) => pending.receiver);
-
         const waitingToAccept = await this.prisma.client.pendingFriendShip.findMany({
             where:{
                 receiverId:user.UserId
@@ -398,7 +397,6 @@ export class UserService {
               },
         });
         wToAccept = waitingToAccept.map((pending) => pending.sender);
-
         // list of friendship that added user(login)
         const friendAddedUser = await this.prisma.client.friend.findMany({
             where:{
@@ -569,22 +567,50 @@ export class UserService {
 
     // get list of blocked users by  a user
     async getBlockedList(findUser:findUserDto){
+        const result:any[] = [];
         const user = await  this.findUser(findUser);
         const blockedList = await this.prisma.client.block.findMany({
             where:{
                 blockedById:user.UserId,
+            },
+            select:{
+                blocked:{
+                    select:{
+                        login:true,
+                    }
+                }
             }
         });
+        blockedList.forEach((it) => result.push(it.blocked.login));
+        return result;
     }
 
     // get haters  (blocked by users)
     async getHaters(dto:findUserDto){
+        const result:any[] = [];
         const user = await  this.findUser({login:dto.login});
-        return await this.prisma.client.block.findMany({
+        const haters = await this.prisma.client.block.findMany({
             where:{
                 blockedId:user.UserId
+            },
+            select:{
+                blockBy:{
+                    select:{
+                        login:true,
+                    }
+                }
             }
         });
+        haters.forEach((it) => result.push(it.blockBy.login));
+        return result;
+    }
+
+    // get logins of haters
+    async getLoginHaters(login:string){
+        const blocked = await this.getBlockedList({login:login});
+        const haters = await this.getHaters({login:login});
+        const result:any[] = blocked.concat(haters);
+        return result;
     }
 
     // check if user blocked another user;

@@ -19,10 +19,7 @@ import { useRouter } from 'next/router';
 
 export default function Game() {
   const context = useContext(MyContext);
-  useEffect(() =>{
-    const token = localStorage.getItem('token');
-    token ? router.push('/Game') : router.push('/');
-  },[])
+  
   const router = useRouter();
   const [joinRoom, setJoinRoom] = useState<string>("hidden")
   const [roomName, setRoomName] = useState<string>("")

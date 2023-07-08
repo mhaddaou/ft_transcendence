@@ -1,4 +1,4 @@
-import { Body, Controller, Get, InternalServerErrorException, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import {AuthGuard} from '@nestjs/passport'
 import { AuthService } from './auth.service';
 import { Response } from 'express';
@@ -8,23 +8,23 @@ import { TwoFADto, findUserDto } from 'src/user/dto/user.dto';
 export class AuthController {
     constructor(private readonly authService:AuthService){}
 
-      @UseGuards(AuthGuard('42'))
-      @Get('42')
-      async login(@Req() req) {
-      }
+    @UseGuards(AuthGuard('42'))
+    @Get('42')
+    async login(@Req() req) {
+    }
 
-      @UseGuards(AuthGuard('42'))
-      @Get('callback')
-      async QuaranteDeuxCallback(@Req() req:any, @Res() response:Response) {
-        try{
-          let access = await this.authService.login42(req);
-          console.log(access);
-          response.redirect(`http://${process.env.host}:3000/GetData/${access}`);
-        }
-        catch(error){
-          response.status(400).json(error);
-        }
+    @UseGuards(AuthGuard('42'))
+    @Get('callback')
+    async QuaranteDeuxCallback(@Req() req:any, @Res() response:Response) {
+      try{
+        let access = await this.authService.login42(req);
+        console.log(access);
+        response.redirect(`${process.env.url_front}/${access}`);
       }
+      catch(error){
+        response.status(400).json(error);
+      }
+    }
 
     @UseGuards(AuthGuard('jwt'))
     @Post('QR')

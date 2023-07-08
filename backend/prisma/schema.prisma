@@ -64,7 +64,6 @@ model  Block {
 }
 
 
-
 // channel Models
 
 model channel {
@@ -164,7 +163,7 @@ model match {
   matchyId     String    @id @default(uuid())
   userA        User      @relation("matchA",fields: [userAId], references: [UserId], onDelete: Cascade)
   userAId      String
-  scoreA       Int
+  scoreA       Int       @default(0)
   userB        User      @relation("matchB",fields: [userBId], references: [UserId], onDelete: Cascade)
   userBId      String
   scoreB       Int       @default(0)
@@ -188,7 +187,7 @@ model Message {
   MsgId           String @id @default(uuid())
   content         String
   sendAt          DateTime  @default(now())
-  loginSender    String
+  loginSender     String
   loginReceiver   String
   fromUserA       Boolean // to know who send the msg (userA or userB) of conversation
   conversation    Conversation @relation(fields: [conversationId], references: [ConvId], onDelete: Cascade)

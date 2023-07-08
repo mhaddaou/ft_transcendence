@@ -263,9 +263,10 @@ const closeModale = () =>{
 
         }
       })
-      context.socket.on('Update', (pay) =>{
+      context.socket.on('updateChannel', (pay) =>{
         if (pay)
-          console.log(pay);
+          console.log('updateChannel');
+        
       })
       context.socket.on('errorMessage', (pay) =>{
         if (pay){
@@ -287,7 +288,7 @@ const closeModale = () =>{
         context.socket.off('accept');
         context.socket.off('delete');
         context.socket.off('kick');
-        context.socket.off('Update');
+        context.socket.off('updateChannel');
         context.socket.off('errorMessage');
         context.socket.off('cancelInvitation');
         // context.socket.off('gameInvitation');

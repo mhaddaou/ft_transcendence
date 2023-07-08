@@ -6,7 +6,7 @@ import Image from "next/image";
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
 import { FriendType, MembersType, MyContext, adminsChannelType, membersChannelType, userSearchProps } from "./Context";
 // import { Reciever, Sender } from "./ChatHistory";
-import { ModalUpdateChannel } from "./Modal";
+import { ModalUpdateChannel, ModalListBanner } from "./Modal";
 import { Contrail_One } from "next/font/google";
 import History from "./HIstory";
 import Router from "next/router";
@@ -17,6 +17,7 @@ import { ModalChat } from "./Modal";
 import { AlertCircle, CheckCircle } from 'react-feather'
 import { GetAvatarChannel } from "./Functions";
 import { library } from "@fortawesome/fontawesome-svg-core";
+
 
 interface recvProps {
   msg: string;
@@ -323,16 +324,19 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
     context?.socket?.emit('kickMember',{channelName : user.channelName, loginDeleted : user.login});
     setIsOpenMember(false);
   }
-  const [promoteuser, setPromote] = useState('Promote');
   const Ban = (user : MembersType) =>{
-    context?.socket?.emit('updateMember', {channelName: user.channelName, loginAffected : user.login, isBlacklist : false})
+    context?.socket?.emit('updateMember', {channelName: user.channelName, loginAffected : user.login, isBlacklist : true})
+    setIsOpenMember(false);
+    
   }
   const promote = (user : MembersType) =>{
     context?.socket?.emit('updateMember',{channelName : user.channelName,loginAffected : user.login,isAdmin : true})
+    setIsOpenMember(false);
     
   }
   const Unpromote = (user : MembersType) =>{
     context?.socket?.emit('updateMember',{channelName : user.channelName,loginAffected : user.login,isAdmin : false})
+    setIsOpenMember(false);
 
   }
   const [meut, setMeut] = useState('hidden');
@@ -454,7 +458,7 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
                       <>
                         <li><button onClick={() => sendMsg(user?.login, user?.username)}>Send Msg</button></li>
                         {!check && <li><button onClick={() => sendInvite(user)} >Add Friend</button></li>}
-                        <li><button onClick={()=>promote(user)}>Un Promote</button></li>
+                        <li><button onClick={()=>Unpromote(user)}>Un Promote</button></li>
                         <li><button onClick={()=>kickMember(user)} >kick</button></li>
                         <li><button onClick={()=>Ban(user)} >Ban</button></li>
                         <li className="flex flex-row"> 
@@ -601,7 +605,28 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
     fetchData();
   }, []);
 
+  const [modalBanner, setModalBanner] = useState(false);
+  const openBanner = () =>{
+    setModalBanner(true);
+  }
+  const closeBanner = () => {
+    setModalBanner(false);
+  }
+
   const ListBan = () =>{
+    console.log('this is list banner ', context?.channelBanner);
+    const getData = async () =>{
+      const response = await axios.post('http://localhost:5000/chat/channel/banned', {
+          channelName : context?.channelInfo?.channelName,
+        },{
+          headers:{
+            Authorization: `Bearer ${context?.token}`,
+          }
+        })
+        context?.setChannelBanner(response.data);
+    }
+    getData();
+    openBanner();
 
   }
   //info
@@ -613,7 +638,7 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
         <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
           <li><button onClick={memberChannel}>Members Channel</button></li>
           {isAdmin && <li><button onClick={openMd}>Update Channel</button></li>}
-          {isAdmin && <li><button>List Banned</button></li>}
+          {isAdmin && <li><button onClick={ListBan}>List Banned</button></li>}
           <li><button onClick={leaveChannel}>Leave Channel</button></li>
           {isAdmin && <li><button onClick={deleteChannel}>Delete Channel</button></li>}
 
@@ -656,6 +681,8 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
 
   }
   
+
+  
   return (
 
     <div className={`${valueCheck === true ? 'hidden' : 'flex'}flex-col h-full overflow-y-auto relative scrollbar scrollbar-thumb-green-400 scrollbar-w-1
@@ -664,6 +691,7 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
         openModal && <ModalUpdateChannel isOpen={openModal} closeModal={closeMd} />
       }
       <ModalMembers isOpen={isOpenMember} closeMember={closeMember} />
+      <ModalListBanner isOpen={modalBanner} close={closeBanner} />
       <div className={`w-full h-[7%]  flex chat chat-start  border-b-2 border-slate-500 items-center justify-between px-4  `}>
         <div>
           <div >

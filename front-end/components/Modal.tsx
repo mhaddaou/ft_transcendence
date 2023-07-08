@@ -4,7 +4,7 @@ import { Star, AlertCircle } from 'react-feather'
 import Avatar from '../image/avatar.webp'
 import Image, { StaticImageData } from "next/image";
 import { FriendType } from "./Context";
-import { userSearchProps } from "./Context";
+import { userSearchProps, BanedType } from "./Context";
 import Router from "next/router";
 
 interface ModalProps {
@@ -367,7 +367,7 @@ const ModalUpdateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
           <div className="font-semibold font-mono">
 
             <p >Channel Name</p>
-            <input type="text" value={value} onChange={handleChange} ref={chanref} placeholder="Name Channel" className="input input-bordered input-sm w-full max-w-xs" />
+            <input type="text" value={value}  ref={chanref} placeholder="Name Channel" className="input input-bordered input-sm w-full max-w-xs" />
           </div>
           <div className="form-control font-semibold font-mono">
             <label className="label cursor-pointer">
@@ -1050,5 +1050,66 @@ const ModalError = () => {
   )
 
 }
+interface banner{
+  isOpen: boolean;
+  close: () => void;
+}
+
+const ModalListBanner = (props : banner) =>{
+  if (!props.isOpen)
+    return null;
+    const GetAvatar = ({ avat }: { avat: string | undefined }) => {
+      if (avat === '0')
+        return (
+          <Image src={Avatar} alt="ava" />
+        );
+      else
+        return (
+          <img src={avat} alt="ava" />
+        );
+    }
+  const context = useContext(MyContext);
+  const removeBan = (user : BanedType) =>{
+    context?.socket?.emit('updateMember', {channelName: context.channelInfo?.channelName, loginAffected : user.login, isBlacklist : false})
+    props.close();
+    
+  }
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50  ">
+      <div className=" w-1/2 h-1/2 bg-white rounded-lg">
+        <div className="w-full h-full flex flex-col">
+          <div className="w-full  h-[10%] text-base md:text-xl flex justify-center items-center">List of Banned</div>
+          <div className="w-full  h-[80%] flex flex-col gap-1 px-2 overflow-y-auto">
+            {
+              context?.channelBanner.map((user) =>{
+                return (
+                  <div key={user.login} className="  min-w-full w-full h-[80px] min-h-[80px] bg-slate-200 rounded-2xl flex justify-between px-8 items-center">
+                    <div className="avatar">
+                      <div className="w-16 rounded-full">
+                        <GetAvatar avat={user.avatar} />
+                      </div>
+                    </div>
+                    <div>{user.username}</div>
+                    <div><button onClick={() => removeBan(user)}>
+                    Remove
+                      </button></div>
+                  </div>
+                );
+              })
+            }
+
+          
+
+          </div>
+          <div className="w-full  h-[10%] flex justify-end items-center pr-6">
+            <button className="bg-slate-400 py-1 px-2 rounded-lg text-white text-lg border-2 border-slate-500"  onClick={props.close}>close</button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  );
+}
 export default Modal;
-export { ModalChat, ModalInvite, ModalCreateChannel, ModalUpdateChannel, ModalSearch, ModalGame, ModalJoin, ModalQRcode, ModalError };
+export { ModalChat, ModalInvite, ModalCreateChannel, ModalUpdateChannel, ModalSearch, ModalGame, ModalJoin, ModalQRcode, ModalError, ModalListBanner };

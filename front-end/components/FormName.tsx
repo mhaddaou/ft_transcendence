@@ -35,7 +35,7 @@ function containsSpecialChars(str : string) : boolean {
     };
 
     useEffect(() =>{
-      context?.socket?.on('updateUser', (pay : any) =>{
+      context?.socket?.on('updateUsername', (pay : any) =>{
         if (pay){
             setMsg("the name is changed");
             setColor("bg-green-400");
@@ -46,20 +46,22 @@ function containsSpecialChars(str : string) : boolean {
           
         }
       })
-      context?.socket?.on('errorMessageUpdateUser', (pay : any) =>{
+      context?.socket?.on('errorMessageUpdateUsername', (pay : any) =>{
         if (pay){
+          console.log('hada ', pay);
             setMsg(pay.message);
             setColor("bg-orange-400");
             setTitle("Failed")
             setValue('');
             openModal();
+            console.log('fin')
 
         }
       })
 
       return () =>{
-        context?.socket?.off('updateUser');
-        context?.socket?.off('errorMessageUpdateUser');
+        context?.socket?.off('updateUsername');
+        context?.socket?.off('errorMessageUpdateUsername');
       }
       
     }, [context?.socket])
@@ -69,7 +71,7 @@ function containsSpecialChars(str : string) : boolean {
       if (!containsSpecialChars(name) && name.length > 7) {
         if (context?.socket) {
           console.log('dkhelt ....');
-          context?.socket.emit("updateUser",{username : name});
+          context?.socket.emit("updateUsername",{username : name});
         }
       } else {
         // data is malicious code

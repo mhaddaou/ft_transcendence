@@ -67,14 +67,17 @@ export default function Chat() {
           },
         }
       );
-      const response = await axios.post('http://localhost:5000/chat/channel/members', {
+      const response = await axios.post('http://localhost:5000/chat/channel/banned', {
         channelName : login,
       },{
         headers:{
           Authorization: `Bearer ${context?.token}`,
         }
       })
-      context?.setMembersChannel(response.data);
+      context?.setChannelBanner(response.data);
+      console.log(context?.channelBanner, '  this is channel banner in context');
+      console.log('list of banned ', response.data);
+      // context?.setMembersChannel(response.data);
       const resp = await axios.post('http://localhost:5000/chat/channel/memberShips',
       {
         channelName : login,
@@ -83,6 +86,7 @@ export default function Chat() {
           Authorization: `Bearer ${context?.token}`
         }
       })
+      console.log('this is users ',  resp.data)
       context?.setAdminChannel(resp.data[0].admins);
       context?.setMembersChannel(resp.data[1].members);
       console.log('here is memebers channel ', context?.membersChannel);

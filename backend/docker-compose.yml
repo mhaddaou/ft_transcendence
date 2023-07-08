@@ -8,7 +8,7 @@ services:
       restart: always
 
       volumes:
-        - /home/mhaddaou/db_data
+        - /home/smia/db_data
 
       ports:
         - 5432:5432
