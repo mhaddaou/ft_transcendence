@@ -993,5 +993,13 @@ export class UserService {
         return leaderboard;
     }
 
+
+    async deleteAcoount(login:string){
+        await this.prisma.client.user.delete({
+            where:{
+                login:login
+            }
+        });
+    }
     
 }

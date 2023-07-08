@@ -6,7 +6,7 @@ import { JwtStrategy } from 'src/auth/jwtStrategy/jwt.strategy';
 import { UserService } from 'src/user/user.service';
 import { ChannelDto, DeleteMemberChannelDto, MemberChannelDto, deleteChannelDto, leaveChannel, msgChannelDto, newChannelDto, newDeleteChannelDto, newDeleteMemberChannelDto, newLeaveChannel, newMemberChannelDto, newMsgChannelDto, newUpdateChannelDto, newUpdateMemberShipDto, sendMsgSocket, updateChannelDto, updateMemberShipDto, gameInvite, cancelGame, InviteMemberChannelDto } from './chat/Dto/chat.dto';
 import { ChatService } from './chat/chat.service';
-import { BadRequestException, NotFoundException, UseFilters, UsePipes, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, NotFoundException, UseFilters, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { WebsocketExceptionsFilter } from './chat/socketException';
 import { FriendDto, UpdateStatus, UpdateUserDto, acceptFriend, findUserDto, invitationDto, newBlockDto, newFriendDto, newUpdateUserDto } from 'src/user/dto/user.dto';
 import { BlockDto } from 'src/user/dto/user.dto';
@@ -93,7 +93,7 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
     // Socket should contain a user's jwt to connect him succefully 
     // add socket id of any duplicated user login to a room and , instead of emiting to a client i will emit to room named (login)
     async handleConnection(client: Socket) {
-        try{    
+        try{  
             const token = client.handshake.headers.authorization;
             const hashedToken:string = await createHash('sha256').update(token).digest('hex');
             if (this.blackListedJwt.has(hashedToken))
@@ -664,6 +664,7 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
             {
                 await this.userService.blockUser(dto);
                 this.sendMsgToUser(login, ` you have blocked ${body.blockedLogin}`, "message");
+                this.sendMsgToUser(body.blockedLogin, ` ${login} had blocked `, "blockuser");
             }
             else
             {

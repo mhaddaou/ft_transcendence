@@ -194,8 +194,6 @@ constructor(private readonly userSrevice:UserService, private readonly achieveme
         }
     }
 
-
-
     @UseGuards(AuthGuard('jwt'))
     @Get('Leaderboard')
     async getLeaderboard(@Res() response:Response){
@@ -229,12 +227,26 @@ constructor(private readonly userSrevice:UserService, private readonly achieveme
             const otherUser = await this.userSrevice.findUser({login:dto.login});
             const isEnmey = await this.userSrevice.isBlockedMe({loginA:login, loginB:dto.login});
             if (isEnmey == false)
-                response.status(200 ).json({message:true});
+                response.redirect(`http://localhost:3000/Profile/${dto.login}`)
             else
-                response.status(200 ).json({message:false});
+                response.redirect(`http://localhost:3000/NotExist`);
         }
         catch(error){
             response.status(400 ).json(error);
+        }
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Post('deleteAccount')
+    async deleteAccount(@Req() req:any, @Res() response:Response){
+        try{
+            const { login} = req.user;
+            const user = await this.userSrevice.findUser({login:login});
+            await this.userSrevice.deleteAcoount(login);
+            response.redirect(`http://localhost:3000`);
+        }
+        catch(error){
+            response.status(400).json(error);
         }
     }
 }

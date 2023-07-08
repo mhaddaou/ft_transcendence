@@ -262,8 +262,27 @@ const closeModale = () =>{
 
         }
       })
+      context.socket.on('blockuser', (pay) =>{
+        if (pay) {
+          const getData = async () =>{
+            const res = await axios.post('http://localhost:5000/user/friends', 
+            {
+              login: context.login,
+            },
+            {
+              headers:{
+                Authorization : `Bearer ${context.token}`,
+              }
+            })
+            console.log('this is friends ', res.data.friends);
+            context.setFriends(res.data.friends);
+          }
+          getData();
+        }
+      })
       context.socket.on('updateChannel', (pay) =>{
         if (pay){
+         
           const fetchData = async () => {
             try {
               const res = await axios.post(
@@ -347,6 +366,7 @@ const closeModale = () =>{
         context.socket.off('updateChannel');
         context.socket.off('errorMessage');
         context.socket.off('cancelInvitation');
+        context.socket.off('blockuser');
         // context.socket.off('gameInvitation');
       }
     };

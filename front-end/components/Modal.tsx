@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
 import { InfoChannelProp, MyContext, channelSearchProps } from "./Context";
 import { Star, AlertCircle } from 'react-feather'
 import Avatar from '../image/avatar.webp'
@@ -145,264 +145,67 @@ interface ModalChannel {
 
 
 const ModalUpdateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
-  const [file, setFile] = useState<File | null>(null)
-  let imgSrc: string | Blob | MediaSource | StaticImageData;
-  const [url, setUrl] = useState<string | null>(null);
-  const [avatar, setAvatar] = useState("")
-  function sendToBck(Url: string) {
-    if (context?.socket) {
-      context?.socket.emit("updateUser", { avatar: Url });
-    }
-  }
-
-
-  const uploadImage = () => {
-    return new Promise((resolve, reject) => {
-      const form = new FormData();
-
-      if (file) {
-        form.append("file", file);
-        form.append("upload_preset", "mhaddaou");
-
-        if ((file.type !== "image/jpeg") && (file.type !== "image/png")) {
-          setColor('bg-orange-600');
-          setMsg('this image is not jpeg or PNG');
-          setTitle('Warning!');
-          setIsModalOpen(true);
-          reject('Invalid image type');
-        } else if ((file.size / (1024 * 1024)) > 10) {
-          setColor('bg-orange-600');
-          setMsg('this image is more than 6MB');
-          setTitle('Warning!');
-          setIsModalOpen(true);
-          reject('Image size is too large');
-        } else {
-          axios.post("https://api.cloudinary.com/v1_1/daczu80rh/upload", form)
-            .then((result) => {
-              setUrl(result.data.secure_url);
-              // context?.setImg(result.data.secure_url);
-              setAvatar(result.data.secure_url);
-              // export interface InfoChannelProp{
-              //   ChannelId : string;
-              //   LoginOwner: string;
-              //   avatar: string;
-              //   channelName : string;
-              //   createdAt: string;
-              //   isPrivate : boolean;
-              //   ispassword: boolean;
-              // }
-              if (context?.channelInfo) {
-                const obt = {
-                  ChannelId: context?.channelInfo?.ChannelId,
-                  LoginOwner: context?.channelInfo?.LoginOwner,
-                  avatar: result.data.secure_url,
-                  channelName: context?.channelInfo?.channelName,
-                  createdAt: context?.channelInfo?.createdAt,
-                  isPrivate: context?.channelInfo?.isPrivate,
-                  ispassword: context?.channelInfo?.ispassword,
-                }
-                context?.setChannelInfo(obt)
-              }
-              setColor('bg-green-500');
-              setMsg('The image was successfully uploaded');
-              setTitle('Success!');
-              setIsModalOpen(true);
-              resolve(`${result.data.secure_url}`);
-            })
-            .catch((error) => {
-              reject(error);
-            });
-        }
-        setFile(null);
-      } else {
-        setColor('bg-orange-600');
-        setMsg('the image is empty');
-        setTitle('Warning!');
-        setIsModalOpen(true);
-        reject('No image selected');
-      }
-    });
-  };
-  const passref = useRef<HTMLInputElement | null>(null);
-  const chanref = useRef<HTMLInputElement | null>(null);
-  const [msg, setMsg] = useState('');
-  const [color, setColor] = useState('');
-  const [title, setTitle] = useState('');
   const context = useContext(MyContext);
-  useEffect(() => {
-    if (context?.socket)
-      context?.socket.on('message', (pay) => {
-        console.log(pay);
-        setMsg(pay);
-        setColor('bg-green-400');
-        setTitle('Success');
-        openModal()
-      })
-    if (context?.socket)
-      context?.socket.on('errorMessage', (pay) => {
-        console.log(pay)
-        setMsg(pay.message);
-        setColor('bg-orange-400');
-        setTitle('Failed');
-        openModal()
-      })
-    return () => {
-      context?.socket?.off('errorMessage');
+  const [file , setFile] = useState<File | null>(null);
+  const [url, setUrl] = useState('');
+
+
+  const update  = () =>{
+    console.log('update channel ', context?.channelInfo?.channelName);
+    if (file){
+      const form = new FormData();
+      form.append("file", file);
+                form.append("upload_preset", "mhaddaou");
+                // this file is not jpeg or PNG
+                if ((file.type !== "image/jpeg") && (file.type !== "image/png")){
+                    console.log('this image is not assests')
+                }
+                else{
+                  axios.post("https://api.cloudinary.com/v1_1/daczu80rh/upload", form)
+                    .then((result) =>{
+                        setUrl(result.data.secure_url);
+                    })
+                }
     }
-
-  }, [context?.socket])
-
-  useEffect(() => {
-    if (context?.chn)
-      closeModal()
-    context?.setChn(false);
-  }, [context?.chn])
-
-  if (!isOpen) {
-    return null; // If isOpen is false, don't render the modal
+    
   }
 
-
-  interface newChannel {
-    avatar: string;
-    channelName: string;   // Required
-    isPrivate: boolean;    // Required
-    ispassword: boolean;   // Required
-    password?: string;     // Optional
-  }
-
-  const [check, setCheck] = useState(false);
-  const [pass, setPass] = useState(false);
-  const clickPass = () => {
-    setPass(!pass);
-  }
-
-  const clickcheck = () => {
-    setCheck(!check);
-  }
-
-  const Update = () => {
-    if (pass && check) {
-      if (chanref.current && passref.current)
-        updateChannel(chanref.current.value, check, pass, passref.current.value)
-    }
-    else if (pass) {
-      if (chanref.current && passref.current)
-        updateChannel(chanref.current.value, check, pass, passref.current.value)
-    }
-    else if (check) {
-      if (context?.channelInfo)
-        updateChannel(context.channelInfo.channelName, check, pass, "")
-    }
-    else {
-      if (chanref.current) {
-        updateChannel(chanref.current.value, check, pass, "")
-      }
-    }
-  }
-
-  function updateChannel(channel: string, isPrivat: boolean, pass: boolean, password: string) {
-    var msg: newChannel | string = '';
-    if (chanref.current) {
-      uploadImage().then((secureUrl) => {
-        if (chanref.current) {
-          msg = {
-            avatar: `${secureUrl}`,
-            channelName: channel,
-            isPrivate: isPrivat,
-            ispassword: pass,
-            password: password,
-          }
-          context?.socket?.emit('updateChannel', msg)
-          const removeChannelByName = (channelName: string) => {
-            context?.setChannels(prevChannels =>
-              prevChannels.filter(channel => channel.channelName !== channelName)
-            );
-          };
-          removeChannelByName(channel)
-          context?.setChannels((prev) => [...prev, { avatar: `${secureUrl}`, channelName: channel }])
-        }
-      })
-    }
-  }
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-  const closeModale = () => {
-    setIsModalOpen(false);
-  };
-  const [value, setValue] = useState(context?.channelInfo?.channelName);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value)
-  }
-
-  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("tries to upload")
-    if (e.target.files)
-      setFile(e.target.files[0]);
-
-
-  }
-
+  const handleChange = (e : ChangeEvent<HTMLInputElement>) =>{
+    if (e.target.files )
+    setFile(e.target.files[0]);
+}
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ">
-      {isModalOpen && <Modal isOpen={isModalOpen} closeModal={closeModale} title={title} msg={msg} color={color} />}
-      <div className={`bg-white p-6 rounded-md`}>
-        <h2 className="text-2xl font-bold mb-4 text-center border-b-2 pb-4">Update Channel</h2>
-        <div className="bg-re mb-5 flex flex-col gap-2 pt-4">
-          <div className="font-semibold mb-2 font-mono">
-            <p className="mb-1" >Avatar <span className="text-xs">
-              (optional)
-            </span>
-            </p>
-            <label className=" cursor-pointer flex-shrink-0 bg-slate-500 hover:bg-slate-700 border-slate-500 hover:border-slate-700 text-sm border-4 text-white py-1 px-2 rounded" >
-              <input onChange={handleUpload} type="file" className="hidden" />
-              select file
-            </label>
+    <div className="fixed  inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ">
+      <div className="w-[500px] h-[50%] bg-white rounded-lg">
+        <div className="w-full h-full ">
+          <div className="w-full h-[10%]  flex justify-center items-center text-base md:text-xl ">Update Channel {context?.channelInfo?.channelName}</div>
+          <div className="w-full h-[80%]  ">
+          <div className="w-full h-1/3 flex justify-center items-center gap-4 flex-col">
+            <div>
+            <p className="text-xl font-mono font-semibold">change avatar</p>
+            </div>
+            <div className="pl-14">
+            <input type="file" onChange={handleChange} className="file-input file-input-bordered file-input-sm w-full max-w-xs" />
+
+            </div>
+           
           </div>
-          <div className="font-semibold font-mono">
+          <div className="w-full h-1/3 flex justify-center items-center">password</div>
+          <div className="w-full h-1/3 flex justify-center items-center">private</div>
 
-            <p >Channel Name</p>
-            <input type="text" value={value}  ref={chanref} placeholder="Name Channel" className="input input-bordered input-sm w-full max-w-xs" />
           </div>
-          <div className="form-control font-semibold font-mono">
-            <label className="label cursor-pointer">
-              <span className="label-text">Password</span>
-              <input type="checkbox" ref={passref} onClick={clickPass} checked={pass} className="checkbox" />
-            </label>
-          </div>
-          <input type="password" placeholder="Password" className="input input-bordered input-sm w-full max-w-xs" />
+          <div className="w-full h-[10%] bg-red-400 text-lg flex justify-end px-8 gap-5">
+            <button onClick={closeModal}>Close</button><button onClick={update}>Update</button>
 
-
-
-          <div className="form-control font-semibold font-mono">
-            <label className="label cursor-pointer">
-              <span className="label-text">Private Channel</span>
-              <input type="checkbox" onClick={clickcheck} checked={check} className="checkbox" />
-            </label>
           </div>
         </div>
-        <div className="flex justify-end gap-2">
-          <button
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-            onClick={closeModal}
-          >
-            Close
-          </button>
-          <button
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-            onClick={Update}
-          >
-            Update
-          </button>
-        </div>
+
       </div>
+
+
     </div>
-  );
+  )
+  
 };
 
 const ModalCreateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
