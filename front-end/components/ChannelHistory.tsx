@@ -295,15 +295,16 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
     const GetDat = async () => {
       try {
        
-        const res = await axios.post('http://localhost:5000/chat/channel/members',
-          { channelName: context?.channelInfo?.channelName },
-          {
-            headers: {
-              Authorization: `Bearer ${context?.token}`,
-            }
-          }
-        )
-        context?.setMembersChannel(res.data);
+        const resp = await axios.post('http://localhost:5000/chat/channel/memberShips',
+      {
+        channelName : context?.channelInfo?.channelName,
+      }, {
+        headers:{
+          Authorization: `Bearer ${context?.token}`
+        }
+      })
+      context?.setAdminChannel(resp.data[0].admins);
+      context?.setMembersChannel(resp.data[1].members);
 
       } catch (e) {
         console.log(e);
@@ -327,14 +328,12 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
     context?.socket?.emit('updateMember', {channelName: user.channelName, loginAffected : user.login, isBlacklist : false})
   }
   const promote = (user : MembersType) =>{
-    if (promoteuser === 'Promote'){
-      context?.socket?.emit('updateMember',{channelName : user.channelName,loginAffected : user.login,isAdmin : true})
-      setPromote('Un promote');
-    }
-    else{
-      context?.socket?.emit('updateMember',{channelName : user.channelName,loginAffected : user.login,isAdmin : false})
-      setPromote('Promote');
-    }
+    context?.socket?.emit('updateMember',{channelName : user.channelName,loginAffected : user.login,isAdmin : true})
+    
+  }
+  const Unpromote = (user : MembersType) =>{
+    context?.socket?.emit('updateMember',{channelName : user.channelName,loginAffected : user.login,isAdmin : false})
+
   }
   const [meut, setMeut] = useState('hidden');
   const timeMeut = useRef<HTMLInputElement | null>(null)
@@ -379,8 +378,10 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
     if (login && username){
       setName(username);
       setLogin(login);
-        setIsModalOpen(true);
+      setIsModalOpen(true);
     }
+    // here update contact list
+   
 
   }
 
@@ -442,10 +443,41 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
                 <div>{user?.username}</div>
                 <div>Admin</div>
                 <div className="dropdown dropdown-left">
-                { (context.login !== user.login )&&    <FontAwesomeIcon className=" cursor-pointer" tabIndex={0} icon={faEllipsisVertical} />}
+                { (context.login !== user.login )&&    <FontAwesomeIcon onClick={() =>{
+                  setCheck(false);
+                  checkis(user.login)
+                } 
+                } className=" cursor-pointer" tabIndex={0} icon={faEllipsisVertical} />}
                   <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                  <li><button onClick={ ()=> sendMsg(user?.login, user?.username) }>Send Msg</button></li>
-                  {!check && <li><button onClick={() => sendInvite(user)}>Add Friend</button></li>}
+                  {
+                    context.login === context.channelInfo?.LoginOwner ? (
+                      <>
+                        <li><button onClick={() => sendMsg(user?.login, user?.username)}>Send Msg</button></li>
+                        {!check && <li><button onClick={() => sendInvite(user)} >Add Friend</button></li>}
+                        <li><button onClick={()=>promote(user)}>Un Promote</button></li>
+                        <li><button onClick={()=>kickMember(user)} >kick</button></li>
+                        <li><button onClick={()=>Ban(user)} >Ban</button></li>
+                        <li className="flex flex-row"> 
+                          <div className="w-1/2 h-full"><input ref={timeMeut} type="text" className="w-full h-full input-bordered"  /></div>
+                          <div className="w-1/2 h-full" onClick={() =>meute(user)}>Mute</div>
+                        </li>
+                      </>
+                    ) : (
+                      <>
+                        <li>
+                          <button onClick={() => sendMsg(user?.login, user?.username)}>
+                            Send Msg
+                          </button>
+                        </li>
+                        {!check && (
+                          <li>
+                            <button onClick={() => sendInvite(user)}>Add Friend</button>
+                          </li>
+                        )}
+                      </>
+                    )
+                  }
+
                   </ul>
                 </div>
               </li>
@@ -493,13 +525,16 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
              <li><button onClick={() => sendMsg(user?.login, user?.username)}>Send Msg</button></li>
              {!isFriend && <li><button onClick={() => sendInvite(user)} >Add Friend</button></li>}
            </ul>} 
-            {check && <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-             <li><button onClick={() => sendMsg(user?.login, user?.username)}>Send Msg</button></li>
-             {!isFriend && <li><button onClick={() => sendInvite(user)} >Add Friend</button></li>}
-             <li><button>promote</button></li>
-             <li><button onClick={()=>kickMember(user)} >kick</button></li>
-             <li><button>ban</button></li>
-             <li><button>mute</button></li>
+             {check && <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+              <li><button onClick={() => sendMsg(user?.login, user?.username)}>Send Msg</button></li>
+              {!isFriend && <li><button onClick={() => sendInvite(user)} >Add Friend</button></li>}
+              <li><button onClick={()=>promote(user)}>Promote</button></li>
+              <li><button onClick={()=>kickMember(user)} >kick</button></li>
+              <li><button onClick={()=>Ban(user)} >Ban</button></li>
+              <li className="flex flex-row"> 
+                <div className="w-1/2 h-full"><input ref={timeMeut} type="text" className="w-full h-full input-bordered"  /></div>
+                <div className="w-1/2 h-full" onClick={() =>meute(user)}>Mute</div>
+              </li>
            </ul>}
          </div>
        </li>

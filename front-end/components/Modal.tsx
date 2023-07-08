@@ -89,7 +89,29 @@ const ModalChat: React.FC<ModalChatProps> = ({ isOpen, closeModal, name, login }
 
       }
       closeModal();
+      
     }
+    const fetchData = async () => {
+      console.log("here i'm here");
+      try {
+        const res = await axios.post(
+          'http://localhost:5000/chat/conversations',
+          { login: context?.login },
+          {
+            headers: {
+              Authorization: `Bearer ${context?.token}`,
+            },
+          }
+        );
+        context?.setContactChat(res.data);
+        console.log(context?.contactChat);
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    fetchData();
   }
 
   return (
