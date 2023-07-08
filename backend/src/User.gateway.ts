@@ -373,9 +373,9 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
             const dto:updateChannelDto = {userLogin:user.login, channelName:body.channelName, isPrivate:body.isPrivate, ispassword:body.ispassword, newPassword:body.newPassword, avatar:body.avatar};
             const channel = await this.chatService.updateChannel(dto);
             this.existChannels.set(channel.channelName,channel);
-            const msg:string = `you have updated your channel ${channel.channelName}`;
+            const msg:any = {channelName:channel.channelName, message:`you have updated your channel ${channel.channelName}`};
             // this.sendMsgToUser(login, msg,"message");
-            this.server.to(channel.channelName).emit("message", msg);
+            this.server.to(channel.channelName).emit("updateChannel", msg);
         }
         catch(error){
             client.emit('errorMessage',error);
@@ -519,6 +519,8 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
                 this.joinSocketsToRoom(body.loginAffected, body.channelName);
                 const msg:any = {message:`${user.login}  had  ${msgAct} ${ik.login}`,login:ik.login, channelName:ik.channelName,isAdmin:ik.isAdmin, isMute:ik.isMute, isBlacklist:ik.isBlacklist, isOwner:ik.isOwner};
                 this.sendMsgToUser(body.loginAffected, msg, "Update");
+                // const userAffected = this.connectedUsers.get(ik.login);
+                // this.server.to(ik.channelName).emit(`Update`,msg);
             }
         }
         catch(error){

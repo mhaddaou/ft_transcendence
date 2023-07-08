@@ -219,4 +219,22 @@ constructor(private readonly userSrevice:UserService, private readonly achieveme
             response.status(400 ).json(error);
         }
     }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Post('viewProfile')
+    async viewProfile(@Req() req:any, @Body() dto:findUserDto, @Res() response:Response){
+        try{        
+            const { login} = req.user;
+            const user = await this.userSrevice.findUser({login:login});
+            const otherUser = await this.userSrevice.findUser({login:dto.login});
+            const isEnmey = await this.userSrevice.isBlockedMe({loginA:login, loginB:dto.login});
+            if (isEnmey == false)
+                response.status(200 ).json({message:true});
+            else
+                response.status(200 ).json({message:false});
+        }
+        catch(error){
+            response.status(400 ).json(error);
+        }
+    }
 }

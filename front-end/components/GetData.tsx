@@ -240,7 +240,22 @@ export function GetDataFriend() {
     }
     const viewProfile = (friend : FriendType) =>{
       context?.setProfileuser(friend.login);
-      router.push(`http://localhost:3000/Profile/${context?.profileuser}`)
+      const getData = async () =>{
+        const res = await axios.post('http://localhost:5000/user/viewProfile', 
+        {login : friend.login}, 
+        {
+          headers: {
+            Authorization : `Bearer ${context?.token} `
+
+          }
+        });
+        console.log('this is res profile ', res.data.message);
+        if (res.data.message)
+          router.push(`http://localhost:3000/Profile/${context?.profileuser}`)
+        else
+          console.log('this user is block you ');
+      }
+      getData();
     }
   
     if (context?.friends.length === 0) {

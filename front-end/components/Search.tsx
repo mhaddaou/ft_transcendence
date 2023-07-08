@@ -251,7 +251,6 @@ const closeModale = () =>{
                   },
                 }
               );
-              // context?.setContactChat(res.data);
               context?.setChannels(res.data);
       
             } catch (error) {
@@ -264,8 +263,65 @@ const closeModale = () =>{
         }
       })
       context.socket.on('updateChannel', (pay) =>{
-        if (pay)
-          console.log('updateChannel');
+        if (pay){
+          const fetchData = async () => {
+            try {
+              const res = await axios.post(
+                'http://localhost:5000/chat/memberships',
+                { login: context?.login },
+                {
+                  headers: {
+                    Authorization: `Bearer ${context?.token}`,
+                  },
+                }
+              );
+              context?.setChannels(res.data);
+      if (context.channelInfo?.channelName === pay.channelName){
+
+        // info channel
+        const res = await axios.post(
+          'http://localhost:5000/chat/channel/message/all',
+          {channelName: pay.channelName}, 
+          {
+            headers:{
+              Authorization : `Bearer ${context?.token}`,
+            },
+          }
+        );
+        context?.setChannelInfo(res.data[0]);
+
+
+        // this for members   banned from channel 
+        const response = await axios.post('http://localhost:5000/chat/channel/banned', {
+          channelName : pay.channelName,
+        },{
+          headers:{
+            Authorization: `Bearer ${context?.token}`,
+          }
+        })
+        context?.setChannelBanner(response.data);     
+        
+        // this for permesion users
+        const resp = await axios.post('http://localhost:5000/chat/channel/memberShips',
+        {
+          channelName : pay.channelName,
+        }, {
+          headers:{
+            Authorization: `Bearer ${context?.token}`
+          }
+        })
+        context?.setAdminChannel(resp.data[0].admins);
+        context?.setMembersChannel(resp.data[1].members);
+      }
+      
+            } catch (error) {
+              console.error('Error fetching data:', error);
+            }
+          };
+        
+          fetchData();
+        }
+          console.log( 'this is update channel ', pay);
         
       })
       context.socket.on('errorMessage', (pay) =>{
