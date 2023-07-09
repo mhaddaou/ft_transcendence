@@ -373,9 +373,10 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
             const dto:updateChannelDto = {userLogin:user.login, channelName:body.channelName, isPrivate:body.isPrivate, ispassword:body.ispassword, newPassword:body.newPassword, avatar:body.avatar};
             const channel = await this.chatService.updateChannel(dto);
             this.existChannels.set(channel.channelName,channel);
-            const msg:any = {channelName:channel.channelName, message:`you have updated your channel ${channel.channelName}`};
+            const msg:any = {channelName:channel.channelName, message:`you have updated your channel ${channel.channelName},`};
             // this.sendMsgToUser(login, msg,"message");
-            this.server.to(channel.channelName).emit("updateChannel", msg);
+            console.log(channel)
+            this.server.to(channel.channelName).emit("updateChannel", channel);
         }
         catch(error){
             client.emit('errorMessage',error);

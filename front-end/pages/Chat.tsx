@@ -75,8 +75,6 @@ export default function Chat() {
         }
       })
       context?.setChannelBanner(response.data);
-      console.log(context?.channelBanner, '  this is channel banner in context');
-      console.log('list of banned ', response.data);
       // context?.setMembersChannel(response.data);
       const resp = await axios.post('http://localhost:5000/chat/channel/memberShips',
       {

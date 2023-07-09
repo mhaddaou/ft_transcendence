@@ -282,7 +282,9 @@ const closeModale = () =>{
       })
       context.socket.on('updateChannel', (pay) =>{
         if (pay){
-         
+          // console.log('this is pay ', pay);
+          context.setChannelInfo(pay);
+          console.log('this is pass ', context.channelInfo?.ispassword)
           const fetchData = async () => {
             try {
               const res = await axios.post(
@@ -294,44 +296,8 @@ const closeModale = () =>{
                   },
                 }
               );
+              // context?.setContactChat(res.data);
               context?.setChannels(res.data);
-      if (context.channelInfo?.channelName === pay.channelName){
-
-        // info channel
-        const res = await axios.post(
-          'http://localhost:5000/chat/channel/message/all',
-          {channelName: pay.channelName}, 
-          {
-            headers:{
-              Authorization : `Bearer ${context?.token}`,
-            },
-          }
-        );
-        context?.setChannelInfo(res.data[0]);
-
-
-        // this for members   banned from channel 
-        const response = await axios.post('http://localhost:5000/chat/channel/banned', {
-          channelName : pay.channelName,
-        },{
-          headers:{
-            Authorization: `Bearer ${context?.token}`,
-          }
-        })
-        context?.setChannelBanner(response.data);     
-        
-        // this for permesion users
-        const resp = await axios.post('http://localhost:5000/chat/channel/memberShips',
-        {
-          channelName : pay.channelName,
-        }, {
-          headers:{
-            Authorization: `Bearer ${context?.token}`
-          }
-        })
-        context?.setAdminChannel(resp.data[0].admins);
-        context?.setMembersChannel(resp.data[1].members);
-      }
       
             } catch (error) {
               console.error('Error fetching data:', error);
@@ -340,7 +306,7 @@ const closeModale = () =>{
         
           fetchData();
         }
-          console.log( 'this is update channel ', pay);
+      
         
       })
       context.socket.on('errorMessage', (pay) =>{
