@@ -62,6 +62,7 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
   const [newMsg, setNewMsg] = useState<MesgType[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [gameRoom, setGameRoom] = useState("")
+  const [userBlock, setUserBlock] = useState('');
 
 
   const Sender = ({ msg }: { msg: string }) => {
@@ -250,9 +251,37 @@ const handleGameInvite = () => {
     context.socket.emit('gameInvitation', {
       receiver: login,
     });
-    window.location.href = (`http://localhost:3000/ft_transcendence/${url}`)
+    window.location.href = (`http://localhost:3000/${url}`)
     
   }
+}
+const removefriend = (login: string) => {
+  context?.setFriends(prevFriends =>
+    prevFriends.filter(friend => friend.login !== login)
+  );
+};
+
+const removeChat = (login : string) =>{
+  context?.setContactChat(prevcontact =>
+    prevcontact.filter(chat => chat.login !== login))
+}
+const [loginr, setLoginr] = useState<string | undefined >(undefined);
+const blockUser = () =>{
+  console.log('hani dkhelt');
+  context?.login === context?.MessageContent[0].loginReceiver ? setUserBlock(context?.MessageContent[0].loginSender ) : setUserBlock(context?.MessageContent[0].loginReceiver)
+if (userBlock)
+  console.log(userBlock , ' this is user block');
+    // if (context?.socket)
+    // context?.socket.emit('block', {
+    //   blockedLogin: friend.login,
+    //   stillEnemy: true,
+    // })
+    // removefriend(friend.login);
+    // removeChat(friend.login);
+    // context?.setBlackList((prev) =>[...prev, friend]);
+  
+
+
 }
 
 
@@ -274,7 +303,7 @@ const handleGameInvite = () => {
                   <Link href="#" className=" hover:text-cyan-700 pl- text-left  rounded-t-lg block px-4 py-2 hover:bg-gray-100 ">info</Link>
                 </li>
                 <li>
-                  <Link href="#" className=" hover:text-cyan-700 text-left block px-4 py-2 hover:bg-gray-100 ">block</Link>
+                  <button onClick={blockUser} className=" hover:text-cyan-700 text-left block px-4 py-2 hover:bg-gray-100 ">block</button>
                 </li>
                 <li>
                   <Link href="#" className="hover:text-cyan-700 text-left rounded-b-lg block px-4 py-2 hover:bg-gray-100 ">Earnings</Link>
