@@ -42,8 +42,9 @@ constructor(private readonly userSrevice:UserService, private readonly achieveme
             const user = await this.userSrevice.findUser(findUser);
             const matches = await this.userSrevice.getHistoryUserMatchs({login:user.login});
             const acheivement = await this.userSrevice.getAcheivments({login:user.login});
+            const status  = await this.userSrevice.getStatusUser(findUser);
             const porcentages = matches.pop();
-            const result = {...user, porcentages, matches, acheivement};
+            const result = {...user, status, porcentages, matches, acheivement};
             response.status(200).json(result);
         }
         catch(error){
@@ -223,18 +224,21 @@ constructor(private readonly userSrevice:UserService, private readonly achieveme
     async viewProfile(@Req() req:any, @Body() dto:findUserDto, @Res() response:Response){
         try{        
             const { login} = req.user;
+            let bol:boolean = false;
             const user = await this.userSrevice.findUser({login:login});
             const otherUser = await this.userSrevice.findUser({login:dto.login});
             const isEnmey = await this.userSrevice.isBlockedMe({loginA:login, loginB:dto.login});
             if (isEnmey == false)
-                response.redirect(`http://localhost:3000/Profile/${dto.login}`)
+                bol = true
             else
-                response.redirect(`http://localhost:3000/NotExist`);
+                bol = false
+            response.json({message: bol});
         }
         catch(error){
             response.status(400 ).json(error);
         }
     }
+
 
     @UseGuards(AuthGuard('jwt'))
     @Post('deleteAccount')

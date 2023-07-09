@@ -240,6 +240,7 @@ export function GetDataFriend() {
     }
     const viewProfile = (friend : FriendType) =>{
       context?.setProfileuser(friend.login);
+      console.log(friend.login);
       const getData = async () =>{
         const res = await axios.post('http://localhost:5000/user/viewProfile', 
         {login : friend.login}, 
@@ -251,7 +252,7 @@ export function GetDataFriend() {
         });
         console.log('this is res profile ', res.data.message);
         if (res.data.message)
-          router.push(`http://localhost:3000/Profile/${context?.profileuser}`)
+          router.push(`http://localhost:3000/Profile/${friend.login}`)
         else
           console.log('this user is block you ');
       }
@@ -398,19 +399,7 @@ const DataRecieved = () =>{
       login: friend.login,
       accepte : false,  
     })
-    if (context?.socket)
-    context?.socket.on('message',(pay) =>{
-      if (pay)
-        console.log(pay);
-    })
-    if (context?.socket)
-    context?.socket.on('errorMessage',(pay) =>{
-      if (pay)
-        console.log(pay);
-    })
-    
     removefriend(friend.login);
-
   }
 
 

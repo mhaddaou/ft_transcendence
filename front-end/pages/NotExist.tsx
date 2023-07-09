@@ -1,4 +1,4 @@
-import Not from '../../image/Not.webp'
+import Not from '../image/Not.webp'
 import Image from 'next/image';
 const NotExist = () =>{
     return (

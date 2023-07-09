@@ -811,6 +811,9 @@ const ModalSearch = (props: ModalSearchProps) => {
     openModaleJoin();
   }
   const [channel, setChannel] = useState<channelSearchProps>()
+  const viewProfile = (user : FriendType) =>{
+    console.log(user.login);
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50  ">
@@ -845,6 +848,7 @@ const ModalSearch = (props: ModalSearchProps) => {
                       <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                         <li><button onClick={() => sendInvite(user)}>Add Friend</button></li>
                         <li><button onClick={() => sendMsg(user.login, user.username)}>Send Message</button></li>
+                        <li><button onClick={() =>viewProfile(user)}>View Profile</button></li>
                       </ul>
                     </div>
                   </div>

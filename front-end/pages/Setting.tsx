@@ -12,6 +12,7 @@ import {io} from "socket.io-client"
 import InfoContact from "@/components/InfoContact";
 import Router from "next/router";
 import createSocketConnection from "@/components/socketConnection";
+import { ModalError } from "@/components/Modal";
 const router = Router;
 var token : string | null = null;
 
@@ -43,6 +44,7 @@ var token : string | null = null;
     if (token){
       return (
         <div className="bg-gradient-to-t from-gray-100 to-gray-400 min-h-screen">
+          <ModalError />
             <div className="container mx-auto h-screen min-h-[1024px] flex flex-col py-2 gap-2">
                 <div className="w-full h-[35%]   flex rounded-2xl gap-2">
                         <Barl page="Setting"/>

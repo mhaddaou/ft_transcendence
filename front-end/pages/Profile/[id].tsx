@@ -19,6 +19,8 @@ import mhaddaou from '../image/mhaddaou.jpg'
 import Sky from '../../image/sky.png'
 import avatar from '../../image/avatar.webp'
 import GetDataHistory from '@/components/GetData';
+import Router from 'next/router';
+const router = Router;
 
 
 
@@ -32,8 +34,33 @@ const GetAvatar = ({name} : {name : string}) =>{
 
 
 const Other = () =>{
+  const [checkis , setCheckIs] = useState(false);
   const context = useContext(MyContext)
   const userLogin = useRouter()?.query?.id;
+  useEffect(()=>{
+    const getData = async () =>{
+
+      try{
+        const res = await axios.post('http://localhost:5000/user/viewProfile', 
+        {login : userLogin}, 
+        {
+          headers: {
+            Authorization : `Bearer ${context?.token} `
+  
+          }
+        });
+        console.log('this is res profile ', res.data.message);
+        if (res.data.message)
+          setCheckIs(true);
+        else
+          router.push('/NotExist');
+      }catch(e){
+        console.log(e);
+      }
+    }
+    getData();
+  }, [userLogin]);
+  console.log(userLogin);
   // const [user, setUser] = useState();
   // const getUser = async () =>{
   //   if (userLogin){
@@ -106,7 +133,7 @@ const clickAchievement = ()=>{
   setCheck(2);
 }
 
-if (context?.profile ){
+if (context?.profile && checkis ){
   
   return(
       <div className='bg-gradient-to-t from-gray-100 to-gray-400 min-h-screen ' >
@@ -138,9 +165,21 @@ if (context?.profile ){
         />
       </div>
       <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center md:justify-start pl-6 gap-8">
+        <div>
         <GetAvatar name={context?.profile?.avatar} />
+        </div>
+        <div className='flex flex-col md:flex-row  justify-between space-y-10 md:space-y-0 md:gap-40  items-center '>
+          <div>
+            <h1 className="text-4xl text-slate-300 font-mono font-semibold "> {context.profile.username}</h1>
+
+          </div>
+          <div>
+              <h1 className="text-4xl text-slate-300 font-mono font-semibold  text-center  "> status</h1>
+
+          </div>
+
+        </div>
           
-        <h1 className="text-4xl text-slate-300 font-mono font-semibold "> {context.profile.username}</h1>
       </div>
     </div>
   </div>

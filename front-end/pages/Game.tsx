@@ -10,7 +10,7 @@ import { io } from "socket.io-client"
 import Barl from "@/components/Barl";
 import NavBar from "@/components/NavBar";
 
-import { ModalGame } from '@/components/Modal';
+import { ModalError, ModalGame } from '@/components/Modal';
 
 import { useRouter } from 'next/router';
 
@@ -194,6 +194,7 @@ export default function Game() {
         </Head>
         <main>
           <div className="bg-gradient-to-t from-gray-100 to-gray-400 min-h-screen">
+          <ModalError />
             <div className="container w-full mx-auto h-screen min-h-[1024px] flex flex-row py-2 gap-2">
               <Barl page="Game" />
               <div className="w-full h-full relative rounded-2xl flex flex-col  gap-2 ">

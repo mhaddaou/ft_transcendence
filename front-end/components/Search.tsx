@@ -2,7 +2,7 @@ import axios, {AxiosError} from "axios";
 import { headers } from "next/dist/client/components/headers";
 import React, {useContext, useEffect, useState} from "react";
 import { MyContext } from "./Context";
-import {ModalSearch} from "./Modal";
+import {ModalError, ModalSearch} from "./Modal";
 import { dataProp } from "./Modal";
 const Search = ({page } : {page : string})=>{
     const context = useContext(MyContext);
@@ -310,10 +310,15 @@ const closeModale = () =>{
         
       })
       context.socket.on('errorMessage', (pay) =>{
+       
+
+
         if (pay){
           if (pay.message !== 'jwt must be provided'){
+           
             context.setMessageError(pay.message);
             context.setError(true);
+          
           }
 
         }
@@ -333,7 +338,6 @@ const closeModale = () =>{
         context.socket.off('errorMessage');
         context.socket.off('cancelInvitation');
         context.socket.off('blockuser');
-        // context.socket.off('gameInvitation');
       }
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
