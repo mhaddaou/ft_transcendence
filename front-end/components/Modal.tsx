@@ -15,6 +15,16 @@ interface ModalProps {
   color: string
 
 }
+interface ModalCheckProps {
+  isOpen: boolean;
+  closeModal: () => void;
+  closeOldModal: () => void;
+  title: string;
+  msg: string;
+  color: string
+
+}
+
 import { ReactNode } from 'react';
 import axios from "axios";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
@@ -25,6 +35,36 @@ import { Socket } from "socket.io-client";
 
 
 const Modal: React.FC<ModalProps> = ({ isOpen, closeModal, title, msg, color }) => {
+  const context = useContext(MyContext);
+  if (!isOpen) {
+    return null; // If isOpen is false, don't render the modal
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ">
+      <div className={`${color} p-6 rounded-md`}>
+        <h2 className="text-2xl font-bold mb-4 text-center">{title}</h2>
+        <p className="text-gray-700 mb-6">
+          {msg}
+        </p>
+        <div className="flex justify-end">
+          <button
+            className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+            onClick={() => {
+              closeModal()
+              context?.setChn(true);
+            }}
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+const ModalCheck: React.FC<ModalCheckProps> = ({ isOpen, closeModal, closeOldModal, title, msg, color }) => {
   const context = useContext(MyContext);
   if (!isOpen) {
     return null; // If isOpen is false, don't render the modal
@@ -144,28 +184,78 @@ interface ModalChannel {
 }
 
 
+
 const ModalUpdateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
   const context = useContext(MyContext);
   const [file , setFile] = useState<File | null>(null);
+  const [checkPass, setCheckPass] = useState(false);
+  const [checkPrivate, setCheckPrivate] = useState(false);
   const [url, setUrl] = useState('');
+  const [open, setOpen] = useState(false);
+  const [msg, setMsg] = useState('');
+  const [color, setColor] = useState('');
+  const [title, setTitle] = useState('');
+  
+  const openM = () =>{
+    setOpen(true);
+  }
+  const closeM = () =>{
+    setOpen(false);
+  }
+
+  
 
 
   const update  = () =>{
     console.log('update channel ', context?.channelInfo?.channelName);
-    if (file){
+    // if (file){
+    //   const form = new FormData();
+    //   form.append("file", file);
+    //             form.append("upload_preset", "mhaddaou");
+    //             // this file is not jpeg or PNG
+    //             if ((file.type !== "image/jpeg") && (file.type !== "image/png")){
+    //                 console.log('this image is not assests')
+    //             }
+    //             else{
+    //               axios.post("https://api.cloudinary.com/v1_1/daczu80rh/upload", form)
+    //                 .then((result) =>{
+    //                     setUrl(result.data.secure_url);
+    //                 })
+    //             }
+    // }
+    if (file && checkPass && checkPrivate){
       const form = new FormData();
       form.append("file", file);
-                form.append("upload_preset", "mhaddaou");
-                // this file is not jpeg or PNG
-                if ((file.type !== "image/jpeg") && (file.type !== "image/png")){
-                    console.log('this image is not assests')
-                }
-                else{
-                  axios.post("https://api.cloudinary.com/v1_1/daczu80rh/upload", form)
-                    .then((result) =>{
-                        setUrl(result.data.secure_url);
-                    })
-                }
+      form.append("upload_preset", "mhaddaou");
+      if ((file.type !== "image/jpeg") && (file.type !== "image/png")){
+        console.log('this image is not assests')
+        openM();
+      }
+
+      console.log('all');
+    }
+    else if (file && checkPass){
+      console.log('file and password');
+
+    }
+    else if (file && checkPrivate){
+      console.log('file and private');
+    }
+    else if (checkPass && checkPrivate){
+      console.log('password and private');
+    }
+    else if (checkPass){
+      console.log('password')
+    }
+    else if (file){
+      console.log('just image');
+    }
+    else if (checkPrivate){
+      console.log('just private ');
+      console.log(checkPass)
+    }
+    else{
+      console.log('nothing change');
     }
     
   }
@@ -176,8 +266,9 @@ const ModalUpdateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
 }
   return (
     <div className="fixed  inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ">
+      <ModalCheck isOpen={open} closeModal={closeM} title="nice" color="bg-green-400" msg="hello"  />
       <div className="w-[500px] h-[50%] bg-white rounded-lg">
-        <div className="w-full h-full ">
+        <div className="w-full h-full pt-2 ">
           <div className="w-full h-[10%]  flex justify-center items-center text-base md:text-xl ">Update Channel {context?.channelInfo?.channelName}</div>
           <div className="w-full h-[80%]  ">
           <div className="w-full h-1/3 flex justify-center items-center gap-4 flex-col">
@@ -190,14 +281,37 @@ const ModalUpdateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
             </div>
            
           </div>
-          <div className="w-full h-1/3 flex justify-center items-center">password</div>
-          <div className="w-full h-1/3 flex justify-center items-center">private</div>
+          <div className="w-full h-1/3 flex   flex-col  ">
+            <div  className="w-full h-1/2 flex justify-center gap-20">
+              <div>
+                <p className="text-xl font-mono font-semibold">password</p>
+              </div>
+              <div>
+              <input type="checkbox" onClick={() => setCheckPass(!checkPass)} checked={checkPass}  className="checkbox" />
+              </div>
+
+            </div>
+            <div className="w-full h-1/2">
+              <div className="flex items-center justify-center">
+              <input type="password"  placeholder="password" className="input input-ghost w-full max-w-xs" />
+              </div>
+            </div>  
+          
+              
+          </div>
+          <div className="w-full h-1/3 flex justify-center items-center gap-20">
+            <div className="text-xl font-mono font-semibold">
+                Private Channel
+            </div>
+            <div>
+            <input type="checkbox" onClick={() => setCheckPrivate(!checkPrivate)} checked={checkPrivate}  className="checkbox" />
+            </div>
+          </div>
 
           </div>
-          <div className="w-full h-[10%] bg-red-400 text-lg flex justify-end px-8 gap-5">
-            <button onClick={closeModal}>Close</button><button onClick={update}>Update</button>
-
-          </div>
+            <div className="w-full h-[10%]  text-xl  font-semibold flex justify-end px-8 gap-5 pb-2">
+              <button className="bg-slate-300 rounded px-1" onClick={closeModal}>Close</button><button className="bg-slate-300 rounded px-1" onClick={update}>Update</button>
+            </div>
         </div>
 
       </div>
