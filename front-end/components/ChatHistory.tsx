@@ -17,38 +17,19 @@ import Notification from './Notification'
 import { Stack } from "@mui/material";
 import { useRouter } from 'next/router';
 import Router from "next/router";
+import avatar from '../image/avatar.webp'
 
 import ChannelHistor from "./ChannelHistory";
 import { ModalInvite } from '@/components/Modal';
 
-const Sender = ({ msg }: { msg: string }) => {
-  
-  return (
-    <div className="chat chat-end">
-      <div className="chat-image avatar">
-        <div className="w-10 rounded-full">
-          <Image src={mhaddaou} alt="av" />
-        </div>
-      </div>
-      
-      <div className="chat-bubble">{msg}</div>
-          
-    </div>
-  );
-};
+const GetImage = ({name } : {name : string | undefined}) =>{
+  if (name === '0')
+    return <Image className="mask mask-squircle w-12 h-12" src={avatar} alt="avatar" /> 
+  else
+    return <img className="mask mask-squircle w-12 h-12" src={name} alt="avatar"/>
 
-const Reciever = ({ msg }: { msg: string }) => {
-  return (
-    <div className="chat chat-start">
-      <div className="chat-image avatar">
-        <div className="w-10 rounded-full">
-          <Image src={mhaddaou} alt="av" />
-        </div>
-      </div>
-      <div className="chat-bubble bg-slate-400">{msg}</div>
-    </div>
-  );
-};
+}
+
 
 const AvatarOffline = ({ img }: { img: StaticImageData }) => {
   return (
@@ -60,11 +41,11 @@ const AvatarOffline = ({ img }: { img: StaticImageData }) => {
   );
 };
 
-const AvatarOnline = ({ img }: { img: StaticImageData }) => {
+const AvatarOnline = ({ img }: { img: string  | undefined}) => {
   return (
     <div className="avatar online">
       <div className="w-14 rounded-full">
-        <Image src={img} alt="avatar" />
+        <GetImage name={img}  />
       </div>
     </div>
   );
@@ -82,6 +63,36 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [gameRoom, setGameRoom] = useState("")
 
+
+  const Sender = ({ msg }: { msg: string }) => {
+    
+    return (
+      <div className="chat chat-end">
+        <div className="chat-image avatar">
+          <div className="w-10 rounded-full">
+           {context?.img && <GetImage name={context?.img}/>}
+          </div>
+        </div>
+        
+        <div className="chat-bubble">{msg}</div>
+            
+      </div>
+    );
+  };
+  
+  const Reciever = ({ msg }: { msg: string }) => {
+    return (
+      <div className="chat chat-start">
+        <div className="chat-image avatar">
+          <div className="w-10 rounded-full">
+          {context?.login === context?.MessageInfo?.loginA? <GetImage name={context?.MessageInfo?.avatarB} /> : <GetImage name={context?.MessageInfo?.avatarA} /> }
+          </div>
+        </div>
+        <div className="chat-bubble bg-slate-400">{msg}</div>
+      </div>
+    );
+  };
+
   useEffect(() => {
     if (gameRoom.length)
       setIsModalOpen(true)
@@ -97,6 +108,7 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
     if (context?.socket) {
       context.socket.on('PrivateMessage', (payload: any) => {
         if (payload) {
+          // console.log('this is new message , ', payload)
           setNewMsg((prevMsgs) => [...prevMsgs, payload]);
         }
         if (!document.hidden) {
@@ -250,7 +262,8 @@ const handleGameInvite = () => {
        {isModalOpen && <ModalInvite isOpen={isModalOpen} closeModal={closeModal} title="Invitation to Game" msg={`you've been invited to join a game against ${gameRoom}`} color={gameRoom}  />}
       <div className={`w-full h-[7%] flex chat chat-start  border-b-2 border-slate-500 items-center ${chatHistory.length === 0 ? "hidden" : ""}`}>
         <div className="w-1/2 pl-6">
-          <AvatarOnline img={mhaddaou} />
+          {context?.login === context?.MessageInfo?.loginA ? <AvatarOnline img={context?.MessageInfo?.avatarB} /> : <AvatarOnline img={context?.MessageInfo?.avatarA} /> }
+          
         </div>
         <div className="w-1/2 pr-6 text-end">
           <div className="dropdown dropdown-left">
@@ -312,4 +325,4 @@ const handleGameInvite = () => {
   );
 }
 
-export {Reciever, Sender};
+// export {Reciever, Sender};

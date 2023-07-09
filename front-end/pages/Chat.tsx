@@ -104,6 +104,7 @@ export default function Chat() {
           },
         }
       );
+      console.log('this is responese of chat ', res.data);
       setCheck('chat');
       setChatHistory(res.data[1]);
       context?.setMessageInfo(res.data[0]);

@@ -86,6 +86,7 @@ const Other = () =>{
 
 
   const [check, setCheck] = useState(0);
+  const [status , setStatus] = useState('');
 
   const GetData = (check : number) =>{
     if (check === 1){
@@ -114,6 +115,14 @@ const Other = () =>{
           })
           // context?.setProfileuser(JSON.stringify(userLogin));
           console.log("respnse profile  ", res.data);
+          if (res.data.status.inGame)
+            setStatus('in Game');
+          else{
+            if (res.data.status.isOnline)
+              setStatus('on Line')
+            else
+              setStatus('Offline');
+          }
           context?.setProfile(res.data);
           console.log(res.data.avatar)
           console.log('context ', context?.profile?.avatar);
@@ -174,7 +183,7 @@ if (context?.profile && checkis ){
 
           </div>
           <div>
-              <h1 className="text-4xl text-slate-300 font-mono font-semibold  text-center  "> status</h1>
+              <h1 className="text-4xl text-slate-300 font-mono font-semibold  text-center  "> {status}</h1>
 
           </div>
 
