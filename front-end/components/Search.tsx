@@ -149,6 +149,11 @@ const closeModale = () =>{
             // }
           }
         })
+        context.socket.on('updateFriend', (pay) =>{
+          if (pay){
+            console.log('this is update friend  ', pay);
+          }
+        })
         
         context.socket.on('errorJoin' , (pay) =>{
             if (pay){
@@ -338,6 +343,7 @@ const closeModale = () =>{
         context.socket.off('errorMessage');
         context.socket.off('cancelInvitation');
         context.socket.off('blockuser');
+        context.socket.off('updateFriend');
       }
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps

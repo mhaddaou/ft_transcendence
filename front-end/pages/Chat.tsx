@@ -55,6 +55,7 @@ export default function Chat() {
     };
   async function handleContactClick(login: string, Channel: boolean) {
     
+    context?.setShowChat(true);
 
     if (Channel){
 
@@ -95,6 +96,7 @@ export default function Chat() {
     }
     else {
 
+      context?.setLoginClick(login);
        const res = await axios.post(
         "http://localhost:5000/chat/findConversation",
         { loginA: context?.login, loginB: login },

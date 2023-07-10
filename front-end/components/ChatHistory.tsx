@@ -15,6 +15,7 @@ import { MyContext, MesgType } from "./Context";
 import { element } from "prop-types";
 import Notification from './Notification'
 import { Stack } from "@mui/material";
+import Info from "@/components/Info";
 import { useRouter } from 'next/router';
 import Router from "next/router";
 import avatar from '../image/avatar.webp'
@@ -58,6 +59,7 @@ interface IMessage {
 }
 
 export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgType[], login: string }) {
+  const [showChat, setShowChat] = useState(true);
   const context = useContext(MyContext);
   const [newMsg, setNewMsg] = useState<MesgType[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -267,27 +269,58 @@ const removeChat = (login : string) =>{
 }
 const [loginr, setLoginr] = useState<string | undefined >(undefined);
 const blockUser = () =>{
-  console.log('hani dkhelt');
-  context?.login === context?.MessageContent[0].loginReceiver ? setUserBlock(context?.MessageContent[0].loginSender ) : setUserBlock(context?.MessageContent[0].loginReceiver)
-if (userBlock)
-  console.log(userBlock , ' this is user block');
-    // if (context?.socket)
-    // context?.socket.emit('block', {
-    //   blockedLogin: friend.login,
-    //   stillEnemy: true,
-    // })
-    // removefriend(friend.login);
-    // removeChat(friend.login);
-    // context?.setBlackList((prev) =>[...prev, friend]);
+ 
+    if (context?.socket)
+    context?.socket.emit('block', {
+      blockedLogin: context?.loginClick,
+      stillEnemy: true,
+    })
+    if (context?.loginClick){
+      removefriend(context?.loginClick);
+      removeChat(context?.loginClick);
+    }
+    const friend = context?.friends.find((user) => user.login === context.loginClick)
+    if (friend)
+      context?.setBlackList((prev) =>[...prev, friend]);
+      console.log(friend, ' this is friend that want to block');
+    // context?.setMessageContent([])
+    // setNewMsg([]);
+    // setShowChat(false);
+    context?.setShowChat(false);
   
 
 
 }
+const viewProfile = () =>{
+  console.log("viewProfile");
+  console.log(context?.loginClick);
+  context?.setProfileuser(context?.loginClick);
+      console.log(context?.loginClick);
+      const getData = async () =>{
+        const res = await axios.post('http://localhost:5000/user/viewProfile', 
+        {login : context?.loginClick}, 
+        {
+          headers: {
+            Authorization : `Bearer ${context?.token} `
+
+          }
+        });
+        console.log('this is res profile ', res.data.message);
+        if (res.data.message)
+          router.push(`http://localhost:3000/Profile/${context?.loginClick}`)
+        else
+          console.log('this user is block you ');
+      }
+      getData();
+}
 
 
   return (
-
-    <div className="flex flex-col h-full overflow-y-auto relative scrollbar scrollbar-thumb-green-400 scrollbar-w-1 scrollbar-track-slate-100 scrollbar- gap-1 bg-gray-300 rounded-2xl">
+    <>
+    <div className={`w-full h-full flex justify-center ${context?.showChat ? 'hidden' : 'block'}`}>
+      <Lottie  animationData={anim}  /> 
+    </div>
+    <div className={`flex flex-col h-full overflow-y-auto relative scrollbar scrollbar-thumb-green-400 scrollbar-w-1 scrollbar-track-slate-100 scrollbar- gap-1 bg-gray-300 rounded-2xl ${context?.showChat ? 'block' : 'hidden'}`}>
        {isModalOpen && <ModalInvite isOpen={isModalOpen} closeModal={closeModal} title="Invitation to Game" msg={`you've been invited to join a game against ${gameRoom}`} color={gameRoom}  />}
       <div className={`w-full h-[7%] flex chat chat-start  border-b-2 border-slate-500 items-center ${chatHistory.length === 0 ? "hidden" : ""}`}>
         <div className="w-1/2 pl-6">
@@ -295,18 +328,18 @@ if (userBlock)
           
         </div>
         <div className="w-1/2 pr-6 text-end">
-          <div className="dropdown dropdown-left">
+          <div className="dropdown w-20 dropdown-left">
             <button onClick={clickPro}>
               <FontAwesomeIcon className="w-8 h-7 text-black" icon={faBars} flip />
               <ul className={`${hidden} bg-white absolute -left-24 z-20 rounded-lg y-2 text-sm text-gray-700  flex flex-col font-mono font-semibold`} aria-labelledby="dropdownLargeButton">
                 <li>
-                  <Link href="#" className=" hover:text-cyan-700 pl- text-left  rounded-t-lg block px-4 py-2 hover:bg-gray-100 ">info</Link>
+                  <button onClick={viewProfile} className=" hover:text-cyan-700 pl- text-left  rounded-t-lg block px-4 py-2 hover:bg-gray-100 ">View Profile</button>
                 </li>
                 <li>
                   <button onClick={blockUser} className=" hover:text-cyan-700 text-left block px-4 py-2 hover:bg-gray-100 ">block</button>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-cyan-700 text-left rounded-b-lg block px-4 py-2 hover:bg-gray-100 ">Earnings</Link>
+                  {/* <Link href="#" className="hover:text-cyan-700 text-left rounded-b-lg block px-4 py-2 hover:bg-gray-100 ">Earnings</Link> */}
                 </li>
                 <li>
                   <Link href="#" onClick={handleGameInvite} className="hover:text-cyan-700 text-left rounded-b-lg block px-4 py-2 hover:bg-gray-100 ">Invite</Link>
@@ -325,7 +358,7 @@ if (userBlock)
       </div>
       <div className="w-full h-[93%] flex flex-col p-2 " ref={chatContainerRef}>
       {
-  (chatHistory.length > 0 ) &&
+  (chatHistory.length > 0  ) &&
   newMsg.map((msg: MesgType) => {
     if (msg.loginSender === context?.login) {
       return <Sender key={msg.loginSender} msg={msg.content} />;
@@ -351,6 +384,8 @@ if (userBlock)
         </div>
       </div>
     </div>
+    </>
+
   );
 }
 
