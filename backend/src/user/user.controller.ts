@@ -1,5 +1,5 @@
 import { UserService } from 'src/user/user.service';
-import { Body, Controller, Get,Req, Post, UseGuards, Res, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Param } from '@nestjs/common';
+import { Body, Controller, Get,Req, Post, UseGuards, Res, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Param, Delete } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FriendDto ,findUserDto, findUserOrChannel, storeMatchDto, usernameDto } from './dto/user.dto';
 import { Response } from 'express';
@@ -121,7 +121,7 @@ constructor(private readonly userSrevice:UserService, private readonly achieveme
     @Post('blocks')
     async getListBlocked(@Body() findUser:findUserDto, @Res() response:Response){
         try {
-            const result =  await this.userSrevice.getBlockedList(findUser);
+            const result =  await this.userSrevice.getblockedUsers(findUser.login);
             response.status(200).json(result);
         }
         catch(error){
@@ -226,13 +226,13 @@ constructor(private readonly userSrevice:UserService, private readonly achieveme
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Post('deleteAccount')
+    @Delete('deleteAccount')
     async deleteAccount(@Req() req:any, @Res() response:Response){
         try{
             const { login} = req.user;
             const user = await this.userSrevice.findUser({login:login});
             await this.userSrevice.deleteAcoount(login);
-            response.redirect(`http://localhost:3000`);
+            response.json({message:'Done'});
         }
         catch(error){
             response.status(400).json(error);

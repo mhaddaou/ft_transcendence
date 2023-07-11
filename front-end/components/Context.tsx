@@ -363,11 +363,11 @@ const MyContextProvider = ({children} : ChildProps) =>{
         if (GetBlock!== undefined && GetBlock!== null) {
           setBlackList(JSON.parse(GetBlock));
         }
-        if (GetWaitAccept != undefined && GetWaitAccept !== null){
+        if (GetWaitAccept != undefined && GetWaitAccept !== null && GetWaitAccept !== "undefined"){
             setWaitToAccept(JSON.parse(GetWaitAccept));
         }
         const GetPending = localStorage.getItem('pending')
-        if (GetPending !== undefined && GetPending != null){
+        if (GetPending !== undefined && GetPending != null && GetPending !== "undefined"){
           setPendingInvitation(JSON.parse(GetPending));
         }
         const GetChangeName = localStorage.getItem('changeName');

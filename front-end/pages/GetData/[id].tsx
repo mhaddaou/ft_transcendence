@@ -114,6 +114,7 @@ export default function Profileid() {
           )
           console.log(' this is all users you are block ', res.data);
           context?.setUserBlocked(res.data);
+          console.log('and this is all users you are blocked in context ', context?.userBlocked);
 
         }catch(e){
           console.log(e)

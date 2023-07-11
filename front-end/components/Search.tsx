@@ -76,6 +76,11 @@ const closeModale = () =>{
 
           }
         })
+        context.socket.on('twoInvite', (pay) =>{
+          console.log('you are friend friend');
+
+
+        })
         context?.socket.on('joinOther', (pay) =>{
           if (pay){
             console.log('her channel name ', pay)
@@ -215,7 +220,34 @@ const closeModale = () =>{
             avatar : pay.avatar
           }
 
-            context.setPendingInvitation((prev) =>[...prev,friend])
+            // context.setPendingInvitation((prev) =>[...prev,friend])
+            const getDat = async () =>{
+              try{
+                const resp = await axios.post('http://localhost:5000/user/friends', 
+                {login : context?.login}, 
+                {
+                  headers: {
+                    Authorization : `Bearer ${context?.token} `
+
+                  }
+                });
+                console.log(resp);
+                const res= await axios.post('http://localhost:5000/user/friends',
+                {login : context.login},
+                {
+                  headers : {
+                    Authorization : `Bearer ${context.token}`
+                  }
+                }
+                )
+                context.setPendingInvitation(res.data.waitToAccept);
+                console.log('this fro event invite j',res.data )
+
+              }catch(e){
+                console.log(e);
+              }
+            }
+            getDat()
         }
       })
 
@@ -330,8 +362,11 @@ const closeModale = () =>{
                 Authorization : `Bearer ${context.token}`,
               }
             })
-            console.log('this is friends ', res.data.friends);
+            console.log('this all  friends  and not friend  ', res.data);
             context.setFriends(res.data.friends);
+            context.setWaitToAccept(res.data.pendingInvitationt);
+            context.setPendingInvitation(res.data.waitAccept);
+
           }
           getData();
           const fetchData = async () => {
@@ -464,6 +499,7 @@ const closeModale = () =>{
         context.socket.off('blockuser');
         context.socket.off('updatedFriend');
         context.socket.off('firstMsg');
+        context.socket.off('twoInvite');
         
       }
     };

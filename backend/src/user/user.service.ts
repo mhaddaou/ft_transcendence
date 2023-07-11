@@ -1,5 +1,5 @@
 import { BlockDto, FriendDto, LoginDto, UpdateStats, UpdateStatus, UpdateUserDto, findUserDto, findUserOrChannel, invitationDto, storeMatchDto, usernameDto } from './dto/user.dto';
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadGatewayException, BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Acheivement } from '@prisma/client';
 import { PrismaService,  } from 'prisma/prisma.service';
 import { Achievements } from './achievement.service';
@@ -604,6 +604,25 @@ export class UserService {
                         ConvId:conv.ConvId
                     }
                 })
+            let pend = await this.prisma.client.pendingFriendShip.findFirst({
+                where:{
+                    senderId:user.UserId,
+                    receiverId:blockedUser.UserId
+                }
+            })
+            if (!pend)
+                pend = await this.prisma.client.pendingFriendShip.findFirst({
+                    where:{
+                        senderId:blockedUser.UserId,
+                        receiverId:user.UserId,
+                    }
+                })
+            if (pend)
+                await  this.prisma.client.pendingFriendShip.delete({
+                    where:{
+                        PendingId:pend.PendingId
+                    }
+                })
             return await this.prisma.client.block.create({
                 data:{
                     blockBy:{
@@ -643,6 +662,27 @@ export class UserService {
             })
         else
             throw new BadRequestException(`${login} didn't block ${blocked}`);
+    }
+
+    // get list blocked for displaying display them
+    async getblockedUsers(login:string){
+        const user = await  this.findUser({login:login});
+        const blockedList = await this.prisma.client.block.findMany({
+            where:{
+                blockedById:user.UserId,
+            },
+            select:{
+                blocked:{
+                    select:{
+                        login:true,
+                        username:true,
+                        avatar:true,
+                    }
+                }
+            }
+        });
+        const result = blockedList.map(it => it.blocked);
+        return result;
     }
 
     // get list of blocked users by  a user
@@ -910,6 +950,8 @@ export class UserService {
         const {loginA, loginB, scoreA, scoreB, winner} = matchDto;
         const userA = await  this.findUser({login:loginA});
         const userB = await  this.findUser({login:loginB});
+        if (loginA === loginB)
+            throw new BadGatewayException("loginA  and loginB  must be different");
         await this.prisma.client.match.create({
             data:{
                 userA:{
@@ -934,7 +976,7 @@ export class UserService {
                     UserId:userA.UserId,
                 },
                 data:{
-                    lvl:userA.lvl + 0.4,
+                    lvl:userA.lvl + 0.4
                 }
             });
             if (userB.lvl > 0)
@@ -944,7 +986,7 @@ export class UserService {
                         UserId:userB.UserId,
                     },
                     data:{
-                        lvl:userB.lvl + 0.2,
+                        lvl:userB.lvl - 0.2
                     },
                 });
             }
@@ -956,7 +998,7 @@ export class UserService {
                     UserId:userB.UserId,
                 },
                 data:{
-                    lvl:userB.lvl + 0.4,
+                    lvl:userB.lvl + 0.4
                 },
             });
             if (userA.lvl > 0)
@@ -966,7 +1008,7 @@ export class UserService {
                         UserId:userA.UserId,
                     },
                     data:{
-                        lvl:userA.lvl + 0.2
+                        lvl:userA.lvl - 0.2
                     },
                 });
             }
@@ -1057,6 +1099,17 @@ export class UserService {
 
 
     async deleteAcoount(login:string){
+        const user = await this.findUser({login:login});
+        await this.prisma.client.channel.deleteMany({
+            where:{
+                LoginOwner:login,
+            },
+        });
+        await this.prisma.client.msgChannel.deleteMany({
+            where:{
+                login:login,
+            },
+        });
         await this.prisma.client.user.delete({
             where:{
                 login:login

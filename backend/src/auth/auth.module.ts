@@ -16,7 +16,6 @@ import { Achievements } from 'src/user/achievement.service';
     PassportModule,
     JwtModule.register({secret: `${process.env.jwt_secret}`,signOptions: { expiresIn: '1d' }}),
     UserModule,
-
   ],
   providers: [AuthService, JwtStrategy,QuaranteDeuxStrategy,ftAuthGuard, UserService, Achievements, PrismaService ],
   controllers: [AuthController]

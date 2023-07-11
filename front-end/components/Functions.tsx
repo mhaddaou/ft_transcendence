@@ -48,7 +48,27 @@ export function DataFunction (nbr : number){
               return <DataRecieved />
             }
             else if (nbr == 6){
-              console.log('black list');
+              const fetchBlockusers = async () =>{
+                try{
+                  const res = await axios.post('http://localhost:5000/user/blocks',
+                  {
+                    login : context?.login
+                  },{
+                    headers : {
+                      Authorization : `Bearer ${context?.token}`
+                    }
+                  }
+                  )
+                  console.log(' this is all users you are block ', res.data);
+                  context?.setUserBlocked(res.data);
+                  console.log('and this is all users you are blocked in context ', context?.userBlocked);
+          
+                }catch(e){
+                  console.log(e)
+                }
+          
+               }
+               fetchBlockusers();
               return <BlackList />
             }
             else{

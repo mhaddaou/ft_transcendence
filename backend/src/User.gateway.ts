@@ -447,7 +447,7 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
             this.sendMsgToUser(login, msg, 'join');
         }
         catch(error){
-            client.emit('errorMessage', error);
+            client.emit('errorJoin', error);
         }
     }
 
@@ -834,5 +834,10 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
         catch(error){
             client.emit('errorMessage', error);
         }
+    }
+
+    @SubscribeMessage('deleteAccount')
+    async deleteAccount(){
+        
     }
 }

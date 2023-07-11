@@ -300,10 +300,11 @@ const blockUser = () =>{
       removefriend(context?.loginClick);
       removeChat(context?.loginClick);
     }
-    const friend = context?.friends.find((user) => user.login === context.loginClick)
-    if (friend)
-      context?.setBlackList((prev) =>[...prev, friend]);
-      console.log(friend, ' this is friend that want to block');
+  
+    // const friend = context?.friends.find((user) => user.login === context.loginClick)
+    // if (friend)
+    //   context?.setUserBlocked((prev) =>[...prev, friend]);
+    //   console.log(friend, ' this is friend that want to block');
     // context?.setMessageContent([])
     // setNewMsg([]);
     // setShowChat(false);
