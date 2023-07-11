@@ -77,7 +77,26 @@ const closeModale = () =>{
           }
         })
         context.socket.on('twoInvite', (pay) =>{
-          console.log('you are friend friend');
+          console.log('twoInvite');
+          const fetchData = async () =>{
+            try{
+              const res = await axios.post('http://localhost:5000/user/friends',
+              {
+                login : context?.login
+              },{
+                headers : {
+                  Authorization : ` Bearer ${context?.token}`
+                }
+              }
+              )
+              console.log(' this is res for friend res', res);
+              // context.setF
+
+            }catch (error) {
+              console.log(error)
+            }
+
+          }
 
 
         })

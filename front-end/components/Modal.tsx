@@ -737,6 +737,7 @@ const ModalSearch = (props: ModalSearchProps) => {
   }
 
   const removeChat = (login: string) => {
+    if (context?.waitToAccept)
     context?.setWaitToAccept(prevcontact =>
       prevcontact.filter(chat => chat.login !== login))
   }
@@ -756,7 +757,10 @@ const ModalSearch = (props: ModalSearchProps) => {
         avatar: user.avatar,
       }
       removeChat(user.login)
-      context?.setWaitToAccept((prev) => [...prev, friend])
+      if (context?.waitToAccept)
+        context?.setWaitToAccept((prev) => [...prev, friend])
+      else
+        context?.setWaitToAccept([friend]);
 
       // when i add this
     }
