@@ -4,6 +4,7 @@ import React, {ChangeEvent, useContext, useEffect, useState} from "react";
 import Image, { StaticImageData } from "next/image";
 import { url } from "inspector";
 import { MyContext } from "@/components/Context";
+import { checkIs7rag } from "./Functions";
 const Upload = () =>{
 
 
@@ -19,6 +20,8 @@ const Upload = () =>{
 
 
     function sendToBck(Url : string) {
+        if (context?.token)
+            checkIs7rag(context?.token);
         if (context?.socket) {
             context?.socket.emit("updateUser",{avatar : Url });
         }

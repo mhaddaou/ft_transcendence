@@ -13,6 +13,7 @@ import Router from "next/router";
 import axios from "axios";
 
 import { Award } from "react-feather"
+import { checkIs7rag } from "./Functions";
 interface Achievements {
   avatar: string
   condition: string
@@ -184,6 +185,8 @@ export function GetDataFriend() {
   }
 
   const blockUser = (friend: FriendType) => {
+    if (context?.token)
+      checkIs7rag(context?.token);
     if (context?.socket)
       context?.socket.emit('block', {
         blockedLogin: friend.login,
@@ -209,6 +212,8 @@ export function GetDataFriend() {
   }
   
   const deleteFriend = (friend: FriendType) => {
+    if (context?.token)
+      checkIs7rag(context?.token);
     context?.socket?.emit('removeFriend', { login: friend.login });
     removefriend(friend.login);
   }
@@ -295,6 +300,8 @@ const DatSend = () => {
 
 
   const removeInvite = (login: string) => {
+    if (context?.token)
+      checkIs7rag(context?.token);
     context?.socket?.emit('removeInvite', { login: login });
     rmv(login);
     console.log(login);
@@ -366,7 +373,10 @@ const DataRecieved = () => {
   };
 
   const AcceptFriend = (friend: FriendType) => {
+    if (context?.token)
+      checkIs7rag(context?.token);
     removefriend(friend.login)
+    
     context?.socket?.emit('acceptFriend',
       {
         login: friend.login,
@@ -380,6 +390,8 @@ const DataRecieved = () => {
   }
 
   const deleteinvit = (friend: FriendType) => {
+    if (context?.token)
+      checkIs7rag(context?.token);
     removefriend(friend.login)
     context?.socket?.emit('acceptFriend', {
       login: friend.login,
@@ -455,6 +467,8 @@ const BlackList = () => {
     );
   };
   const removeBlock = (friend: FriendType) => {
+    if (context?.token)
+      checkIs7rag(context?.token);
     context?.socket?.emit('block', {
       blockedLogin: friend.login,
       stillEnemy: false,

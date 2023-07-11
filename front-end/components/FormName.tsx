@@ -7,6 +7,7 @@ import InfoContact from "./InfoContact";
 import { SubmitName } from "./InfoContact";
 import { Hidden } from "@mui/material";
 import Modal from "./Modal";
+import { checkIs7rag } from "./Functions";
 
 
 function containsSpecialChars(str : string) : boolean {
@@ -71,6 +72,9 @@ function containsSpecialChars(str : string) : boolean {
       if (!containsSpecialChars(name) && name.length > 7) {
         if (context?.socket) {
           console.log('dkhelt ....');
+          // here when i check is 7rag
+          context.token
+          checkIs7rag(context?.token)
           context?.socket.emit("updateUsername",{username : name});
         }
       } else {

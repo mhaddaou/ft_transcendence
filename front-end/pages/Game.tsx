@@ -14,6 +14,7 @@ import { ChevronLeft, ChevronRight } from 'react-feather'
 import { ModalGame } from '@/components/Modal';
 
 import { useRouter } from 'next/router';
+import { checkIs7rag } from '@/components/Functions';
 
 // const inter = Inter({ subsets: ['latin'] })
 // var token : string | null = null;
@@ -100,6 +101,8 @@ export default function Game() {
 
 
       const handleLeavePage = () => {
+        if (context?.token)
+          checkIs7rag(context?.token);
         if (matterjsInstance && matterjsInstance.socket) {
           matterjsInstance.socket.emit('gameDisconnection', 'User has navigated from the page');
         }

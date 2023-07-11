@@ -15,7 +15,7 @@ import axios from "axios";
 import { Socket } from "socket.io-client";
 import { ModalChat } from "./Modal";
 import { AlertCircle, CheckCircle } from 'react-feather'
-import { GetAvatarChannel } from "./Functions";
+import { GetAvatarChannel, checkIs7rag } from "./Functions";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
 
@@ -173,6 +173,8 @@ const AddMember = () => {
       
     }
     GetData();
+    if (context?.token)
+      checkIs7rag(context?.token);
     context?.socket?.emit('inviteMember', { channelName: context.channelInfo?.channelName, login: friend.login })
     if(context?.socket)
     context?.socket.on('errorDuplicate', (pay) =>{
@@ -262,6 +264,8 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
 
 
   const leaveChannel = () => {
+    if (context?.token)
+      checkIs7rag(context?.token);
     context?.socket?.emit('leaveChannel', {
       channelName: context.channelInfo?.channelName,
     })
@@ -283,6 +287,8 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
 
   //delete Channel
   const deleteChannel = () => {
+    if (context?.token)
+      checkIs7rag(context?.token);
     context?.socket?.emit('deleteChannel', {
       channelName: context.channelInfo?.channelName
     })
@@ -320,21 +326,29 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
     closeMember: () => void;
   }
   const kickMember = (user : MembersType) =>{
+    if (context?.token)
+      checkIs7rag(context?.token);
     
     context?.socket?.emit('kickMember',{channelName : user.channelName, loginDeleted : user.login});
     setIsOpenMember(false);
   }
   const Ban = (user : MembersType) =>{
+    if (context?.token)
+      checkIs7rag(context?.token);
     context?.socket?.emit('updateMember', {channelName: user.channelName, loginAffected : user.login, isBlacklist : true})
     setIsOpenMember(false);
     
   }
   const promote = (user : MembersType) =>{
+    if (context?.token)
+      checkIs7rag(context?.token);
     context?.socket?.emit('updateMember',{channelName : user.channelName,loginAffected : user.login,isAdmin : true})
     setIsOpenMember(false);
     
   }
   const Unpromote = (user : MembersType) =>{
+    if (context?.token)
+      checkIs7rag(context?.token);
     context?.socket?.emit('updateMember',{channelName : user.channelName,loginAffected : user.login,isAdmin : false})
     setIsOpenMember(false);
 
@@ -343,6 +357,8 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
   const timeMeut = useRef<HTMLInputElement | null>(null)
   const meute = (user : MembersType) =>{
     if (timeMeut.current){
+      if (context?.token)
+      checkIs7rag(context?.token);
       context?.socket?.emit('updateMember',{channelName : user.channelName,loginAffected : user.login,isMute : true,timeMute : +timeMeut.current.value})
     setIsOpenMember(false);
     }
@@ -351,6 +367,8 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
   const sendInvite = (user: FriendType) => {
 
     if (user.login) {
+      if (context?.token)
+      checkIs7rag(context?.token);
       context?.socket?.emit('inviteFriend', {
         login: user.login,
       })
@@ -658,6 +676,8 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
   const send = () => {
     console.log('send message on this channel  ', context?.channelInfo?.channelName);
     if (inputValue != '') {
+      if (context?.token)
+      checkIs7rag(context?.token);
       context?.socket?.emit('msgChannel', {
         channelName: context.channelInfo?.channelName,
         content: inputValue,

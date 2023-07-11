@@ -31,6 +31,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { send } from "process";
 import { Socket } from "socket.io-client";
+import { checkIs7rag } from "./Functions";
 
 
 
@@ -145,6 +146,8 @@ const ModalChat: React.FC<ModalChatProps> = ({ isOpen, closeModal, name, login }
   const sendMsg = () => {
     if (value.current) {
       if (context?.socket) {
+        if (context?.token)
+          checkIs7rag(context?.token);
         context.socket.emit('PrivateMessage', {
           receiver: login,
           content: value.current.value
@@ -286,6 +289,8 @@ const ModalUpdateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
         const sendImage = async () =>{
                 const res = await axios.post("https://api.cloudinary.com/v1_1/daczu80rh/upload", form);
                 if (res.data){
+                  if (context?.token)
+                    checkIs7rag(context?.token);
                   context?.socket?.emit('updateChannel',
                   {
                     channelName : context.channelInfo?.channelName,
@@ -307,6 +312,8 @@ const ModalUpdateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
 
     }
     else{
+      if (context?.token)
+        checkIs7rag(context?.token);
       context?.socket?.emit('updateChannel',
       {
         channelName : context.channelInfo?.channelName,
@@ -456,6 +463,8 @@ const ModalCreateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
   }
 
   const Create = () => {
+    if (context?.token)
+      checkIs7rag(context?.token);
     if (pass && check) {
       var msg: newChannel | string = '';
       if (chanref.current && passref.current) {
@@ -466,6 +475,7 @@ const ModalCreateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
           password: passref.current.value,
         }
       }
+
       context?.socket?.emit('newChannel', msg)
       // closeModal()
 
@@ -480,8 +490,8 @@ const ModalCreateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
           ispassword: pass,
           password: passref.current.value,
         }
-        console.log('this what i send ', msg)
-
+        if (context?.token)
+          checkIs7rag(context?.token);
         context?.socket?.emit('newChannel', msg)
       }
       // closeModal()
@@ -499,6 +509,8 @@ const ModalCreateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
           ispassword: pass,
           password: '',
         }
+        if (context?.token)
+          checkIs7rag(context?.token);
 
         context?.socket?.emit('newChannel', msg)
       }
@@ -518,6 +530,8 @@ const ModalCreateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
           password: '',
         }
       }
+      if (context?.token)
+        checkIs7rag(context?.token);
       context?.socket?.emit('newChannel', msg)
     }
 
@@ -634,6 +648,8 @@ const ModalJoin = (props: ModaleJoin) => {
       );
     }
     else {
+      if (context?.token)
+        checkIs7rag(context?.token);
       context?.socket?.emit('joinChannel', { channelName: props.channel.channelName })
       setHidden('hidden')
       return (
@@ -643,6 +659,8 @@ const ModalJoin = (props: ModaleJoin) => {
   }
 
   const JoinChannelPass = () => {
+    if (context?.token)
+      checkIs7rag(context?.token);
     if (value.current)
       context?.socket?.emit('joinChannel', { channelName: props.channel.channelName, password: value.current.value })
 
@@ -746,6 +764,8 @@ const ModalSearch = (props: ModalSearchProps) => {
   const sendInvite = (user: userSearchProps) => {
 
     if (user.login) {
+      if (context?.token)
+        checkIs7rag(context?.token);
       context?.socket?.emit('inviteFriend', {
         login: user.login,
       })
@@ -956,6 +976,8 @@ const ModalInvite: React.FC<ModalProps> = ({ isOpen, closeModal, title, msg, col
   }
 
   const handleDecline = () => {
+    if (context?.token)
+      checkIs7rag(context?.token);
     if (context?.socket)
       context?.socket.emit("cancelGame", {
         host: color
@@ -1065,6 +1087,8 @@ const ModalListBanner = (props : banner) =>{
     }
   const context = useContext(MyContext);
   const removeBan = (user : BanedType) =>{
+    if (context?.token)
+      checkIs7rag(context?.token);
     context?.socket?.emit('updateMember', {channelName: context.channelInfo?.channelName, loginAffected : user.login, isBlacklist : false})
     props.close();
     

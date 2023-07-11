@@ -249,7 +249,7 @@ constructor(private readonly userSrevice:UserService, private readonly achieveme
             response.status(200).json({message:true});
         }
         catch(error){
-            response.status(400).json({message:false});
+            response.status(900).json({message:false});
         }
     }
 }

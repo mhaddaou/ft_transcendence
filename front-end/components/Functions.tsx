@@ -5,6 +5,9 @@ import { MyContext } from './Context';
 import avatar from '../image/avatar.webp'
 import Image from 'next/image';
 import axios from 'axios';
+import Router from 'next/router';
+import { Content } from 'next/font/google';
+const router = Router
 
 interface PropsCallBarLeft{
   page : string;
@@ -124,6 +127,25 @@ else
   return (
     <img className="w-12 h-12 rounded-full border-4 border-slate-400 cursor-pointer hover:border-slate-900" src={context?.channelInfo?.avatar} alt="ava" />
   );
+
+
+}
+
+export async function  checkIs7rag(token : string) {
+  try{
+    const res = await axios.get('http://localhost:5000/user/is7erag', {headers:{
+            Authorization : `Bearer ${token}`
+        }})
+        if (res.data.message)
+          console.log('is not 7rag');
+        else{
+          console.log('is 7rag 7rag');
+          router.push('/NotExist');
+        }
+
+  }catch(e){
+    console.log(e);
+  }
 
 
 }

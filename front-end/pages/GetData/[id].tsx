@@ -81,6 +81,7 @@ export default function Profileid() {
         context?.setLosses(response.porcentages.pLose)
         context?.setWins(response.porcentages.pWin)
         context?.setImg(response.avatar);
+        context?.setAcheivement(response.acheivement);
         context?.setFriends(response.friends.friends);
         context?.setWaitToAccept(response.friends.pendingInvitation);
         context?.setPendingInvitation(response.friends.waitToAccept);

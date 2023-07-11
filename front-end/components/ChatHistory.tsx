@@ -22,6 +22,7 @@ import avatar from '../image/avatar.webp'
 
 import ChannelHistor from "./ChannelHistory";
 import { ModalInvite } from '@/components/Modal';
+import { checkIs7rag } from "./Functions";
 
 const GetImage = ({name } : {name : string | undefined}) =>{
   if (name === '0')
@@ -180,6 +181,8 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
   
     if (context?.socket) {
       if (inputValue !== '') {
+        if (context?.token)
+          checkIs7rag(context?.token);
         context.socket.emit('PrivateMessage', {
           receiver: login,
           content: inputValue,
@@ -266,7 +269,8 @@ const handleGameInvite = () => {
   if (context?.socket) {
 
     const url = `Game/?room=${context.login}&queue=false`;
-    console.log("emiting invite", url)
+    if (context?.token)
+      checkIs7rag(context?.token);
     context.socket.emit('gameInvitation', {
       receiver: login,
     });
@@ -290,7 +294,9 @@ const removeChat = (login : string) =>{
 }
 const [loginr, setLoginr] = useState<string | undefined >(undefined);
 const blockUser = () =>{
- 
+
+    if (context?.token)
+      checkIs7rag(context?.token);
     if (context?.socket)
     context?.socket.emit('block', {
       blockedLogin: context?.loginClick,

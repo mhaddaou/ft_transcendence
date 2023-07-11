@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { MyContext } from '@/components/Context';
 import axios from "axios";
+import { checkIs7rag } from "./Functions";
 
 
 const Form2fa = () => {
@@ -46,6 +47,8 @@ console.log(context?.enableTwoFa)
     if (context){
         const userInfo = await fetchdata(context?.token)
         context.setEnableTwofa(!context.enableTwoFa)
+        if (context?.token)
+            checkIs7rag(context?.token);
         context?.socket?.emit("updateUser",{
             enableTwoFa: !context.enableTwoFa
         })
