@@ -141,11 +141,18 @@ export interface FriendType{
   avatar : string;
 }
 
+interface PorTypes{
+  pWin : number;
+  pLose : number;
+  numberOfMatches : number;
+}
 export interface profileType{
   username: string;
   avatar: string;
   matches : MatchType[];
   acheivement : AchievementType[];
+  porcentages : PorTypes;
+  lvl : number
 }
 
 

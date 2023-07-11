@@ -88,6 +88,8 @@ const Other = () =>{
 
   const [check, setCheck] = useState(0);
   const [status , setStatus] = useState('');
+  const [level,setLevel] = useState(0);
+  const [perLevel,setPerLevel] = useState(0);
 
   const GetData = (check : number) =>{
     console.log(check , '  this is check')
@@ -127,8 +129,12 @@ const Other = () =>{
             else
               setStatus('Offline');
           }
+          const m : string = res.data.lvl.toString();
+          setLevel((+m.substring(0,1)))
+          setPerLevel((+(m.substring(2.1))) * 10)
           console.log('this is all data in profile ', res.data.acheivement);
           // here when i check level 
+          console.log(res.data, '   here all response');
           context?.setProfile(res.data);
           console.log(res.data.avatar)
           console.log('context ', context?.profile?.avatar);
@@ -201,9 +207,9 @@ if (context?.profile && checkis ){
           <div className='bg-gray-200 w-full  h-1/2 rounded-2xl px-8 md:px-0  overflow-y-auto scrollbar-thin'>
             <div className='h-full  w-full flex  flex-col gap-4 md:flex-row md:justify-around md:items-center'>
               
-            <LevelStatics level={context?.level || 0} per={context?.LevlPer || 0} />
-            <Stats per={context?.wins || 0} name='Wins' />
-            <Stats per={context?.losses || 0} name='Losses' />
+            <LevelStatics level={level || 0} per={perLevel || 0} />
+            <Stats per={context.profile.porcentages.pWin || 0} name='Wins' />
+            <Stats per={context?.profile.porcentages.pLose || 0} name='Losses' />
             </div>
           </div>
         </div>
