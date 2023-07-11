@@ -151,18 +151,9 @@ const closeModale = () =>{
             // }
           }
         })
-        context.socket.on('updateFriend', (pay) =>{
-          if (pay){
-            console.log('this is update friend  ', pay);
-          }
-        })
+       
         
-        context.socket.on('errorJoin' , (pay) =>{
-            if (pay){
-              console.log(pay)
-              console.log('this is error')
-            }
-        })
+     
     }
 
 

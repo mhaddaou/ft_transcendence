@@ -627,7 +627,7 @@ const ModalJoin = (props: ModaleJoin) => {
       return (
         <div className="flex flex-col gap-2">
           <p>this channel with pass</p>
-          <input type="password" placeholder="Type Password" onClick={() => setColor('input-success')} ref={value} className={`input input-bordered  w-full max-w-xs ${color} `} />
+          <input type="password" placeholder="Type Password"  ref={value} className={`input input-bordered  w-full max-w-xs ${color} `} />
           <p>{msg}</p>
 
         </div>
@@ -649,41 +649,41 @@ const ModalJoin = (props: ModaleJoin) => {
 
 
   }
-  // useEffect(() =>{
-  //   if (context?.socket){
-  //     context?.socket.on('errorJoin', (pay) =>{
-  //       if (pay ){
-  //         console.log('this is error join ' , pay);
-  //         setMsg(pay.message);
-  //         setColor('input-error')
-  //       }
-  //     })
-  //     context.socket.on('join', (pay) =>{
-  //       if (pay){
-  //         console.log('this for you are join channel pass ', pay);
-  //         const GetDat = async () =>{
-  //           const res = await axios.post(
-  //             'http://localhost:5000/chat/channel/message/all',
-  //             {channelName: login}, 
-  //             {
-  //               headers:{
-  //                 Authorization : `Bearer ${context?.token}`,
-  //               },
-  //             }
-  //           );
-  //         }
-  //         props.closeModal();
-  //         props.closeModalSearch()
-  //       }
-  //     })
+  useEffect(() =>{
+    if (context?.socket){
+      context?.socket.on('errorJoin', (pay) =>{
+        if (pay ){
+          console.log('this is error join ' , pay);
+          setMsg(pay.message);
+          setColor('input-error')
+        }
+      })
+      context.socket.on('join', (pay) =>{
+        if (pay){
+          console.log('this for you are join channel pass ', pay);
+          const GetDat = async () =>{
+            const res = await axios.post(
+              'http://localhost:5000/chat/channel/message/all',
+              {channelName: props.channel.channelName}, 
+              {
+                headers:{
+                  Authorization : `Bearer ${context?.token}`,
+                },
+              }
+            );
+          }
+          props.closeModal();
+          props.closeModalSearch()
+        }
+      })
 
-  //   }
-  //   return () =>  {
-  //       // context?.socket?.off('join');
-  //       context?.socket?.off('errorJoin');
-  //   };
+    }
+    return () =>  {
+        context?.socket?.off('join');
+        // context?.socket?.off('errorJoin');
+    };
 
-  // }, [context?.socket])
+  }, [context?.socket])
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50  ">
