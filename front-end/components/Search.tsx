@@ -218,6 +218,12 @@ const closeModale = () =>{
             context.setPendingInvitation((prev) =>[...prev,friend])
         }
       })
+
+      // context.socket.on('updatedFriend', (pay) =>{
+      //   if (pay){
+      //     console.log('this is updated ', pay);
+      //   }
+      // })
       context.socket.on('accept',(pay) =>{
         if (pay){
           rmv(pay.login);
@@ -241,6 +247,48 @@ const closeModale = () =>{
       context.socket.on('cancelInvitation', (pay) =>{
         if (pay){
           rmvPend(pay.login)
+        }
+      })
+      context.socket.on('updatedFriend', (pay) =>{
+        if (pay){
+          console.log('updatedFriend  ', pay);
+          const getData = async () =>{
+            const res = await axios.post(
+              "http://localhost:5000/chat/findConversation",
+              { loginA: context?.login, loginB: pay.login },
+              {
+                headers: {
+                  Authorization: `Bearer ${context?.token}`,
+                },
+              }
+            );
+            context?.setMessageInfo(res.data[0]);
+            context?.setMessageContent(res.data[1]);
+            const chatconver = await axios.post(
+              'http://localhost:5000/chat/conversations',
+              { login: context?.login },
+              {
+                headers: {
+                  Authorization: `Bearer ${context?.token}`,
+                },
+              }
+            );
+            context.setContactChat(chatconver.data);
+            const friend = await axios.post('http://localhost:5000/user/friends',
+            {
+              login: context.login,
+            },
+            {
+              headers:{
+                Authorization : `Bearer ${context.token}`,
+              }
+            })
+            context?.setPendingInvitation(friend.data.waitToAccept);
+            context?.setWaitToAccept(friend.data.pendingInvitation);
+            context.setFriends(friend.data.friends);
+          }
+          getData();
+          
         }
       })
       context.socket.on('kick',(pay)=>{
@@ -267,6 +315,7 @@ const closeModale = () =>{
 
         }
       })
+      
       context.socket.on('blockuser', (pay) =>{
         if (pay) {
           const getData = async () =>{
@@ -283,7 +332,75 @@ const closeModale = () =>{
             context.setFriends(res.data.friends);
           }
           getData();
+          const fetchData = async () => {
+            try {
+              const res = await axios.post(
+                'http://localhost:5000/chat/conversations',
+                { login: context?.login },
+                {
+                  headers: {
+                    Authorization: `Bearer ${context?.token}`,
+                  },
+                }
+              );
+              context?.setContactChat(res.data);
+      
+            } catch (error) {
+              console.error('Error fetching data:', error);
+            }
+          };
+        
+          fetchData();
+          context?.setShowChat(false);
         }
+        console.log('ths is block ', pay);
+      })
+      context.socket.on('privateMessage',(pay) =>{
+        console.log('message received');
+        const fetchData = async () => {
+          try {
+            const res = await axios.post(
+              'http://localhost:5000/chat/conversations',
+              { login: context?.login },
+              {
+                headers: {
+                  Authorization: `Bearer ${context?.token}`,
+                },
+              }
+            );
+            context?.setContactChat(res.data);
+    
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        };
+      
+        fetchData();
+      })
+      context.socket.on('firstMsg', (pay) =>{
+        if (pay){
+          const fetchData = async () => {
+            try {
+              const res = await axios.post(
+                'http://localhost:5000/chat/conversations',
+                { login: context?.login },
+                {
+                  headers: {
+                    Authorization: `Bearer ${context?.token}`,
+                  },
+                }
+              );
+              context?.setContactChat(res.data);
+      
+            } catch (error) {
+              console.error('Error fetching data:', error);
+            }
+          };
+        
+          fetchData();
+          
+        }
+      
       })
       context.socket.on('updateChannel', (pay) =>{
         if (pay){
@@ -343,7 +460,9 @@ const closeModale = () =>{
         context.socket.off('errorMessage');
         context.socket.off('cancelInvitation');
         context.socket.off('blockuser');
-        context.socket.off('updateFriend');
+        context.socket.off('updatedFriend');
+        context.socket.off('firstMsg');
+        
       }
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps

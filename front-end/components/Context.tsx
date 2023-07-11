@@ -123,6 +123,15 @@ export interface MembersType{
   login : string;
   username: string;
 };
+
+export interface AchievementType{
+  avatar : string;
+  condition : string;
+  description : string ;
+  id : number;
+  title : string;
+}
+// {id: '2', avatar: '2', title: 'Winning Streak', description: "You're on fire! This achievement is unlocked when you win three consecutive Pigpong games.", condition: '3 Wins', …}
   
 
 
@@ -136,10 +145,13 @@ export interface profileType{
   username: string;
   avatar: string;
   matches : MatchType[];
+  acheivement : AchievementType[];
 }
 
 
 export interface ContextTypes{
+  acheivement : AchievementType[];
+  setAcheivement : Dispatch<SetStateAction<AchievementType[]>>;
   showChat : boolean;
   setShowChat : Dispatch<SetStateAction<boolean>>;
   loginClick : string;
@@ -235,7 +247,8 @@ const MyContext = createContext<ContextTypes | undefined>(undefined);
 // create provider
 
 const MyContextProvider = ({children} : ChildProps) =>{
-    const [loginClick, setLoginClick] = useState('');
+    const [acheivement, setAcheivement] = useState<AchievementType[]>([])
+    const [loginClick, setLoginClick] = useState<string>('');
     const [showChat, setShowChat] = useState(true);
     const [owner, setOwner] = useState(false);
     const [channelBanner, setChannelBanner] = useState<BanedType[]>([])
@@ -305,8 +318,12 @@ const MyContextProvider = ({children} : ChildProps) =>{
         const GetProfileuser = localStorage.getItem('profileuser');
         const GetChannelBanner = localStorage.getItem('channelBanner');
         const GetClickC = localStorage.getItem('loginClick');
+        const Getacheivement = localStorage.getItem('acheivement')
         if (GetClickC)
-          setLoginClick(GetClickC)
+        setLoginClick(GetClickC)
+        if (Getacheivement != undefined && Getacheivement !== null && Getacheivement !== "undefined"){
+          setAcheivement(JSON.parse(Getacheivement));
+        }
         if (GetChannelBanner != undefined && GetChannelBanner !== null && GetChannelBanner !== "undefined") {
           setChannelBanner(JSON.parse(GetChannelBanner));
         }
@@ -483,10 +500,13 @@ const MyContextProvider = ({children} : ChildProps) =>{
   useEffect(() =>{
     localStorage.setItem('loginClick', loginClick);
   },[loginClick])
+  useEffect(() =>{
+    localStorage.setItem('acheivement', JSON.stringify(acheivement));
+  },[acheivement]);
 
   // context value
  
-    const ContextValue = {name,showChat, setShowChat ,setName, img, setImg, friends, setFriends,wins, setWins, losses, setLosses,  level, setLevel,LevlPer,setLevlPer,login, setLogin, checkname, 
+    const ContextValue = {name,showChat,acheivement, setAcheivement, setShowChat ,setName, img, setImg, friends, setFriends,wins, setWins, losses, setLosses,  level, setLevel,LevlPer,setLevlPer,login, setLogin, checkname, 
       setCheckname,socket,setSocket, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck, match, setMatch,token, setToken,blackList,adminsChannel, setAdminChannel, 
       setBlackList,error, setError, messageError, setMessageError, membersChannel, setMembersChannel,userSearch, setUserSearch,channelSearch, setChannelSearch,MessageContent, 
       waitToAccept,profile, setProfile, pendingInvitation, setPendingInvitation, setWaitToAccept, channelInfo, Channels,setClickChannel, setChannelInfo,clickChat, setClickChat,

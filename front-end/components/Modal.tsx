@@ -904,6 +904,8 @@ const ModalSearch = (props: ModalSearchProps) => {
   );
 };
 const ModalGame: React.FC<ModalProps> = ({ isOpen, closeModal, title, msg, color }) => {
+  const router = Router;
+
   if (!isOpen) {
     return null; // If isOpen is false, don't render the modal
   }
@@ -935,7 +937,7 @@ const ModalGame: React.FC<ModalProps> = ({ isOpen, closeModal, title, msg, color
               </button>
             ) : null
           }
-          <button className="px-4 py-2 bg-red-200 text-gray-700 rounded hover:bg-red-300">Leave</button>
+          <button onClick={()=>{router.push('http://localhost:3000/Dashbord');}} className="px-4 py-2 bg-red-200 text-gray-700 rounded hover:bg-red-300">Leave</button>
         </div>
       </div>
     </div>
@@ -946,7 +948,7 @@ const ModalInvite: React.FC<ModalProps> = ({ isOpen, closeModal, title, msg, col
   const context = useContext(MyContext);
   const handleAccept = () => {
     const url = `Game?room=${color}&queue=false`;
-    router.push(`http://localhost:3000/ft_transcendence/${url}`)
+    router.push(`http://localhost:3000/${url}`)
   }
 
   const handleDecline = () => {

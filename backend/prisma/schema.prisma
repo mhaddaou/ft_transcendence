@@ -10,17 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-model Status {
-  statusId   String    @id @default(uuid())
-  user       User      @relation("userStatus", fields: [userId], references: [UserId], onDelete: Cascade)
-  userId     String    @unique
-  isOnline   Boolean   @default(false)
-  inGame     Boolean   @default(false)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @default(now())
-}
-
 model Stats {
   StatsId    String    @id @default(uuid())
   user       User      @relation("userStats", fields: [userId], references: [UserId], onDelete: Cascade)
@@ -42,7 +31,7 @@ model Friend {
 }
 
 model PendingFriendShip{
-  PendingId        String @id @default(uuid())
+  PendingId           String @id @default(uuid())
   sender              User @relation("pendingA",fields: [senderId], references: [UserId], onDelete: Cascade) // user that requested friendship first
   senderId            String
   senderLogin         String
@@ -124,9 +113,9 @@ model User {
   avatar              String @default("0")
   enableTwoFa         Boolean @default(false)
   twoFactorSecret     String?
-  bioGra              String
   lvl                 Int  @default(0)
-
+  isOnline            Boolean   @default(false)
+  inGame              Boolean   @default(false)
   // Acheivement
   achievement         Acheivement[] @relation("Acheivement")
   // Friends
@@ -140,9 +129,6 @@ model User {
   // conversations
   conversationsA        Conversation[]  @relation("conversationA")
   conversationsB        Conversation[]  @relation("conversationB")
-
-  // status
-  status                 Status?      @relation("userStatus")
 
   // channel
   memberships            MembershipChannel[] @relation("Membership")

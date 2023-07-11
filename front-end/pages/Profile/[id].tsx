@@ -18,9 +18,10 @@ import { MesgType } from '@/components/Context';
 import mhaddaou from '../image/mhaddaou.jpg'
 import Sky from '../../image/sky.png'
 import avatar from '../../image/avatar.webp'
-import GetDataHistory from '@/components/GetData';
+import GetDataHistory ,{GetDataAchievement} from '@/components/GetData';
 import Router from 'next/router';
 const router = Router;
+
 
 
 
@@ -89,15 +90,18 @@ const Other = () =>{
   const [status , setStatus] = useState('');
 
   const GetData = (check : number) =>{
+    console.log(check , '  this is check')
     if (check === 1){
       if (context?.profile?.matches)
         return (<GetDataHistory matches={context?.profile?.matches} />);
     }
-    else if (check === 2){
-      return <div>Achievement</div>
+    if (check === 2){
+      if (context?.profile?.acheivement)
+        return (<GetDataAchievement achiev={context?.profile?.acheivement} />);
+      
     }
     else
-      return <div>hello</div>
+      return <div></div>
   }
 
 
@@ -115,14 +119,15 @@ const Other = () =>{
           })
           // context?.setProfileuser(JSON.stringify(userLogin));
           console.log("respnse profile  ", res.data);
-          if (res.data.status.inGame)
+          if (res.data.inGame)
             setStatus('in Game');
           else{
-            if (res.data.status.isOnline)
-              setStatus('on Line')
+            if (res.data.isOnline)
+              setStatus('En ligne')
             else
               setStatus('Offline');
           }
+          console.log('this is all data in profile ', res.data.acheivement);
           context?.setProfile(res.data);
           console.log(res.data.avatar)
           console.log('context ', context?.profile?.avatar);

@@ -53,6 +53,12 @@ export class UpdateUserDto {
     @IsOptional()
     @IsBoolean()
     enableTwoFa:boolean;
+    @IsOptional()
+    @IsBoolean()
+    isOnline:boolean;
+    @IsOptional()
+    @IsBoolean()
+    inGame:boolean
 }
 
 export class UpdateStatus {

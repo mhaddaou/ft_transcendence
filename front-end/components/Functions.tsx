@@ -34,8 +34,8 @@ export function DataFunction (nbr : number){
               if (context?.match)
               return <GetDataHistory matches={context?.match} />;
             }
-            else if (nbr == 2){
-              return <GetDataAchievement />
+            else if (nbr == 2 && context?.acheivement){
+              return <GetDataAchievement achiev={context?.acheivement} />
             }
             else if (nbr == 3){
 

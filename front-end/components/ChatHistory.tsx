@@ -96,6 +96,8 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
     );
   };
 
+  
+
   useEffect(() => {
     if (gameRoom.length)
       setIsModalOpen(true)
@@ -110,16 +112,30 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
   useEffect(() => {
     if (context?.socket) {
       context.socket.on('PrivateMessage', (payload: any) => {
+        console.log('privateMessage is received ' , payload)
         if (payload) {
           // console.log('this is new message , ', payload)
           setNewMsg((prevMsgs) => [...prevMsgs, payload]);
+          const fetchData = async () => {
+            try {
+              const res = await axios.post(
+                'http://localhost:5000/chat/conversations',
+                { login: context?.login },
+                {
+                  headers: {
+                    Authorization: `Bearer ${context?.token}`,
+                  },
+                }
+              );
+              context?.setContactChat(res.data);
+      
+            } catch (error) {
+              console.error('Error fetching data:', error);
+            }
+          };
+        
+          fetchData();
         }
-        if (!document.hidden) {
-          // Show a notification
-          console.log('newMsg')
-        }
-        else
-          console.log("msg and not in this page");
       });
 
       context.socket.on('gameInvitation', (payload: any) => {
@@ -136,7 +152,7 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
   
     return () => {
       if (context?.socket) {
-        context.socket.off('PrivateMessage');
+        // context.socket.off('PrivateMessage');
         context.socket.off('gameInvitation');
 
       }
@@ -238,7 +254,7 @@ useEffect(() => {
 //   </div>
 // )
 const [hidden, setHidden] = useState('hidden');
-const router = useRouter();
+const router = Router
 
 const clickPro = (): void => {
   if (hidden === 'hidden')
@@ -248,12 +264,17 @@ const clickPro = (): void => {
 }
 const handleGameInvite = () => {
   if (context?.socket) {
-    const url = `Game?room=${context.login}&queue=false`;
+
+    const url = `Game/?room=${context.login}&queue=false`;
     console.log("emiting invite", url)
     context.socket.emit('gameInvitation', {
       receiver: login,
     });
-    window.location.href = (`http://localhost:3000/${url}`)
+    const handleHref = (link : string) => {
+      router.push(link);
+    };
+    handleHref(`http://localhost:3000/${url}`)
+   
     
   }
 }
@@ -342,7 +363,7 @@ const viewProfile = () =>{
                   {/* <Link href="#" className="hover:text-cyan-700 text-left rounded-b-lg block px-4 py-2 hover:bg-gray-100 ">Earnings</Link> */}
                 </li>
                 <li>
-                  <Link href="#" onClick={handleGameInvite} className="hover:text-cyan-700 text-left rounded-b-lg block px-4 py-2 hover:bg-gray-100 ">Invite</Link>
+                  <button onClick={handleGameInvite} className="hover:text-cyan-700 text-left rounded-b-lg block px-4 py-2 hover:bg-gray-100 ">Invite</button>
                 </li>
 
               </ul>

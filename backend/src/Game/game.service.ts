@@ -213,8 +213,6 @@ export class matterNode {
                             }, 5000);
                     }
                     else if (this.ball.position.y > this.obj.divHeight) {
-                        console.log(this.ball.position.y)
-
                         Body.setVelocity(this.ball, { x: 0, y: 0 });
                         Body.setPosition(this.ball, { x: this.obj.divWidth / 2, y: this.obj.divHeight / 2 });
                         this.score.left++
@@ -257,13 +255,11 @@ export class matterNode {
     }
 
     handleConnection(client: Socket, user: User) {
-        console.log("someone got in")
         const room = this.server.sockets.adapter.rooms.get(this.roomId);
         let roomArray = []
         if (room) {
             roomArray = Array.from(room.keys())
         }
-        console.log("client id", client.id, this.availablePaddles)
         // console.log("connected to room are: ", roomArray)
         // console.log("available paddles", this.availablePaddles)
         this.updateConnectedUsers(user, client)
@@ -281,13 +277,11 @@ export class matterNode {
                 if (data.restart) {
                     this.server.to(this.roomId).emit('restart', { restart: true });
                     this.score = { left: 0, right: 0 }
-                    console.log("game restarted")
                     this.ready = true
                     Body.setPosition(this.ball, { x: -155, y: this.obj.divHeight / 2 });
                 }
             })
         } else {
-            console.log("joining user  forced to disconnect")
             throw new BadRequestException('this room is full'); // No available paddles, disconnect the user
         }
     }
@@ -301,11 +295,8 @@ export class matterNode {
     
     clearGame() {
         clearInterval(this.intervalId)
-        console.log("clearing game instance", this.intervalId)
-
         World.clear(this.world);
         Engine.clear(this.engine);
-        console.log(this.world)
     }
 
 }

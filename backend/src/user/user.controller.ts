@@ -42,9 +42,8 @@ constructor(private readonly userSrevice:UserService, private readonly achieveme
             const user = await this.userSrevice.findUser(findUser);
             const matches = await this.userSrevice.getHistoryUserMatchs({login:user.login});
             const acheivement = await this.userSrevice.getAcheivments({login:user.login});
-            const status  = await this.userSrevice.getStatusUser(findUser);
             const porcentages = matches.pop();
-            const result = {...user, status, porcentages, matches, acheivement};
+            const result = {...user, porcentages, matches, acheivement};
             response.status(200).json(result);
         }
         catch(error){
@@ -123,19 +122,6 @@ constructor(private readonly userSrevice:UserService, private readonly achieveme
     async getListBlocked(@Body() findUser:findUserDto, @Res() response:Response){
         try {
             const result =  await this.userSrevice.getBlockedList(findUser);
-            response.status(200).json(result);
-        }
-        catch(error){
-            response.status(400).json(error);
-        }
-    }
-
-// get status of user
-    @UseGuards(AuthGuard('jwt'))
-    @Post('status')
-    async getUserStatus(@Body() findUser:findUserDto, @Res() response:Response){
-        try {
-            const result =  await this.userSrevice.getStatusUser(findUser); 
             response.status(200).json(result);
         }
         catch(error){
@@ -229,16 +215,15 @@ constructor(private readonly userSrevice:UserService, private readonly achieveme
             const otherUser = await this.userSrevice.findUser({login:dto.login});
             const isEnmey = await this.userSrevice.isBlockedMe({loginA:login, loginB:dto.login});
             if (isEnmey == false)
-                bol = true
+                bol = true;
             else
-                bol = false
+                bol = false;
             response.json({message: bol});
         }
         catch(error){
             response.status(400 ).json(error);
         }
     }
-
 
     @UseGuards(AuthGuard('jwt'))
     @Post('deleteAccount')
@@ -251,6 +236,20 @@ constructor(private readonly userSrevice:UserService, private readonly achieveme
         }
         catch(error){
             response.status(400).json(error);
+        }
+    }
+
+    @Get('is7erag')
+    async is7erag(@Req() req:any, @Res() response:Response){
+        try{
+            const token:string = req.headers.authorization
+            const is7erag = await this.userSrevice.is7erag(token.slice(7));
+            if (!is7erag)
+                response.status(200).json({message:false});
+            response.status(200).json({message:true});
+        }
+        catch(error){
+            response.status(400).json({message:false});
         }
     }
 }

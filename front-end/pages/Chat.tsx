@@ -120,9 +120,6 @@ export default function Chat() {
   useEffect(() => {
     context?.setSocket(createSocketConnection(context?.token));
   }, [context?.token]);
-
-  
-
 if (token){
   return (
     <div className="bg-gradient-to-t from-gray-100 to-gray-400 min-h-screen">
