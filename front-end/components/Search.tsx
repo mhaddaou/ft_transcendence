@@ -252,6 +252,8 @@ const closeModale = () =>{
       context.socket.on('updatedFriend', (pay) =>{
         if (pay){
           console.log('updatedFriend  ', pay);
+          if (pay.login === context.login)
+            return;
           const getData = async () =>{
             const res = await axios.post(
               "http://localhost:5000/chat/findConversation",

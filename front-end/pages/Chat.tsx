@@ -97,22 +97,26 @@ export default function Chat() {
     else {
 
       context?.setLoginClick(login);
-       const res = await axios.post(
-        "http://localhost:5000/chat/findConversation",
-        { loginA: context?.login, loginB: login },
-        {
-          headers: {
-            Authorization: `Bearer ${context?.token}`,
-          },
-        }
-      );
-      console.log('this is responese of chat ', res.data);
-      setCheck('chat');
-      setChatHistory(res.data[1]);
-      context?.setMessageInfo(res.data[0]);
-      context?.setMessageContent(res.data[1]);
-      setId(login);
+      try{
+        const res = await axios.post(
+         "http://localhost:5000/chat/findConversation",
+         { loginA: context?.login, loginB: login },
+         {
+           headers: {
+             Authorization: `Bearer ${context?.token}`,
+           },
+         }
+       );
+       console.log('this is responese of chat ', res.data);
+       setCheck('chat');
+       setChatHistory(res.data[1]);
+       context?.setMessageInfo(res.data[0]);
+       context?.setMessageContent(res.data[1]);
+       setId(login);
 
+      }catch(e){
+        console.log(e);
+      }
       // setShow("hidden");
     }
   }

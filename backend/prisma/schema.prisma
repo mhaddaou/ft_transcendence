@@ -113,7 +113,7 @@ model User {
   avatar              String @default("0")
   enableTwoFa         Boolean @default(false)
   twoFactorSecret     String?
-  lvl                 Int  @default(0)
+  lvl                 Float  @default(0)
   isOnline            Boolean   @default(false)
   inGame              Boolean   @default(false)
   // Acheivement

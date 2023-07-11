@@ -128,6 +128,7 @@ const Other = () =>{
               setStatus('Offline');
           }
           console.log('this is all data in profile ', res.data.acheivement);
+          // here when i check level 
           context?.setProfile(res.data);
           console.log(res.data.avatar)
           console.log('context ', context?.profile?.avatar);

@@ -934,7 +934,7 @@ export class UserService {
                     UserId:userA.UserId,
                 },
                 data:{
-                    lvl:userA.lvl + 1,
+                    lvl:userA.lvl + 0.4,
                 }
             });
             if (userB.lvl > 0)
@@ -944,7 +944,7 @@ export class UserService {
                         UserId:userB.UserId,
                     },
                     data:{
-                        lvl:userB.lvl - 1,
+                        lvl:userB.lvl + 0.2,
                     },
                 });
             }
@@ -956,7 +956,7 @@ export class UserService {
                     UserId:userB.UserId,
                 },
                 data:{
-                    lvl:userB.lvl + 1,
+                    lvl:userB.lvl + 0.4,
                 },
             });
             if (userA.lvl > 0)
@@ -966,7 +966,7 @@ export class UserService {
                         UserId:userA.UserId,
                     },
                     data:{
-                        lvl:userA.lvl - 1
+                        lvl:userA.lvl + 0.2
                     },
                 });
             }
@@ -978,24 +978,6 @@ export class UserService {
 
     // get user's matchs history 
     async getHistoryUserMatchs(findUser:findUserDto){
-        // const user = await  this.findUser(findUser);
-        // let result:any[] = [];
-        // let win:number = 0;
-        // const matchsA =  await this.prisma.client.match.findMany({
-        //     where:{
-        //         userAId:user.UserId,
-        //     },
-        //     select: {
-        //       userB: {
-        //         select: {
-        //           login: true,
-        //           avatar: true,
-        //           username: true,
-        //         },
-        //       },
-
-        //     },
-        // });
         const user = await  this.findUser(findUser);
         let result:any[] = [];
         let win:number = 0;
@@ -1026,7 +1008,7 @@ export class UserService {
         const lose = result.length - win;
         const pWin =  win / result.length * 100;
         const pLose = lose / result.length * 100;
-        result.push({pWin:pWin, pLose:pLose, numberOfMatches:result.length});
+        result.push({pWin:pWin.toFixed(2), pLose:pLose.toFixed(2), numberOfMatches:result.length});
         return result;
     }
 

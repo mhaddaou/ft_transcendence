@@ -71,10 +71,16 @@ export default function Profileid() {
           // Fetch data using the id
           const response = await fetchdata(token);
           // console.log("2f response is ", response.enableTwoFa)
-          console.log('this is response ', response);
+          console.log('this is response for for for ', response);
+
           context?.setToken(token);
           context?.setName(response.username);
-        context?.setImg(response.avatar);
+          context?.setLevel(response.lvl);
+          // context?.setLevel()
+          console.log('lvl here ',  (response.lvl * 10));
+          context?.setLosses(response.porcentages.pLose)
+          context?.setWins(response.porcentages.pWin)
+          context?.setImg(response.avatar);
         context?.setFriends(response.friends.friends);
         context?.setWaitToAccept(response.friends.pendingInvitation);
         context?.setPendingInvitation(response.friends.waitToAccept);
