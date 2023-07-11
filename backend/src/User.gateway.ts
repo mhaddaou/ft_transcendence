@@ -724,8 +724,9 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
             {
                 if (this.connectedUsers.has(otherUser.login))
                 {
-                    const msg = {message:`${user.login} had accepte your invitation `, login:user.login,username:user.username,avatar:user.avatar}
+                    const msg = {message:`${user.login} had accepte your invitation `}
                     this.sendMsgToUser(otherUser.login,msg, "twoInvite" );
+                    this.sendMsgToUser(user.login,msg, "twoInvite" );
                     // this.server.to(key).emit("twoInvite", {message:`${user.login} had accepte your invitation `, login:user.login,username:user.username,avatar:user.avatar})    
                 }
                 // client.emit('twoInvite',{message:` you and ${body.login} are  friends now`, login:otherUser.login,username:otherUser.username,avatar:otherUser.avatar});

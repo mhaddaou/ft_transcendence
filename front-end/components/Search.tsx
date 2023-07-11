@@ -76,30 +76,7 @@ const closeModale = () =>{
 
           }
         })
-        context.socket.on('twoInvite', (pay) =>{
-          console.log('twoInvite');
-          const fetchData = async () =>{
-            try{
-              const res = await axios.post('http://localhost:5000/user/friends',
-              {
-                login : context?.login
-              },{
-                headers : {
-                  Authorization : ` Bearer ${context?.token}`
-                }
-              }
-              )
-              console.log(' this is res for friend res', res);
-              // context.setF
-
-            }catch (error) {
-              console.log(error)
-            }
-
-          }
-
-
-        })
+       
         context?.socket.on('joinOther', (pay) =>{
           if (pay){
             console.log('her channel name ', pay)
@@ -136,6 +113,7 @@ const closeModale = () =>{
             // }
           }
         })
+     
         
         context?.socket.on('join', (pay)=>{
           if (pay){
@@ -267,6 +245,56 @@ const closeModale = () =>{
               }
             }
             getDat()
+        }
+      })
+      context.socket.on('errorJoin',(pay : any) =>{
+          if (pay){
+            if (pay.message !== 'jwt must be provided'){
+             
+              context.setMessageError(pay.message);
+              context.setError(true);
+            
+            }
+  
+          }
+      });
+      context.socket.on('twoInvite',(pay : any) =>{
+        if (pay){
+          console.log(pay, 'twoInvite');
+          const fetchData = async () =>{
+            try{
+              const res = await axios.post('http://localhost:5000/user/friends',
+              {
+                login : context?.login
+              },{
+                headers : {
+                  Authorization : ` Bearer ${context?.token}`
+                }
+              }
+              )
+              context.setFriends(res.data.friends);
+              context.setWaitToAccept(res.data.pendingInvitation)
+              context.setPendingInvitation(res.data.waitToAccept);
+//               friends
+// : 
+// [{…}]
+// pendingInvitation
+// : 
+// []
+// waitToAccept
+// : 
+// []
+              console.log(res.data)
+              // context.setF
+
+            }catch (error) {
+              console.log(error)
+            }
+
+          }
+          fetchData();
+          
+          
         }
       })
 
@@ -518,6 +546,7 @@ const closeModale = () =>{
         context.socket.off('blockuser');
         context.socket.off('updatedFriend');
         context.socket.off('firstMsg');
+        context.socket.off('errorJoin');
         context.socket.off('twoInvite');
         
       }
