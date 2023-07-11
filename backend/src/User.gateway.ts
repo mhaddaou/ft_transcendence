@@ -447,7 +447,7 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
             this.sendMsgToUser(login, msg, 'join');
         }
         catch(error){
-            client.emit('errorJoin', error);
+            client.emit('errorMessage', error);
         }
     }
 

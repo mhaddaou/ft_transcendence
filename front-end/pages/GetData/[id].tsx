@@ -101,6 +101,26 @@ export default function Profileid() {
       };
   
        fetchTokenAndConnectSocket();
+       const fetchBlockusers = async () =>{
+        try{
+          const res = await axios.post('http://localhost:5000/user/blocks',
+          {
+            login : context?.login
+          },{
+            headers : {
+              Authorization : `Bearer ${context?.token}`
+            }
+          }
+          )
+          console.log(' this is all users you are block ', res.data);
+          context?.setUserBlocked(res.data);
+
+        }catch(e){
+          console.log(e)
+        }
+
+       }
+       fetchBlockusers();
 
 
     }, [router.query.id]);
