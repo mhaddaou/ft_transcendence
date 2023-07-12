@@ -52,7 +52,11 @@ const closeModale = () =>{
   useEffect(() =>{
     if (context?.socket){
         context.socket.on('channelRemoved', (pay) =>{
+
           if (pay){
+            console.log('channelRemoved ', pay.channelName);
+            if (context.channelInfo?.channelName === pay.channelName)
+              context.setShowChannel(false);
             const fetchData = async () => {
               try {
                 const res = await axios.post(

@@ -20,6 +20,7 @@ import { useRouter } from "next/router";
 import ChannelHistor from "@/components/ChannelHistory";
 import History from "@/components/HIstory";
 import { ModalInvite, ModalError } from "@/components/Modal";
+import { constrainedMemory } from "process";
 const router = Router;
 var token : string | null = null;
 
@@ -55,9 +56,9 @@ export default function Chat() {
     };
   async function handleContactClick(login: string, Channel: boolean) {
     
-    context?.setShowChat(true);
 
     if (Channel){
+      context?.setShowChannel(true);
 
       const res = await axios.post(
         'http://localhost:5000/chat/channel/message/all',
@@ -95,7 +96,7 @@ export default function Chat() {
       setChatHistory(res.data[1]);
     }
     else {
-
+    context?.setShowChat(true);
       context?.setLoginClick(login);
       try{
         const res = await axios.post(

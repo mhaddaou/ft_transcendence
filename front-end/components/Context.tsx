@@ -167,6 +167,8 @@ export interface ContextTypes{
   setUserBlocked : Dispatch<SetStateAction<userBlockedType[]>>;
   acheivement : AchievementType[];
   setAcheivement : Dispatch<SetStateAction<AchievementType[]>>;
+  showChannel : boolean;
+  setShowChannel : Dispatch<SetStateAction<boolean>>;
   showChat : boolean;
   setShowChat : Dispatch<SetStateAction<boolean>>;
   loginClick : string;
@@ -262,6 +264,7 @@ const MyContext = createContext<ContextTypes | undefined>(undefined);
 // create provider
 
 const MyContextProvider = ({children} : ChildProps) =>{
+    const [showChannel, setShowChannel] = useState(false);
     const [userBlocked, setUserBlocked] = useState<userBlockedType[]>([]);
     const [acheivement, setAcheivement] = useState<AchievementType[]>([])
     const [loginClick, setLoginClick] = useState<string>('');
@@ -528,7 +531,7 @@ const MyContextProvider = ({children} : ChildProps) =>{
 
   // context value
  
-    const ContextValue = {name,showChat,acheivement, setAcheivement, setShowChat ,setName, img, setImg, friends, setFriends,wins, setWins, losses, setLosses,  level, setLevel,LevlPer,setLevlPer,login, setLogin, checkname, 
+    const ContextValue = {name,showChat,showChannel, setShowChannel, acheivement, setAcheivement, setShowChat ,setName, img, setImg, friends, setFriends,wins, setWins, losses, setLosses,  level, setLevel,LevlPer,setLevlPer,login, setLogin, checkname, 
       setCheckname,socket,userBlocked, setUserBlocked,setSocket, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck, match, setMatch,token, setToken,blackList,adminsChannel, setAdminChannel, 
       setBlackList,error, setError, messageError, setMessageError, membersChannel, setMembersChannel,userSearch, setUserSearch,channelSearch, setChannelSearch,MessageContent, 
       waitToAccept,profile, setProfile, pendingInvitation, setPendingInvitation, setWaitToAccept, channelInfo, Channels,setClickChannel, setChannelInfo,clickChat, setClickChat,

@@ -17,6 +17,8 @@ import { ModalChat } from "./Modal";
 import { AlertCircle, CheckCircle } from 'react-feather'
 import { GetAvatarChannel, checkIs7rag } from "./Functions";
 import { library } from "@fortawesome/fontawesome-svg-core";
+import Lottie from "lottie-react";
+import anim from '../image/chatanim.json'
 
 
 interface recvProps {
@@ -294,7 +296,7 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
     })
     if (context?.channelInfo)
       removeChannelByName(context?.channelInfo?.channelName)
-    router.reload();
+    context?.setShowChannel(false);
   }
 
   const memberChannel = () => {
@@ -704,8 +706,11 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
 
   
   return (
-
-    <div className={`${valueCheck === true ? 'hidden' : 'flex'}flex-col h-full overflow-y-auto relative scrollbar scrollbar-thumb-green-400 scrollbar-w-1
+    <>
+    <div className={`w-full h-full flex justify-center ${context?.showChannel ? 'hidden' : 'block'}`}>
+      <Lottie  animationData={anim}  /> 
+    </div>
+    <div className={`${valueCheck === true ? 'hidden' : 'flex'} ${context?.showChannel ? 'block' : 'hidden'} flex-col h-full overflow-y-auto relative scrollbar scrollbar-thumb-green-400 scrollbar-w-1
         scrollbar-track-slate-100 scrollbar- gap-1 bg-gray-300 rounded-2xl `}>
       {
         openModal && <ModalUpdateChannel isOpen={openModal} closeModal={closeMd} />
@@ -751,6 +756,8 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
         </div>
       </div>
     </div>
+    </>
+
   );
 }
 
