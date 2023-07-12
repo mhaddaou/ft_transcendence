@@ -10,15 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Stats {
-  StatsId    String    @id @default(uuid())
-  user       User      @relation("userStats", fields: [userId], references: [UserId], onDelete: Cascade)
-  userId     String    @unique
-  wins       Int       @default(0)
-  losses     Int       @default(0)
-  ladder     Int       @default(0)
-}
-
 model Friend {
   FriendshipId       String @id @default(uuid())
   userA              User @relation("relationA",fields: [userAId], references: [UserId], onDelete: Cascade) // user that requested friendship first
@@ -132,9 +123,6 @@ model User {
 
   // channel
   memberships            MembershipChannel[] @relation("Membership")
-
-  // Stats
-  stats                  Stats? @relation("userStats")
 
   //matches
   matchhistoryA   match[] @relation("matchA")

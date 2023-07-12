@@ -254,7 +254,11 @@ export class ChatService {
         }
         if (newPassword !== undefined && channel.ispassword)
         {
-            const pass = await bcrypt.hashSync(newPassword,10); 
+            let pass:string
+            if (newPassword.trim().length == 0)
+                pass = channel.password;
+            else
+                pass = await bcrypt.hashSync(newPassword,10);
             channel = await this.prisma.client.channel.update({
                 where:{
                     ChannelId:channel.ChannelId,

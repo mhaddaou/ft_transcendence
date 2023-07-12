@@ -16,7 +16,6 @@ export interface measurements {
     wallRight: { x: number, y: number, width: number, height: number },
     leftPaddle: { x: number, y: number, width: number, height: number },
     rightPaddle: { x: number, y: number, width: number, height: number },
-
 }
 function saveMeasurements(div: { height: number, width: number }) {
 
@@ -82,11 +81,13 @@ export class matterNode {
             player1: { user: null, client: null },
             player2: { user: null, client: null },
         };
+    private restart : boolean
     constructor(server: any, roomId: string, obj: measurements, openGame: boolean, clientSocket: string) {
         this.hostSocket = clientSocket
         this.roomId = roomId
         this.server = server;
         this.openGame = openGame
+        this.restart = true
         // event emitter to signal the socket gateway that a match score needs saving
         this.eventEmitter = new EventEmitter();
         // cords and measurements of objects
@@ -166,21 +167,22 @@ export class matterNode {
     sendBallPosition() {
 
         // checking if there are users connected to the socket if false, the game instance is shut down and cleqred
-
+     
 
         this.intervalId = setInterval(() => {
 
             if (!this.availablePaddles.length) {
                 if (this.ready) {
                     this.server.to(this.roomId).emit('ready', { msg: true });
-                    if (this.ball.position.x == -155) {
+                    if (this.restart == true) {
                         Body.setPosition(this.ball, { x: this.obj.divWidth / 2, y: this.obj.divHeight / 2 });
+                        console.log("game restarted, ball is at ", this.ball.position)
 
                         this.server.to(this.roomId).emit('score', { score: this.score, players: this.players });
+                        this.restart = false
                         setTimeout(() => {    // after seconds launch the ball again
                             Body.setVelocity(this.ball, { x: 5, y: 6 });
                         }, 5000);
-
                     }
                     // limit the speed of the ball so it doesnt leave the boundries 
                     const speed = Math.sqrt(this.ball.velocity.x ** 2 + this.ball.velocity.y ** 2);
@@ -202,7 +204,7 @@ export class matterNode {
                         if (this.score.right >= 2) {
                             this.ready = false
                             this.winner = this.players.player2.user.login
-                            const resultMatch: storeMatchDto = { loginA: this.winner, scoreA: this.score.left, loginB: this.players.player2.user.login, scoreB: this.score.right, winner: false }
+                            const resultMatch: storeMatchDto = { loginA: this.winner, scoreA: this.score.right, loginB: this.players.player1.user.login, scoreB: this.score.left, winner: true }
 
                             this.eventEmitter.emit('settingScores', { resultMatch: resultMatch });
                             this.server.to(this.roomId).emit("gameOver", { gameOver: this.winner });
@@ -245,6 +247,8 @@ export class matterNode {
             else {
                 Body.setVelocity(this.ball, { x: 0, y: 0 });
                 Body.setPosition(this.ball, { x: -155, y: this.obj.divHeight / 2 });
+
+                // Body.setPosition(this.ball, { x: -155, y: this.obj.divHeight / 2 });
                 this.score = { left: 0, right: 0 }
                 this.server.to(this.roomId).emit('ready', { msg: false });
                 this.server.to(this.roomId).emit('gameStatus', { msg: "Waiting for a player to join..." });
@@ -278,7 +282,8 @@ export class matterNode {
                     this.server.to(this.roomId).emit('restart', { restart: true });
                     this.score = { left: 0, right: 0 }
                     this.ready = true
-                    Body.setPosition(this.ball, { x: -155, y: this.obj.divHeight / 2 });
+                    // Body.setPosition(this.ball, { x: -155, y: this.obj.divHeight / 2 });
+                    this.restart = true
                 }
             })
         } else {

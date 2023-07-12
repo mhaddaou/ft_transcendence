@@ -129,20 +129,6 @@ constructor(private readonly userSrevice:UserService, private readonly achieveme
         }
     }
 
-
-// get stats of user
-    @UseGuards(AuthGuard('jwt'))
-    @Post('stats')
-    async getUserStats(@Body() findUser:findUserDto, @Res() response:Response){
-        try {
-            const result = await this.userSrevice.getStatsUser(findUser); 
-            response.status(200).json(result);
-        }
-        catch(error){
-            response.status(400).json(error);
-        }
-    }
-
 // matches
     @UseGuards(AuthGuard('jwt'))
     @Post('match')
@@ -249,7 +235,7 @@ constructor(private readonly userSrevice:UserService, private readonly achieveme
             response.status(200).json({message:true});
         }
         catch(error){
-            response.status(900).json({message:false});
+            response.status(400).json({message:false});
         }
     }
 }

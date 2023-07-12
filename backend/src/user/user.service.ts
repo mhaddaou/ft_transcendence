@@ -1,4 +1,4 @@
-import { BlockDto, FriendDto, LoginDto, UpdateStats, UpdateStatus, UpdateUserDto, findUserDto, findUserOrChannel, invitationDto, storeMatchDto, usernameDto } from './dto/user.dto';
+import { BlockDto, FriendDto, LoginDto, UpdateStatus, UpdateUserDto, findUserDto, findUserOrChannel, invitationDto, storeMatchDto, usernameDto } from './dto/user.dto';
 import { BadGatewayException, BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Acheivement } from '@prisma/client';
 import { PrismaService,  } from 'prisma/prisma.service';
@@ -85,15 +85,6 @@ export class UserService {
                 login: loginDto.login,
                 username: loginDto.username,
                 email:  loginDto.email,
-            }
-        });
-        await this.prisma.client.stats.create({
-            data:{
-                user:{
-                    connect:{
-                        UserId:user.UserId,
-                    },
-                },
             }
         });
         return user;
@@ -804,37 +795,37 @@ export class UserService {
 
 // stats
     // modify stats of user
-    async modifyStatsUser(updateStats:UpdateStats){
-        const {login, wins, losses, ladder} = updateStats;
-        const user = await this.findUser({login});
-        const stats = await this.prisma.client.stats.findFirst({
-            where:{
-                userId:user.UserId,
-            },
-        });
-        if (!stats)
-            return new NotFoundException();
-        return await this.prisma.client.stats.update({
-            where:{
-                StatsId:stats.StatsId,
-            },
-            data:{
-                wins:wins,
-                losses:losses,
-                ladder:ladder,
-            },
-        });
-    }
+    // async modifyStatsUser(updateStats:UpdateStats){
+    //     const {login, wins, losses, ladder} = updateStats;
+    //     const user = await this.findUser({login});
+    //     const stats = await this.prisma.client.stats.findFirst({
+    //         where:{
+    //             userId:user.UserId,
+    //         },
+    //     });
+    //     if (!stats)
+    //         return new NotFoundException();
+    //     return await this.prisma.client.stats.update({
+    //         where:{
+    //             StatsId:stats.StatsId,
+    //         },
+    //         data:{
+    //             wins:wins,
+    //             losses:losses,
+    //             ladder:ladder,
+    //         },
+    //     });
+    // }
 
-    // get stats of user
-    async getStatsUser(findUser:findUserDto){
-        const user = await  this.findUser(findUser);
-        return await this.prisma.client.stats.findUnique({
-            where:{
-                userId:user.UserId,
-            },
-        });
-    }
+    // // get stats of user
+    // async getStatsUser(findUser:findUserDto){
+    //     const user = await  this.findUser(findUser);
+    //     return await this.prisma.client.stats.findUnique({
+    //         where:{
+    //             userId:user.UserId,
+    //         },
+    //     });
+    // }
 // match
     // Achievement
     async getAcheivments(dto:findUserDto){
@@ -986,7 +977,7 @@ export class UserService {
                         UserId:userB.UserId,
                     },
                     data:{
-                        lvl:userB.lvl - 0.2
+                        lvl:userB.lvl + 0.2
                     },
                 });
             }
@@ -1008,7 +999,7 @@ export class UserService {
                         UserId:userA.UserId,
                     },
                     data:{
-                        lvl:userA.lvl - 0.2
+                        lvl:userA.lvl + 0.2
                     },
                 });
             }
@@ -1023,6 +1014,7 @@ export class UserService {
         const user = await  this.findUser(findUser);
         let result:any[] = [];
         let win:number = 0;
+        let lose:number = 0;
         const matchsA =  await this.prisma.client.match.findMany({
             where:{
                 userAId:user.UserId,
@@ -1030,7 +1022,7 @@ export class UserService {
         });
         for (let i = 0;i < matchsA.length; ++i){
             let otherUser = await this.findUserById(matchsA[i].userBId);
-            if (matchsA[i].winner)
+            if (matchsA[i])
                 win++;
             const {scoreA, scoreB,winner, finishedAt} = matchsA[i];
             result.push({loginA:user.login,avatarA:user.avatar, usernameA:user.username, loginB:otherUser.login, avatarB:otherUser.avatar, usernameB:otherUser.username, winner:winner,scoreA:scoreA,scoreB:scoreB, finishedAt:finishedAt});
@@ -1042,14 +1034,14 @@ export class UserService {
         });
         for (let i = 0;i < matchsB.length; ++i){
             let otherUser = await this.findUserById(matchsB[i].userAId);
-            if (matchsB[i].winner)
-                win++;
+            if (matchsB[i])
+                lose++;
             const {scoreA, scoreB,winner, finishedAt} = matchsB[i];
             result.push({loginA:user.login, avatarA:user.avatar, usernameA:user.username, loginB:otherUser.login, avatarB:otherUser.avatar, usernameB:otherUser.username, winner:winner,scoreA:scoreA,scoreB:scoreB, finishedAt:finishedAt});
         }
-        const lose = result.length - win;
         const pWin =  win / result.length * 100;
         const pLose = lose / result.length * 100;
+        console.log('pwin:',pWin,'pLose:',pLose, 'win:',win, 'lose:',lose)
         result.push({pWin:pWin.toFixed(2), pLose:pLose.toFixed(2), numberOfMatches:result.length});
         return result;
     }
@@ -1083,6 +1075,7 @@ export class UserService {
                 username:true,
                 avatar:true,
                 lvl:true,
+                isOnline:true,
             },
             orderBy:{
                 lvl:"desc",
@@ -1096,7 +1089,6 @@ export class UserService {
           });
         return leaderboard;
     }
-
 
     async deleteAcoount(login:string){
         const user = await this.findUser({login:login});

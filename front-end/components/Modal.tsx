@@ -6,6 +6,7 @@ import Image, { StaticImageData } from "next/image";
 import { FriendType } from "./Context";
 import { userSearchProps, BanedType } from "./Context";
 import Router from "next/router";
+const router = Router
 
 interface ModalProps {
   isOpen: boolean;
@@ -836,7 +837,25 @@ const ModalSearch = (props: ModalSearchProps) => {
   }
   const [channel, setChannel] = useState<channelSearchProps>()
   const viewProfile = (user : FriendType) =>{
+
+   context?.setProfileuser(user.login);
     console.log(user.login);
+    const getData = async () => {
+      const res = await axios.post('http://localhost:5000/user/viewProfile',
+        { login: user.login },
+        {
+          headers: {
+            Authorization: `Bearer ${context?.token} `
+
+          }
+        });
+      console.log('this is res profile ', res.data.message);
+      if (res.data.message)
+        router.push(`http://localhost:3000/Profile/${user.login}`)
+      else
+        console.log('this user is block you ');
+    }
+    getData();
   }
 
   return (

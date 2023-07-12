@@ -1,11 +1,12 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 
 
 export class TwoFADto{
     @IsString()
     login:string;
     @IsString()
+    @MaxLength(6)
+    @MinLength(6)
     code:string;
 }
 export class LoginDto  {
@@ -43,10 +44,8 @@ export class UpdateUserDto {
     login:string;
     @IsOptional()
     @IsString()
+    @MaxLength(15)
     username:string;
-    @IsOptional()
-    @IsString()
-    bioGra:string;
     @IsOptional()
     @IsString()
     avatar:string;
