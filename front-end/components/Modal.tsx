@@ -1186,18 +1186,18 @@ const ModalDeleteAcount = () => {
 
   return (
     <div className={`absolute overflow-hidden inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50  ${context?.deleteAcount ? 'block' : 'hidden'}`}>
-      <div className={`bg-orange-500 rounded-md flex flex-col w-[400px] h-[200px] p-6`}>
-        <div className="text-center text-xl font-mono font-semibold">Remember</div>
+      <div className={`bg-white rounded-md flex flex-col w-[400px] h-[220px] p-6`}>
+        <div className="text-center text-xl font-mono font-semibold text-orange-600">Remember</div>
         <div className="w-full h-[80%] text-center text-lg flex justify-center items-center">
         <p className="">Please note that if you delete your account, you will not be able to recover it.
           
       If you have any questions or concerns, please contact our customer support team.</p> 
           
         </div>
-        <div className="w-full h-[20%] flex items-center justify-end py-3 gap-4">
+        <div className="w-full h-[20%] flex items-center justify-end py-6 gap-4">
 
-          <button className="bg-orange-600 px-2 py-1 rounded-lg text-white" onClick={() => context?.setDeleteAcount(false)}>close</button>
-          <button className="bg-orange-600 px-2 py-1 rounded-lg text-white" onClick={() =>{
+          <button className="bg-slate-600 px-2 py-1 rounded-lg text-white" onClick={() => context?.setDeleteAcount(false)}>close</button>
+          <button className="bg-red-600 px-2 py-1 rounded-lg text-white" onClick={() =>{
             context?.socket?.emit('deleteAccount');
              context?.setDeleteAcount(false)
              router.push('/');

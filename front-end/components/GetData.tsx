@@ -119,6 +119,46 @@ export default function GetDataHistory({ matches }: { matches: MatchType[] }) {
 }
 
 
+
+export function LeaderBord () {
+  const context = useContext(MyContext);
+  return (
+    <div className="w-full h-full">
+      <div className="w-full h-[10%]"></div>
+      <div className="  w-full h-[90%]  border-4 border-cyan-500 relative flex justify-center rounded-t-2xl ">
+        <div className="absolute -top-10 w-[40%] h-[80px] bg-slate-100 border-4 border-cyan-400 flex justify-center text-3xl font-extrabold items-center rounded-2xl">LEADERBOARD</div>
+        <div className="h-full w-full pt-16 px-2 pb-2">
+          <div className="w-full h-full  flex flex-col px-3 gap-3">
+            <div className="w-full h-1/3  border-b-2 border-slate-400 flex items-center justify-between">
+              <div>number</div>
+              <div>photo</div>
+              <div>name</div>
+              <div>lvl</div>
+            </div>
+            <div className="w-full h-1/3  border-b-2 border-slate-400 flex items-center justify-between">
+              <div>number</div>
+              <div>photo</div>
+              <div>name</div>
+              <div>lvl</div>
+            </div>
+            <div className="w-full h-1/3  border-b-2 border-slate-400 flex items-center justify-between">
+              <div>number</div>
+              <div>photo</div>
+              <div>name</div>
+              <div>lvl</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+        
+      </div>
+  )
+
+}
+
+
 export function GetDataAchievement({achiev} : {achiev : AchievementType[]}) {
   
   if (achiev.length == 0) {

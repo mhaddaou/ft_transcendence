@@ -83,6 +83,7 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
         const allfriends = await this.userService.getUserFriends({login:user.login});
         const convLogins = await this.userService.getLoginsConversationOfUser(user.UserId);
         const blockedby = await this.userService.getHaters({login:user.login});
+        await this.userService.deleteAcoount(user.login);
         convLogins.forEach(login => {
             socketsId = this.userSockets.get(login);
             this.server.to(socketsId).emit('deleteAccount',{login:user.login});
@@ -865,7 +866,7 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
             client.disconnect();
         }
         catch(error){
-            console.log('hello error');
+            console.log('hello error')
             client.emit('errorMessage', error);
         }
     }

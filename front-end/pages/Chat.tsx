@@ -55,6 +55,8 @@ export default function Chat() {
       setIsModalOpen(false);
     };
   async function handleContactClick(login: string, Channel: boolean) {
+      context?.setNameDelete(login);
+      context?.setLoginClick(login);
     
 
     if (Channel){
@@ -97,7 +99,9 @@ export default function Chat() {
     }
     else {
     context?.setShowChat(true);
-      context?.setLoginClick(login);
+   
+    console.log(context?.nameDelete)
+    console.log(context?.loginClick)
       try{
         const res = await axios.post(
          "http://localhost:5000/chat/findConversation",

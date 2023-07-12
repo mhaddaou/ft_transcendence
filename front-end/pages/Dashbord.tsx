@@ -121,6 +121,9 @@ export default  function Progress() {
     setCheck(2);
 
   }
+  const clickLeaderboard = () => {
+    setCheck(7);
+  }
 
   const clickFriend = () => {
     setCheck(3);
@@ -173,6 +176,7 @@ export default  function Progress() {
           <div className='h-[25%]  flex justify-around items-center  rounded-2xl '>
             <button onClick={clickHistory} className='font-bold md:text-xl font-mono border-b-4 rounded-b-xl border-slate-600 hover:border-cyan-600'>History</button>
             <button onClick={clickAchie} className='font-bold md:text-xl font-mono border-b-4 rounded-b-xl border-slate-600 hover:border-cyan-600'>Achievement</button>
+            <button onClick={clickLeaderboard} className='font-bold md:text-xl font-mono border-b-4 rounded-b-xl border-slate-600 hover:border-cyan-600'>LeaderBord</button>
             <button onClick={clickFriend} className={`font-bold md:text-xl font-mono border-b-4 rounded-b-xl border-slate-600 hover:border-cyan-600`}>Friends</button>
             <div className="dropdown dropdown-end">
             <button tabIndex={0} className='font-bold md:text-xl font-mono border-b-4 rounded-b-xl border-slate-600 hover:border-cyan-600'>Requests</button>

@@ -1,4 +1,4 @@
-import GetDataHistory, {GetDataAchievement, GetDataFriend, DatSend, DataRecieved, BlackList} from '@/components/GetData';
+import GetDataHistory, {GetDataAchievement, GetDataFriend, DatSend, DataRecieved, BlackList, LeaderBord} from '@/components/GetData';
 import BarLeft from './BarLeft';
 import { useContext, useEffect, useState } from 'react';
 import { MyContext } from './Context';
@@ -73,6 +73,9 @@ export function DataFunction (nbr : number){
                }
                fetchBlockusers();
               return <BlackList />
+            }
+            else if (nbr == 7){
+              return <LeaderBord />
             }
             else{
               return <div></div>

@@ -485,8 +485,60 @@ const closeModale = () =>{
           fetchData();
           
         }
-      
+        
       })
+      context.socket.on('deleteAccount', (pay) =>{
+        if (pay){
+          if (pay.login === context.nameDelete || pay.login === context.loginClick)
+          context.setShowChat(false);
+          const fetData = async () =>{
+            const friend = await axios.post('http://localhost:5000/user/friends',
+            {
+              login : context.login
+            },{
+              headers:{
+               Authorization : `Bearer ${context.token}`
+              }
+            })
+            context.setFriends(friend.data.friends);
+            context.setPendingInvitation(friend.data.waitToAccept);
+            context.setWaitToAccept(friend.data.waitToAccep);
+            const blocks = await axios.post('http://localhost:5000/user/blocks',
+            {
+              login : context?.login
+            },{
+              headers : {
+                Authorization : `Bearer ${context?.token}`
+              }
+            }
+            )
+            context?.setUserBlocked(blocks.data);
+
+            const conversations = await axios.post(
+              'http://localhost:5000/chat/conversations',
+              { login: context?.login },
+              {
+                headers: {
+                  Authorization: `Bearer ${context?.token}`,
+                },
+              }
+            );
+            context?.setContactChat(conversations.data);
+
+          }
+          fetData();
+          
+          
+        }
+      })
+      // this for if you are open many window
+      context.socket.on('deleteMyAccount', (pay) =>{
+        if (pay){
+
+          console.log('deleteMyAccount  ', pay);
+        }
+
+      });
       context.socket.on('updateChannel', (pay) =>{
         if (pay){
           // console.log('this is pay ', pay);
@@ -557,6 +609,7 @@ const closeModale = () =>{
         context.socket.off('updatedFriend');
         context.socket.off('firstMsg');
         context.socket.off('errorJoin');
+        context.socket.off('deleteAccount');
         context.socket.off('twoInvite');
         // context.socket.off('createChannel');
         // context.socket.off('errorCreateChannel');
