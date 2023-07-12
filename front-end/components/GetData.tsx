@@ -5,15 +5,19 @@ import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
 import smia from '../image/smia.jpg'
 import amya from '../image/amya.jpg'
-import { MyContext, MatchType, AchievementType, userBlockedType } from "./Context";
+import { MyContext, MatchType, AchievementType, userBlockedType, LeaderBoardType } from "./Context";
 import avatar from '../image/avatar.webp'
 import { ModalChat } from "./Modal";
 import { FriendType } from "./Context";
 import Router from "next/router";
 import axios from "axios";
 
+import first from '../image/firstplace-removebg-preview.png'
+import second from '../image/secondplace-removebg-preview.png'
+import third from '../image/thirdplace-removebg-preview.png'
+
 import { Award } from "react-feather"
-import { checkIs7rag } from "./Functions";
+import { GetAvatar, checkIs7rag } from "./Functions";
 interface Achievements {
   avatar: string
   condition: string
@@ -122,6 +126,34 @@ export default function GetDataHistory({ matches }: { matches: MatchType[] }) {
 
 export function LeaderBord () {
   const context = useContext(MyContext);
+
+  const GetPhoto = ({ name }: { name: string }) => {
+    if (name === '0')
+      return <Image className="mask mask-squircle w-12 h-12" src={avatar} alt="avatar" />
+    else
+      return <img className="mask mask-squircle w-12 h-12" src={name} alt="avatar" />
+
+  }
+  const GetPlace = ({rank } : {rank : number}) =>{
+    if (rank === 1)
+      return (
+      <Image className=" w-16 h-20 pb-1" src={first} alt="av" />
+
+      );
+    else if (rank === 2)
+    return (
+      <Image className=" w-16 h-20 pb-1" src={second} alt="av" />
+
+      );
+    else 
+    return (
+      <Image className=" w-16 h-20 pb-1" src={third} alt="av" />
+
+      );
+   
+
+  }
+
   return (
     <div className="w-full h-full">
       <div className="w-full h-[10%]"></div>
@@ -129,24 +161,26 @@ export function LeaderBord () {
         <div className="absolute -top-10 w-[40%] h-[80px] bg-slate-100 border-4 border-cyan-400 flex justify-center text-3xl font-extrabold items-center rounded-2xl">LEADERBOARD</div>
         <div className="h-full w-full pt-16 px-2 pb-2">
           <div className="w-full h-full  flex flex-col px-3 gap-3">
-            <div className="w-full h-1/3  border-b-2 border-slate-400 flex items-center justify-between">
-              <div>number</div>
-              <div>photo</div>
-              <div>name</div>
-              <div>lvl</div>
-            </div>
-            <div className="w-full h-1/3  border-b-2 border-slate-400 flex items-center justify-between">
-              <div>number</div>
-              <div>photo</div>
-              <div>name</div>
-              <div>lvl</div>
-            </div>
-            <div className="w-full h-1/3  border-b-2 border-slate-400 flex items-center justify-between">
-              <div>number</div>
-              <div>photo</div>
-              <div>name</div>
-              <div>lvl</div>
-            </div>
+            {
+              context?.leaderBoard.map((leader : LeaderBoardType)=>{
+                return (
+                  <div key={leader.rank} className="w-full h-1/3  border-b-2 border-slate-400 flex items-center justify-between">
+                  <div>
+                  <GetPlace rank={leader.rank} />
+                  </div>
+                  <div>
+                    <GetPhoto name={leader.avatar} />
+
+                  </div>
+                  <div>{leader.username}</div>
+                  <div>{leader.lvl}</div>
+                </div>
+                );
+              })
+            }
+           
+           
+            
           </div>
         </div>
 

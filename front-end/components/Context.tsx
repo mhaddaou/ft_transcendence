@@ -20,6 +20,15 @@ export interface MatchType {
   avatarA : string;
   avatarB: string;
 }
+
+export interface LeaderBoardType{
+  avatar : string;
+  lvl : number;
+  rank : number;
+  username : string;
+
+
+}
 export interface BanedType{
   avatar: string;
   login: string;
@@ -163,6 +172,8 @@ export interface userBlockedType{
 
 
 export interface ContextTypes{
+  leaderBoard : LeaderBoardType[];
+  setLeaderBoard : Dispatch<SetStateAction<LeaderBoardType[]>>;
   nameDelete : string;
   setNameDelete : Dispatch<SetStateAction<string>>;
   deleteAcount : boolean;
@@ -268,6 +279,7 @@ const MyContext = createContext<ContextTypes | undefined>(undefined);
 // create provider
 
 const MyContextProvider = ({children} : ChildProps) =>{
+    const [leaderBoard, setLeaderBoard] = useState<LeaderBoardType[]>([])
     const [nameDelete, setNameDelete] = useState<string>('');
     const [showChannel, setShowChannel] = useState(false);
     const [deleteAcount, setDeleteAcount] = useState(false);
@@ -545,7 +557,7 @@ const MyContextProvider = ({children} : ChildProps) =>{
 
   // context value
  
-    const ContextValue = {name,showChat,nameDelete, setNameDelete, showChannel, setShowChannel, acheivement, setAcheivement, setShowChat ,setName, img, setImg, friends, setFriends,wins, setWins, losses, setLosses,  level, setLevel,LevlPer,setLevlPer,login, setLogin, checkname, 
+    const ContextValue = {name,showChat,nameDelete,leaderBoard, setLeaderBoard,  setNameDelete, showChannel, setShowChannel, acheivement, setAcheivement, setShowChat ,setName, img, setImg, friends, setFriends,wins, setWins, losses, setLosses,  level, setLevel,LevlPer,setLevlPer,login, setLogin, checkname, 
       setCheckname,socket,userBlocked, setUserBlocked,setSocket, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck, match, setMatch,token, setToken,blackList,adminsChannel, setAdminChannel, 
       setBlackList,error, setError, messageError, setMessageError, membersChannel, setMembersChannel,userSearch, setUserSearch,channelSearch, setChannelSearch,MessageContent, 
       waitToAccept,profile, setProfile, pendingInvitation, setPendingInvitation, setWaitToAccept, channelInfo, Channels,setClickChannel, setChannelInfo,clickChat, setClickChat,
