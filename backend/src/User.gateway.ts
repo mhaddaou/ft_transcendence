@@ -845,6 +845,7 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
     // we need a token jwt of that  user to blacklist it
     @SubscribeMessage('logout')
     async lougOut(@ConnectedSocket() client:Socket){
+        console.log('logout');
         try {
             const login = this.getLoginBySocketId(client.id);
             const user = this.connectedUsers.get(login);
@@ -864,6 +865,7 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
             client.disconnect();
         }
         catch(error){
+            console.log('hello error');
             client.emit('errorMessage', error);
         }
     }

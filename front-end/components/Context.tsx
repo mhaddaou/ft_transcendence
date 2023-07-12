@@ -163,6 +163,8 @@ export interface userBlockedType{
 
 
 export interface ContextTypes{
+  deleteAcount : boolean;
+  setDeleteAcount : Dispatch<SetStateAction<boolean>>;
   userBlocked : userBlockedType[];
   setUserBlocked : Dispatch<SetStateAction<userBlockedType[]>>;
   acheivement : AchievementType[];
@@ -265,6 +267,7 @@ const MyContext = createContext<ContextTypes | undefined>(undefined);
 
 const MyContextProvider = ({children} : ChildProps) =>{
     const [showChannel, setShowChannel] = useState(false);
+    const [deleteAcount, setDeleteAcount] = useState(false);
     const [userBlocked, setUserBlocked] = useState<userBlockedType[]>([]);
     const [acheivement, setAcheivement] = useState<AchievementType[]>([])
     const [loginClick, setLoginClick] = useState<string>('');
@@ -535,7 +538,7 @@ const MyContextProvider = ({children} : ChildProps) =>{
       setCheckname,socket,userBlocked, setUserBlocked,setSocket, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck, match, setMatch,token, setToken,blackList,adminsChannel, setAdminChannel, 
       setBlackList,error, setError, messageError, setMessageError, membersChannel, setMembersChannel,userSearch, setUserSearch,channelSearch, setChannelSearch,MessageContent, 
       waitToAccept,profile, setProfile, pendingInvitation, setPendingInvitation, setWaitToAccept, channelInfo, Channels,setClickChannel, setChannelInfo,clickChat, setClickChat,
-      clickChannel,changeName,loginClick, setLoginClick,channelBanner, setChannelBanner, setChangeName, setChannels,owner, profileuser, setProfileuser,setOwner, admin, setAdmin, setMessageContent,contactChat, enableTwoFa, setEnableTwofa, setContactChat, MessageInfo, setMessageInfo , chn, setChn}
+      clickChannel,changeName,deleteAcount, setDeleteAcount,loginClick, setLoginClick,channelBanner, setChannelBanner, setChangeName, setChannels,owner, profileuser, setProfileuser,setOwner, admin, setAdmin, setMessageContent,contactChat, enableTwoFa, setEnableTwofa, setContactChat, MessageInfo, setMessageInfo , chn, setChn}
 
     return (
         <MyContext.Provider value={ContextValue}>
