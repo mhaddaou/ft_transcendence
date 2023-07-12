@@ -16,6 +16,7 @@ interface ModalProps {
   color: string
 
 }
+
 interface ModalCheckProps {
   isOpen: boolean;
   closeModal: () => void;
@@ -33,6 +34,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { send } from "process";
 import { Socket } from "socket.io-client";
 import { checkIs7rag } from "./Functions";
+import { RiCpuFill } from "react-icons/ri";
 
 
 
@@ -402,17 +404,18 @@ const ModalCreateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
   const passref = useRef<HTMLInputElement | null>(null);
   const chanref = useRef<HTMLInputElement | null>(null);
   const [msg, setMsg] = useState('');
+  const [msgError, setMsgError] = useState('');
   const [color, setColor] = useState('');
   const [title, setTitle] = useState('');
   const context = useContext(MyContext);
   useEffect(() => {
     if (context?.socket)
-      context?.socket.on('message', (pay) => {
+      context?.socket.on('createChannel', (pay) => {
+        console.log('this is create new channel ', pay)
         console.log(pay);
         setMsg(pay);
         setColor('bg-green-400');
         setTitle('Success');
-        openModal()
         if (chanref.current) {
           const chann = {
             avatar: "0",
@@ -420,9 +423,12 @@ const ModalCreateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
           }
           context.setChannels((old) => [...old, chann]);
         }
+        openModal()
       })
     if (context?.socket)
-      context?.socket.on('errorMessage', (pay) => {
+      context?.socket.on('errorChannel', (pay) => {
+        console.log('this is error new channel ', pay)
+
         console.log(pay)
         setMsg(pay.message);
         setColor('bg-orange-400');
@@ -430,7 +436,9 @@ const ModalCreateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
         openModal()
       })
     return () => {
-      context?.socket?.off('erroMessage');
+      // context?.socket?.off('errorCreateChannel');
+      context?.socket?.off('createChannel');
+      context?.socket?.off('errorChannel');
     }
 
   }, [context?.socket])
@@ -462,8 +470,27 @@ const ModalCreateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
   const clickcheck = () => {
     setCheck(!check);
   }
+  const checkAllInput = () => {
+    if (chanref.current && chanref.current.value.length < 4){
+      context?.setMessageError('Name of the channel must be at least 4 characters')
+      return false
+    }
+    if (pass && passref.current && passref.current.value.length < 8){
+      context?.setMessageError('password must be at least 8 characters');
+      return false
+    }
+    return true;
+  }
+ 
+  
 
   const Create = () => {
+    if (!checkAllInput()){
+      context?.setError(true);
+      return null;
+    }
+
+   
     if (context?.token)
       checkIs7rag(context?.token);
     if (pass && check) {
@@ -478,9 +505,11 @@ const ModalCreateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
       }
 
       context?.socket?.emit('newChannel', msg)
+      console.log('i send this ', msg);
       // closeModal()
 
     }
+    
     else if (pass) {
       var msg: newChannel | string = '';
 
@@ -512,16 +541,15 @@ const ModalCreateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
         }
         if (context?.token)
           checkIs7rag(context?.token);
-
         context?.socket?.emit('newChannel', msg)
       }
       // closeModal()
 
     }
     else {
-
+      
       var msg: newChannel | string = '';
-
+      
       if (chanref.current) {
         console.log(chanref.current.value);
         msg = {
@@ -530,6 +558,7 @@ const ModalCreateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
           ispassword: pass,
           password: '',
         }
+        console.log('i send this ', msg);
       }
       if (context?.token)
         checkIs7rag(context?.token);
@@ -549,7 +578,7 @@ const ModalCreateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
 
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 ">
+    <div className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-50 ">
       {isModalOpen && <Modal isOpen={isModalOpen} closeModal={closeModale} title={title} msg={msg} color={color} />}
       <div className={`bg-white p-6 rounded-md`}>
         <h2 className="text-2xl font-bold mb-4 text-center border-b-2 pb-4">Create Channel</h2>

@@ -408,10 +408,10 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
             this.joinSocketsToRoom(login, channel.channelName);
             // client.emit('message',`your Channel: ${channel.channelName} has been created`);
             const msg:string = `your Channel: ${channel.channelName} has been created`
-            this.sendMsgToUser(login, msg,"message");
+            this.sendMsgToUser(login, msg,"createChannel");
         }
         catch(error){
-            client.emit("errorMessage", error);
+            client.emit("errorChannel", error);
         }
     }
 

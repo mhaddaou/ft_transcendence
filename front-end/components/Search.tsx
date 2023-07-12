@@ -387,6 +387,12 @@ const closeModale = () =>{
 
         }
       })
+     
+      // context.socket.on('errorCreateChannel',(pay)=>{
+      //   if (pay){
+      //     console.log('this is errorCreateChannel ', pay.message);
+      //   }
+      // })
       
       context.socket.on('blockuser', (pay) =>{
         if (pay) {
@@ -539,6 +545,8 @@ const closeModale = () =>{
         context.socket.off('firstMsg');
         context.socket.off('errorJoin');
         context.socket.off('twoInvite');
+        // context.socket.off('createChannel');
+        // context.socket.off('errorCreateChannel');
         
       }
     };
