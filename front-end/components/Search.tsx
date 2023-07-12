@@ -503,8 +503,17 @@ const closeModale = () =>{
                   },
                 }
               );
-              // context?.setContactChat(res.data);
               context?.setChannels(res.data);
+              const resp = await axios.post(
+                'http://localhost:5000/chat/channel/message/all',
+                {channelName: pay.channelName}, 
+                {
+                  headers:{
+                    Authorization : `Bearer ${context?.token}`,
+                  },
+                }
+              );
+              context.setChannelInfo(resp.data[0])
       
             } catch (error) {
               console.error('Error fetching data:', error);
