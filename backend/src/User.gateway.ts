@@ -83,30 +83,37 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
         const allfriends = await this.userService.getUserFriends({login:user.login});
         const convLogins = await this.userService.getLoginsConversationOfUser(user.UserId);
         const blockedby = await this.userService.getHaters({login:user.login});
+        const ownerChannels:string[] = [] 
+        this.existChannels.forEach((value, key) => {
+            if (value.LoginOwner == user.login){
+                ownerChannels.push(key);
+                this.existChannels.delete(key)
+            }
+        });
         await this.userService.deleteAcoount(user.login);
         convLogins.forEach(login => {
             socketsId = this.userSockets.get(login);
-            this.server.to(socketsId).emit('deleteAccount',{login:user.login});
+            this.server.to(socketsId).emit('deleteAccount',{login:user.login, channels:ownerChannels});
         });
         allfriends.friends.forEach(element => {
             if (!convLogins.includes(element.login)){
                 socketsId = this.userSockets.get(element.login);
-                this.server.to(socketsId).emit('deleteAccount',{login:user.login});
+                this.server.to(socketsId).emit('deleteAccount',{login:user.login, channels:ownerChannels});
         }});
         allfriends.pendingInvitation.forEach(element => {
             if (!convLogins.includes(element.login)){
                 socketsId = this.userSockets.get(element.login);
-                this.server.to(socketsId).emit('deleteAccount',{login:user.login});
+                this.server.to(socketsId).emit('deleteAccount',{login:user.login, channels:ownerChannels});
             }});
         allfriends.waitToAccept.forEach(element => {
             if (!convLogins.includes(element.login)){
                 socketsId = this.userSockets.get(element.login);
-                this.server.to(socketsId).emit('deleteAccount',{login:user.login});
+                this.server.to(socketsId).emit('deleteAccount',{login:user.login, channels:ownerChannels});
             }});
         blockedby.forEach(element => {
             if (!convLogins.includes(element.login)){
                 socketsId = this.userSockets.get(element.login);
-                this.server.to(socketsId).emit('deleteAccount',{login:user.login});
+                this.server.to(socketsId).emit('deleteAccount',{login:user.login, channels:ownerChannels});
             }});
     }
 
@@ -459,7 +466,7 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
     }
 
     // add new Member to a channel
-    @SubscribeMessage('joinChannel')
+    @SubscribeMessage('joinChannel')    
     async joinChannel(@ConnectedSocket() client:Socket, @MessageBody() body:newMemberChannelDto){
         try{
             if (!this.existChannels.has(body.channelName))
@@ -883,7 +890,6 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
         }
         catch(error){
             client.emit('errorMessage', error);
-        }
-
+        }           
     }
 }

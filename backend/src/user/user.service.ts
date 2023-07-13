@@ -420,6 +420,24 @@ export class UserService {
         convB.forEach((element) => {
             result.push(element.loginA)
         })
+
+        // 
+        const memberShips = await this.prisma.client.membershipChannel.findMany({
+            where:{
+                userId:userId
+            }
+        })
+        for(let i = 0; i < memberShips.length; i++){
+            const clicka = await this.prisma.client.membershipChannel.findMany({
+                where:{
+                    channelName:memberShips[i].channelName
+                },
+                select:{
+                    login:true
+                }
+            })
+            clicka.forEach(element => { result.push(element.login)})
+        }
         return result;
     }
 
@@ -1041,7 +1059,6 @@ export class UserService {
         }
         const pWin =  win / result.length * 100;
         const pLose = lose / result.length * 100;
-        console.log('pwin:',pWin,'pLose:',pLose, 'win:',win, 'lose:',lose)
         if (result.length)
             result.push({pWin:pWin.toFixed(2), pLose:pLose.toFixed(2), numberOfMatches:result.length});
         else

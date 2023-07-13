@@ -1199,6 +1199,7 @@ const ModalDeleteAcount = () => {
           <button className="bg-slate-600 px-2 py-1 rounded-lg text-white" onClick={() => context?.setDeleteAcount(false)}>close</button>
           <button className="bg-red-600 px-2 py-1 rounded-lg text-white" onClick={() =>{
             context?.socket?.emit('deleteAccount');
+            console.log('deleteAccount')
              context?.setDeleteAcount(false)
              router.push('/');
              localStorage.clear();
