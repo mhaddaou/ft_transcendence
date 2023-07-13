@@ -82,6 +82,7 @@ const BarLeft = (props: BarLeftProps) => {
       router.push(`http://localhost:3000/Game/?room=${context?.login}&queue=true`)
     if (props.name === "Logout"){
       context?.socket?.emit('logout');
+      localStorage.clear();
       router.push('/');
     }
     

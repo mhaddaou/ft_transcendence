@@ -503,7 +503,6 @@ const closeModale = () =>{
         if (pay){
           if (pay.login === context.nameDelete || pay.login === context.loginClick){
             context.setShowChat(false);
-            context.setShowChannel(false);
             context.setFetchChannel(true);
           }
           const fetData = async () =>{
@@ -540,17 +539,16 @@ const closeModale = () =>{
             );
             context?.setContactChat(conversations.data);
             const res = await axios.post(
-              'http://localhost:5000/chat/memberships',
-              { login: context?.login },
+              'http://localhost:5000/chat/channel/message/all',
+              {channelName: context.loginClick}, 
               {
-                headers: {
-                  Authorization: `Bearer ${context?.token}`,
+                headers:{
+                  Authorization : `Bearer ${context?.token}`,
                 },
               }
             );
-            // context?.setContactChat(res.data);
-            context?.setChannels(res.data);
-
+            console.log('deleted acount in mssage channel ,', res.data[1])
+            context?.setChannelHistory(res.data[1]);
           }
           fetData();
           
@@ -608,10 +606,12 @@ const closeModale = () =>{
 
 
         if (pay){
-          if (pay.message === 'this jwt token is black Listed you have re login'){
+          if (pay.message === 'jwt expired')
+            router.push('/');
+          else if (pay.message === 'this jwt token is black Listed you have re login'){
             router.push('/');
           }
-          if (pay.message !== 'jwt must be provided'){
+          else if (pay.message !== 'jwt must be provided'){
            
             context.setMessageError(pay.message);
             context.setError(true);

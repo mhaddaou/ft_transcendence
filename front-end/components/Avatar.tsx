@@ -100,4 +100,3 @@ export const AvatarInfo = ({user} : {user : string}) =>{
 
 }
 
-

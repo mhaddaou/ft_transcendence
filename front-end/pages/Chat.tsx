@@ -4,7 +4,6 @@ import ChatHistory from "@/components/ChatHistory";
 import Link from "next/link";
 import ContactList from "@/components/ContactList";
 import axios from "axios";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import RealFooter from "@/components/RealFooter";
 import Barl from "@/components/Barl";
@@ -96,6 +95,7 @@ export default function Chat() {
       setId(login);
       context?.setChannelInfo(res.data[0]);
       setChatHistory(res.data[1]);
+      context?.setChannelHistory(res.data[1]);
     }
     else {
     context?.setShowChat(true);

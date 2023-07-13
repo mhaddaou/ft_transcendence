@@ -1042,7 +1042,10 @@ export class UserService {
         const pWin =  win / result.length * 100;
         const pLose = lose / result.length * 100;
         console.log('pwin:',pWin,'pLose:',pLose, 'win:',win, 'lose:',lose)
-        result.push({pWin:pWin.toFixed(2), pLose:pLose.toFixed(2), numberOfMatches:result.length});
+        if (result.length)
+            result.push({pWin:pWin.toFixed(2), pLose:pLose.toFixed(2), numberOfMatches:result.length});
+        else
+            result.push({pWin:0, pLose:0, numberOfMatches:result.length});
         return result;
     }
 

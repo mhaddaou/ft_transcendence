@@ -304,7 +304,7 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
                     this.world = new matterNode(this.server, roomId, data.obj, queue, client.id);// user.login   
                     this.world.onSettingScores(async (payload: any) => {
                         const { resultMatch } = payload
-                        const kk = await this.userService.storeMatch(resultMatch)
+                        const kk = await this.userService.storeMatch(resultMatch);
                         if (kk)
                             client.emit('achiev', {})
                         // Handle the hello event here
@@ -882,7 +882,7 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
             this.sendMsgToUser(login, `${user.login} had delete his Account`, "deleteMyAccount");
         }
         catch(error){
-
+            client.emit('errorMessage', error);
         }
 
     }

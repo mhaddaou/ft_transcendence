@@ -2,6 +2,7 @@ import React, {useState, useContext, createContext, Dispatch, SetStateAction, Re
 import { StaticImageData } from "next/image";
 import avatar from '../image/avatar.webp';
 import { Socket } from "socket.io-client";
+import { msgChannel } from "./ChannelHistory";
 
 
 
@@ -172,6 +173,8 @@ export interface userBlockedType{
 
 
 export interface ContextTypes{
+  channelHistory : msgChannel[];
+  setChannelHistory : Dispatch<SetStateAction<msgChannel[]>>;
   fetchChannel : boolean;
   setFetchChannel : Dispatch<SetStateAction<boolean>>;
   leaderBoard : LeaderBoardType[];
@@ -281,6 +284,7 @@ const MyContext = createContext<ContextTypes | undefined>(undefined);
 // create provider
 
 const MyContextProvider = ({children} : ChildProps) =>{
+    const [channelHistory, setChannelHistory] = useState<msgChannel[]>([]);
     const [leaderBoard, setLeaderBoard] = useState<LeaderBoardType[]>([])
     const [fetchChannel, setFetchChannel] = useState(false);
     const [nameDelete, setNameDelete] = useState<string>('');
@@ -363,10 +367,13 @@ const MyContextProvider = ({children} : ChildProps) =>{
         const Getacheivement = localStorage.getItem('acheivement')
         const GetuserBlocked = localStorage.getItem('userBlocked');
         const GetnameDelete = localStorage.getItem('nameDelete');
+        const GetchannelHistory = localStorage.getItem('channelHistory');
         if (GetnameDelete)
           setNameDelete(GetnameDelete);
         if (GetuserBlocked !== undefined && GetuserBlocked !== null && GetuserBlocked != 'undefined')
           setUserBlocked(JSON.parse(GetuserBlocked));
+        if (GetchannelHistory !== undefined && GetchannelHistory !== null && GetchannelHistory != 'undefined')
+          setChannelHistory(JSON.parse(GetchannelHistory));
         if (GetClickC)
         setLoginClick(GetClickC)
         if (Getacheivement != undefined && Getacheivement !== null && Getacheivement !== "undefined"){
@@ -557,10 +564,13 @@ const MyContextProvider = ({children} : ChildProps) =>{
   useEffect(() =>{
     localStorage.setItem('nameDelete', nameDelete);
   },[nameDelete])
+  useEffect(() =>{
+    localStorage.setItem('channelHistory', JSON.stringify(channelHistory));
+  },[channelHistory])
 
   // context value
  
-    const ContextValue = {name,showChat,fetchChannel,setFetchChannel,nameDelete,leaderBoard, setLeaderBoard,  setNameDelete, showChannel, setShowChannel, acheivement, setAcheivement, setShowChat ,setName, img, setImg, friends, setFriends,wins, setWins, losses, setLosses,  level, setLevel,LevlPer,setLevlPer,login, setLogin, checkname, 
+    const ContextValue = {name,showChat,channelHistory, setChannelHistory,fetchChannel,setFetchChannel,nameDelete,leaderBoard, setLeaderBoard,  setNameDelete, showChannel, setShowChannel, acheivement, setAcheivement, setShowChat ,setName, img, setImg, friends, setFriends,wins, setWins, losses, setLosses,  level, setLevel,LevlPer,setLevlPer,login, setLogin, checkname, 
       setCheckname,socket,userBlocked, setUserBlocked,setSocket, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck, match, setMatch,token, setToken,blackList,adminsChannel, setAdminChannel, 
       setBlackList,error, setError, messageError, setMessageError, membersChannel, setMembersChannel,userSearch, setUserSearch,channelSearch, setChannelSearch,MessageContent, 
       waitToAccept,profile, setProfile, pendingInvitation, setPendingInvitation, setWaitToAccept, channelInfo, Channels,setClickChannel, setChannelInfo,clickChat, setClickChat,

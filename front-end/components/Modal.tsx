@@ -1201,6 +1201,7 @@ const ModalDeleteAcount = () => {
             context?.socket?.emit('deleteAccount');
              context?.setDeleteAcount(false)
              router.push('/');
+             localStorage.clear();
           }}>Delete</button>
         </div>
 

@@ -64,17 +64,14 @@ export default function Profileid() {
         console.log('this is response for for for ', response);
         context?.setToken(token);
         context?.setName(response.username);
+        console.log('this is level ', response.lvl);
+        console.log('this is wins ', response.porcentages.pLose)
+        console.log('this is los ', response.porcentages.pWin)
+        
         context?.setLevel(response.lvl.toFixed(0));
         const m : string = response.lvl.toString();
-        if (response.lvl){
-          context?.setLevel(0)
-          context?.setLevlPer(0);
-        }
-        else{
           context?.setLevel((+m.substring(0,1)))
           context?.setLevlPer((+(m.substring(2.1))) * 10)
-
-        }
         context?.setLosses(response.porcentages.pLose)
         context?.setWins(response.porcentages.pWin)
         context?.setImg(response.avatar);
