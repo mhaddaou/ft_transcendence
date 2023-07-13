@@ -879,7 +879,6 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
             if (!user)
                 throw new BadRequestException('no such user');
             await this.emitToAllusers(user);
-            await this.userService.deleteAcoount(login);
             this.sendMsgToUser(login, `${user.login} had delete his Account`, "deleteMyAccount");
         }
         catch(error){

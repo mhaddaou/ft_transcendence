@@ -86,6 +86,7 @@ export default function GetDataHistory({ matches }: { matches: MatchType[] }) {
 
           {(() => {
             const elements = [];
+            // fix this this is error
             let i = 0;
             while (matches[i]) {
               elements.push(
@@ -101,7 +102,7 @@ export default function GetDataHistory({ matches }: { matches: MatchType[] }) {
 
                   </div>
                   <div className="flex justify-around md:justify-between md:space-x-10  w-1/3 h-full items-center ">
-                    <div className="font-mono font-semibold md:text-[20px]">{matches[i].usernameB}</div>
+                    <div className="font-mono font-semibold md:text-[20px] ">{matches[i].usernameB}</div>
                     <div>
                       <GetImage name={matches[i].avatarB} />
 
@@ -129,30 +130,31 @@ export function LeaderBord () {
 
   const GetPhoto = ({ name }: { name: string }) => {
     if (name === '0')
-      return <Image className="mask mask-squircle w-12 h-12" src={avatar} alt="avatar" />
+      return <Image className="mask mask-squircle w-16 h-16 md:w-20 md:h-20" src={avatar} alt="avatar" />
     else
-      return <img className="mask mask-squircle w-12 h-12" src={name} alt="avatar" />
+      return <img className="mask mask-squircle w-14 h-14 md:w-16 md:h-16" src={name} alt="avatar" />
 
   }
   const GetPlace = ({rank } : {rank : number}) =>{
     if (rank === 1)
       return (
-      <Image className=" w-16 h-20 pb-1" src={first} alt="av" />
+      <Image className=" pl-2 w-20 h-20 md:w-24 md:h-28" src={first} alt="av" />
 
       );
     else if (rank === 2)
     return (
-      <Image className=" w-16 h-20 pb-1" src={second} alt="av" />
+      <Image className="pl-2 w-20 h-20 md:w-24 md:h-28" src={second} alt="av" />
 
       );
     else 
     return (
-      <Image className=" w-16 h-20 pb-1" src={third} alt="av" />
+      <Image className=" pl-2 w-20 h-20 md:w-24 md:h-28 " src={third} alt="av" />
 
       );
    
 
   }
+
 
   return (
     <div className="w-full h-full">
@@ -163,19 +165,32 @@ export function LeaderBord () {
           <div className="w-full h-full  flex flex-col px-3 gap-3">
             {
               context?.leaderBoard.map((leader : LeaderBoardType)=>{
-                return (
-                  <div key={leader.rank} className="w-full h-1/3  border-b-2 border-slate-400 flex items-center justify-between">
-                  <div>
-                  <GetPlace rank={leader.rank} />
-                  </div>
-                  <div>
-                    <GetPhoto name={leader.avatar} />
+               
+                  return (
+                    <div key={leader.rank} className={`w-full h-1/3  border-b-2 border-slate-400  flex gap-2 ${leader.rank === 1 ? 'pl-2' : 'pl-0'}`}>
+                      <div className="w-[30%] h-full flex items-center  justify-around" >
+                      <div>
+                        <GetPlace rank={leader.rank} />
+                        </div>
+                        <div>
+                          <GetPhoto name={leader.avatar} />
+
+                      </div>
+
+                      </div>
+
+
+                      <div className="w-[70%] h-full flex items-center">
+                      <div className="w-full bg-med  rounded-xl py-3 md:py-4 flex items-center justify-around ">
+                      <div className=" text:lg md:text-2xl font-mono font-semibold text-white ">{leader.username}</div>
+                          <div className="text-white text-lg md:text-2xl">{leader.lvl}</div>
+                      </div>
+                      </div>
+                     
+                      
 
                   </div>
-                  <div>{leader.username}</div>
-                  <div>{leader.lvl}</div>
-                </div>
-                );
+                  );
               })
             }
            

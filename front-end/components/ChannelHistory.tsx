@@ -222,6 +222,48 @@ const clickInfo = () => { }
 const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) => {
   const context = useContext(MyContext);
   const [msg, setMsg] = useState<msgChannel[]>([]);
+  useEffect(() =>{
+    if (context?.fetchChannel){
+      const fetchdata = async () =>{
+        context?.setShowChannel(true);
+
+        const res = await axios.post(
+          'http://localhost:5000/chat/channel/message/all',
+          {channelName: context.channelInfo?.channelName}, 
+          {
+            headers:{
+              Authorization : `Bearer ${context?.token}`,
+            },
+          }
+        );
+        const response = await axios.post('http://localhost:5000/chat/channel/banned', {
+          channelName : context.channelInfo?.channelName,
+        },{
+          headers:{
+            Authorization: `Bearer ${context?.token}`,
+          }
+        })
+        context?.setChannelBanner(response.data);
+        // context?.setMembersChannel(response.data);
+        const resp = await axios.post('http://localhost:5000/chat/channel/memberShips',
+        {
+          channelName : context.channelInfo?.channelName,
+        }, {
+          headers:{
+            Authorization: `Bearer ${context?.token}`
+          }
+        })
+        console.log('this is users ',  resp.data)
+        context?.setAdminChannel(resp.data[0].admins);
+        context?.setMembersChannel(resp.data[1].members);
+        console.log('here is memebers channel ', context?.membersChannel);
+        context?.setChannelInfo(res.data[0]);
+        setMsg(res.data[1]);
+        context.setFetchChannel(false);
+      } 
+      fetchdata();
+    }
+  },[context?.fetchChannel])
 
   useEffect(() => {
     setMsg(history);

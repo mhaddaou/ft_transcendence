@@ -1,9 +1,13 @@
 import axios, {AxiosError} from "axios";
+import Router from "next/router";
 import { headers } from "next/dist/client/components/headers";
 import React, {useContext, useEffect, useState} from "react";
 import { MyContext } from "./Context";
 import {ModalError, ModalSearch} from "./Modal";
 import { dataProp } from "./Modal";
+
+
+const router = Router;
 const Search = ({page } : {page : string})=>{
     const context = useContext(MyContext);
     const [inputeValue, setInputValue] = useState('')
@@ -54,8 +58,7 @@ const closeModale = () =>{
         context.socket.on('channelRemoved', (pay) =>{
 
           if (pay){
-            console.log('channelRemoved ', pay.channelName);
-            if (context.channelInfo?.channelName === pay.channelName)
+            if (context.nameDelete === pay.channelName || context.loginClick === pay.channelName)
               context.setShowChannel(false);
             const fetchData = async () => {
               try {
@@ -364,6 +367,15 @@ const closeModale = () =>{
             context.setFriends(friend.data.friends);
           }
           getData();
+          const fetchLeaderBoard = async () =>{
+            const res = await axios.get('http://localhost:5000/user/Leaderboard',{
+              headers:{
+                Authorization: `Bearer ${context?.token}`
+              }
+            })
+            context?.setLeaderBoard(res.data);
+          }
+          fetchLeaderBoard();
           
         }
       })
@@ -489,8 +501,11 @@ const closeModale = () =>{
       })
       context.socket.on('deleteAccount', (pay) =>{
         if (pay){
-          if (pay.login === context.nameDelete || pay.login === context.loginClick)
-          context.setShowChat(false);
+          if (pay.login === context.nameDelete || pay.login === context.loginClick){
+            context.setShowChat(false);
+            context.setShowChannel(false);
+            context.setFetchChannel(true);
+          }
           const fetData = async () =>{
             const friend = await axios.post('http://localhost:5000/user/friends',
             {
@@ -524,6 +539,17 @@ const closeModale = () =>{
               }
             );
             context?.setContactChat(conversations.data);
+            const res = await axios.post(
+              'http://localhost:5000/chat/memberships',
+              { login: context?.login },
+              {
+                headers: {
+                  Authorization: `Bearer ${context?.token}`,
+                },
+              }
+            );
+            // context?.setContactChat(res.data);
+            context?.setChannels(res.data);
 
           }
           fetData();
@@ -582,6 +608,9 @@ const closeModale = () =>{
 
 
         if (pay){
+          if (pay.message === 'this jwt token is black Listed you have re login'){
+            router.push('/');
+          }
           if (pay.message !== 'jwt must be provided'){
            
             context.setMessageError(pay.message);

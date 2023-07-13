@@ -172,6 +172,8 @@ export interface userBlockedType{
 
 
 export interface ContextTypes{
+  fetchChannel : boolean;
+  setFetchChannel : Dispatch<SetStateAction<boolean>>;
   leaderBoard : LeaderBoardType[];
   setLeaderBoard : Dispatch<SetStateAction<LeaderBoardType[]>>;
   nameDelete : string;
@@ -280,6 +282,7 @@ const MyContext = createContext<ContextTypes | undefined>(undefined);
 
 const MyContextProvider = ({children} : ChildProps) =>{
     const [leaderBoard, setLeaderBoard] = useState<LeaderBoardType[]>([])
+    const [fetchChannel, setFetchChannel] = useState(false);
     const [nameDelete, setNameDelete] = useState<string>('');
     const [showChannel, setShowChannel] = useState(false);
     const [deleteAcount, setDeleteAcount] = useState(false);
@@ -557,7 +560,7 @@ const MyContextProvider = ({children} : ChildProps) =>{
 
   // context value
  
-    const ContextValue = {name,showChat,nameDelete,leaderBoard, setLeaderBoard,  setNameDelete, showChannel, setShowChannel, acheivement, setAcheivement, setShowChat ,setName, img, setImg, friends, setFriends,wins, setWins, losses, setLosses,  level, setLevel,LevlPer,setLevlPer,login, setLogin, checkname, 
+    const ContextValue = {name,showChat,fetchChannel,setFetchChannel,nameDelete,leaderBoard, setLeaderBoard,  setNameDelete, showChannel, setShowChannel, acheivement, setAcheivement, setShowChat ,setName, img, setImg, friends, setFriends,wins, setWins, losses, setLosses,  level, setLevel,LevlPer,setLevlPer,login, setLogin, checkname, 
       setCheckname,socket,userBlocked, setUserBlocked,setSocket, chatHistory,setChatHistory,showMsg, setShowMsg, check, setCheck, match, setMatch,token, setToken,blackList,adminsChannel, setAdminChannel, 
       setBlackList,error, setError, messageError, setMessageError, membersChannel, setMembersChannel,userSearch, setUserSearch,channelSearch, setChannelSearch,MessageContent, 
       waitToAccept,profile, setProfile, pendingInvitation, setPendingInvitation, setWaitToAccept, channelInfo, Channels,setClickChannel, setChannelInfo,clickChat, setClickChat,

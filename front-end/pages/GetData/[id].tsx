@@ -12,20 +12,20 @@ import { Socket } from "dgram";
 import Lottie from "lottie-react";
 import wait from '../../image/wait.json'
 import createSocketConnection from '@/components/socketConnection'
+import { checkIs7rag } from "@/components/Functions";
 // import use
 
 
 
-class User{
-
+export async function  checkIsFalse(token : string) {
+    const res = await axios.get('http://localhost:5000/user/is7erag', {headers:{
+            Authorization : `Bearer ${token}`
+        }})
+       return res.data.message;
 }
 
 const router = Router;
 async function fetchdata(tokene :string){
-
-    var l : string = '';
-    if (typeof(tokene) === 'string')
-        l = tokene;
     localStorage.setItem('token', tokene);
     try{
         const res = await axios.get('http://localhost:5000/user/me', {headers:{
@@ -34,12 +34,11 @@ async function fetchdata(tokene :string){
 
         const response = await res.data;
         console.log('this is me res ', response);
-        
-        
-        return response;      
+          return response
     }catch(e){
-        console.log(e)}
+        router.push('/NotExist')}
 }
+
 
 
 export default function Profileid() {
@@ -49,35 +48,33 @@ export default function Profileid() {
     useEffect(() => {
       const fetchTokenAndConnectSocket = async () => {
         if (router.query.id) {
+
+          if (!checkIsFalse(router.query.id.toString()))
+            console.log('ah rah false')
+          else
+            console.log('not false');
           const token = router.query.id.toString();
   
-          // Create the socket connection with the token
-        //   const socket = createSocketConnection(token);
-  
-          // Connect the socket
-        //   socket.connect();
-        //   context?.setSocket(socket);
-  
-          // Store the socket in your context or use it as needed
-          // For example, if you have a socket value in your context
-          // you can set it here
-          // setSocket(socket);
-  
-          // Perform other operations with the socket as needed
-        //   socket.on('message', (data) => {
-        //     console.log('Received message:', data);
-        //   });
-  
-          // Fetch data using the id
+          // checkIsFalse(token) ? console.log('true') : console.log(false) 
+          console.log ('this is check false ', checkIsFalse(token))
           const response = await fetchdata(token);
+          if (!response)
+            return ;
           // console.log("2f response is ", response.enableTwoFa)
         console.log('this is response for for for ', response);
         context?.setToken(token);
         context?.setName(response.username);
         context?.setLevel(response.lvl.toFixed(0));
         const m : string = response.lvl.toString();
-        context?.setLevel((+m.substring(0,1)))
-        context?.setLevlPer((+(m.substring(2.1))) * 10)
+        if (response.lvl){
+          context?.setLevel(0)
+          context?.setLevlPer(0);
+        }
+        else{
+          context?.setLevel((+m.substring(0,1)))
+          context?.setLevlPer((+(m.substring(2.1))) * 10)
+
+        }
         context?.setLosses(response.porcentages.pLose)
         context?.setWins(response.porcentages.pWin)
         context?.setImg(response.avatar);
