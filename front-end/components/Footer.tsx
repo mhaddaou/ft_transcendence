@@ -12,7 +12,7 @@ const Footer = () => {
       <div className='md:bg-slate-00 md:py-2 md:px-6 md:shadow-2xl md:shadow-blue-600 md:rounded-xl md:opacity-90 '>
 
       <Link className='flex flex-col md:flex-row   items-center' href='https://www.linkedin.com/in/mohamed-haddaoui-26b28423a/'> 
-      <Image className='w-10 ' src={Linkedin} alt='link' />
+      <Image className='w-10 ' src={Linkedin} priority alt='link' />
       <p className='font-semibold'>Mhaddaou</p>
       </Link>
       </div>
@@ -20,7 +20,7 @@ const Footer = () => {
       <div className='md:bg-slate-00 md:py-2 md:px-6 md:shadow-2xl md:shadow-blue-600 md:rounded-xl md:opacity-90 '>
 
       <Link className='flex flex-col md:flex-row   items-center' href='https://www.linkedin.com/in/mohamed-haddaoui-26b28423a/'> 
-      <Image className='w-10 ' src={Linkedin} alt='link' />
+      <Image className='w-10 ' src={Linkedin} priority alt='link' />
       <p className='font-semibold'>Mhaddaou</p>
       </Link>
       </div>
@@ -28,7 +28,7 @@ const Footer = () => {
       <div className='md:bg-slate-00 md:py-2 md:px-6 md:shadow-2xl md:shadow-blue-600 md:rounded-xl md:opacity-90 '>
 
       <Link className='flex flex-col md:flex-row   items-center' href='https://www.linkedin.com/in/mohamed-haddaoui-26b28423a/'> 
-      <Image className='w-10 ' src={Linkedin} alt='link' />
+      <Image className='w-10 ' src={Linkedin} priority alt='link' />
       <p className='font-semibold'>Mhaddaou</p>
       </Link>
       </div>
@@ -36,7 +36,7 @@ const Footer = () => {
       <div className='md:bg-slate-00 md:py-2 md:px-6 md:shadow-2xl md:shadow-blue-600 md:rounded-xl md:opacity-90 '>
 
       <Link className='flex flex-col md:flex-row   items-center' href='https://www.linkedin.com/in/mohamed-haddaoui-26b28423a/'> 
-      <Image className='w-10 ' src={Linkedin} alt='link' />
+      <Image className='w-10 ' src={Linkedin} priority alt='link' />
       <p className='font-semibold'>Mhaddaou</p>
       </Link>
       </div>

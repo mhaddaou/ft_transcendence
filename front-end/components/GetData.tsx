@@ -30,19 +30,12 @@ interface Achievements {
 
 type DataProps = number | undefined;
 
-const getImgSrc = (name: string) => {
-  if (name === 'smia')
-    return smia;
-  else if (name === 'amya')
-    return amya
-  else
-    return avatar;
-}
+
 
 
 const GetImage = ({ name }: { name: string | undefined }) => {
   if (name === '0')
-    return <Image className="mask mask-squircle w-8 h-8 sm:w-12 sm:h-12" src={avatar} alt="avatar" />
+    return <Image className="mask mask-squircle w-8 h-8 sm:w-12 sm:h-12" src={avatar} priority alt="avatar" />
   else
     return <img className="mask mask-squircle w-8 h-8 sm:w-12 sm:h-12" src={name} alt="avatar" />
 
@@ -67,7 +60,7 @@ export default function GetDataHistory({ matches }: { matches: MatchType[] }) {
 
   const GetImage = ({ name }: { name: string }) => {
     if (name === '0')
-      return <Image className="mask mask-squircle w-12 h-12" src={avatar} alt="avatar" />
+      return <Image className="mask mask-squircle w-12 h-12" src={avatar} priority alt="avatar" />
     else
       return <img className="mask mask-squircle w-12 h-12" src={name} alt="avatar" />
 
@@ -86,7 +79,7 @@ export default function GetDataHistory({ matches }: { matches: MatchType[] }) {
 
           {context?.match.map((match =>{
             return (
-              <div key={match.loginA} className="flex flex-row min-h-[60px] h-[14%]  mt-2 justify-center space-x-3 md:justify-between items-center bg-gray-300 md:space-x-2 lg:space-x-6 md:px-10 lg:px-32 rounded-lg">
+              <div key={match.scoreA} className="flex flex-row min-h-[60px] h-[14%]  mt-2 justify-center space-x-3 md:justify-between items-center bg-gray-300 md:space-x-2 lg:space-x-6 md:px-10 lg:px-32 rounded-lg">
               <div className="flex  md:space-x-10  w-1/3 h-full items-center">
                 <GetImage name={match.avatarA} />
                 <div className="font-mono font-semibold md:text-[20px]">{match.usernameA}</div>
@@ -123,7 +116,7 @@ export function LeaderBord () {
 
   const GetPhoto = ({ name }: { name: string }) => {
     if (name === '0')
-      return <Image className="mask mask-squircle w-16 h-16 md:w-20 md:h-20" src={avatar} alt="avatar" />
+      return <Image className="mask mask-squircle w-16 h-16 md:w-20 md:h-20" src={avatar} priority alt="avatar" />
     else
       return <img className="mask mask-squircle w-14 h-14 md:w-16 md:h-16" src={name} alt="avatar" />
 
@@ -131,17 +124,17 @@ export function LeaderBord () {
   const GetPlace = ({rank } : {rank : number}) =>{
     if (rank === 1)
       return (
-      <Image className=" pl-2 w-20 h-20 md:w-24 md:h-28" src={first} alt="av" />
+      <Image className=" pl-2 w-20 h-20 md:w-24 md:h-28" src={first} priority alt="av" />
 
       );
     else if (rank === 2)
     return (
-      <Image className="pl-2 w-20 h-20 md:w-24 md:h-28" src={second} alt="av" />
+      <Image className="pl-2 w-20 h-20 md:w-24 md:h-28" src={second} priority alt="av" />
 
       );
     else 
     return (
-      <Image className=" pl-2 w-20 h-20 md:w-24 md:h-28 " src={third} alt="av" />
+      <Image className=" pl-2 w-20 h-20 md:w-24 md:h-28 " src={third} priority alt="av" />
 
       );
    

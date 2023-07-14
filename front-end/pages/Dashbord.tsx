@@ -9,18 +9,13 @@ import { faTableTennisPaddleBall } from '@fortawesome/free-solid-svg-icons';
 import {DataFunction, CallBarLeft} from '@/components/Functions';
 import NavBar from '@/components/NavBar';
 import { MyContext , ContextTypes, FriendType} from '@/components/Context';
-import Modal, { ModalError, ModalInvite } from '@/components/Modal';
-import axios from 'axios';
-import {io} from "socket.io-client";
+import { ModalError, ModalInvite } from '@/components/Modal';
 import createSocketConnection from '@/components/socketConnection'
 import { useRouter } from 'next/router';
-import { MesgType } from '@/components/Context';
-import { Sleeping } from 'matter-js';
-import { Socket } from 'dgram';
-// import { initSocketConnection, getSocket } from '@/components/socketConnection';
+import Modal from '@/components/Pop';
 
-var i = 0;
-var token : string | null = null;
+// var i = 0;
+// var token : string | null = null;
 
 
 function usleep(milliseconds: number) {
@@ -47,9 +42,9 @@ export default  function Progress() {
   useEffect(() =>{
     context?.setLoginClick('');
     context?.setNameDelete('');
-     token = localStorage.getItem('token');
+    //  token = localStorage.getItem('token');
     // console.log(context?.login, ' this is login in useEffect');
-    token ? router.push('/Dashbord') : router.push('/')
+    // token ? router.push('/Dashbord') : router.push('/')
   },[])
 
   useEffect(() =>{
@@ -137,7 +132,8 @@ export default  function Progress() {
   const blockFriend = () => {
     setCheck(6);
   }
-  if (token){
+  // if (token)
+  {
 
     return (
       <div className='bg-gradient-to-t from-gray-100 to-gray-400 min-h-screen ' >

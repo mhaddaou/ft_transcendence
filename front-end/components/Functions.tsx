@@ -19,7 +19,7 @@ export default function  Functions(){
 export const GetAvatar = ({avat } : {avat : string | undefined}) =>{
   if (avat === '0')
     return (
-      <Image src={avatar} alt="ava" />
+      <Image src={avatar} priority alt="ava" />
     );
   else
       return (
@@ -147,7 +147,7 @@ export function  GetAvatarChannel (){
 
   if (context?.channelInfo?.avatar === '0')
   return (
-    <Image className="w-12 h-12 rounded-full border-4 border-slate-400 cursor-pointer hover:border-slate-900" src={avatar} alt="ava" />
+    <Image className="w-12 h-12 rounded-full border-4 border-slate-400 cursor-pointer hover:border-slate-900" src={avatar} priority alt="ava" />
   );
 else
   return (

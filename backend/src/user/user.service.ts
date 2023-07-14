@@ -700,6 +700,8 @@ export class UserService {
                 }
             }
         });
+        if (blockedList.length == 0)
+            return []
         const result = blockedList.map(it => it.blocked);
         return result;
     }

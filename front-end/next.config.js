@@ -5,13 +5,6 @@ const nextConfig = {
 
 module.exports = {nextConfig,
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'sm.ign.com',
-        port: '',
-        pathname: '/ign_ap/cover/a/avatar-gen/avatar-generations_hugw.jpg',
-      },
-    ],
-}
+    unoptimized: true,
+  },
 }

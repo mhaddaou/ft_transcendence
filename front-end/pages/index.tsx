@@ -6,7 +6,7 @@ import Smia from '../image/smia.jpg'
 import Amya from '../image/amya.jpg'
 import Hastid from '../image/hastid.jpg'
 import Cards from '@/components/Cards';
-import React, { useState } from 'react';
+import React from 'react';
 import Footer from '@/components/Footer';
 import HBest from '@/components/HBest';
 import Modal from '@/components/Pop';
@@ -17,9 +17,8 @@ export default function HomePage({pro}:any) {
 
 
 
-  // const router = Router;
-  // const [text, setText] = useState("");
   const images = [Smia, Amya, Hastid, Mhaddaou];
+
   const Names = ["Said Mia", "Abderrahmane Mya", "Hamza Astid", "Mohamed Haddaoui"];
  
 
@@ -39,7 +38,7 @@ export default function HomePage({pro}:any) {
               <Modal />
             </div>
             <div className='md:w-1/2 '>
-              <Image src={Game} alt='image' />
+              <Image priority src={Game} alt='image' />
             </div>
           </div>
         </section>

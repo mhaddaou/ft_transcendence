@@ -33,7 +33,6 @@ async function fetchdata(tokene :string){
         }})
 
         const response = await res.data;
-        console.log('this is me res ', response);
           return response
     }catch(e){
         router.push('/NotExist')}
@@ -48,25 +47,13 @@ export default function Profileid() {
     useEffect(() => {
       const fetchTokenAndConnectSocket = async () => {
         if (router.query.id) {
-
-          if (!checkIsFalse(router.query.id.toString()))
-            console.log('ah rah false')
-          else
-            console.log('not false');
           const token = router.query.id.toString();
   
-          // checkIsFalse(token) ? console.log('true') : console.log(false) 
-          console.log ('this is check false ', checkIsFalse(token))
           const response = await fetchdata(token);
           if (!response)
-            return ;
-          // console.log("2f response is ", response.enableTwoFa)
-        console.log('this is response for for for ', response);
+            return ;  
         context?.setToken(token);
         context?.setName(response.username);
-        console.log('this is level ', response.lvl);
-        console.log('this is wins ', response.porcentages.pLose)
-        console.log('this is los ', response.porcentages.pWin)
         
         context?.setLevel(response.lvl.toFixed(0));
         const m : string = response.lvl.toString();
@@ -81,13 +68,8 @@ export default function Profileid() {
         context?.setPendingInvitation(response.friends.waitToAccept);
         context?.setEnableTwofa(response.enableTwoFa)
         context?.setLogin(response.login);
-        console.log('this is friends ' , context?.friends);
-        console.log('this is pending ', context?.pendingInvitation)
-        console.log('this is wating to accept ', context?.waitToAccept);
 
         context?.setMatch(response.matches);
-        console.log('this is matches ', response.matches);
-        console.log("well the 2f is actually", context?.enableTwoFa)
         if (response.enableTwoFa)
         router.push('http://localhost:3000/QrCode');
       else
@@ -98,22 +80,21 @@ export default function Profileid() {
   
        fetchTokenAndConnectSocket();
        const fetchBlockusers = async () =>{
-        try{
-          const res = await axios.post('http://localhost:5000/user/blocks',
-          {
-            login : context?.login
-          },{
-            headers : {
-              Authorization : `Bearer ${context?.token}`
+        if (context?.login){
+          try{
+            const res = await axios.post('http://localhost:5000/user/blocks',
+            {
+              login : context?.login
+            },{
+              headers : {
+                Authorization : `Bearer ${localStorage.getItem('token')}`
+              }
             }
+            )
+            context?.setUserBlocked(res.data);
+  
+          }catch(e){
           }
-          )
-          console.log(' this is all users you are block ', res.data);
-          context?.setUserBlocked(res.data);
-          console.log('and this is all users you are blocked in context ', context?.userBlocked);
-
-        }catch(e){
-          console.log(e)
         }
 
        }

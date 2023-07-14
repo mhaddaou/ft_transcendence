@@ -5,7 +5,7 @@ const RealFooter = () =>{
     return (
         <footer>
             <div className=' h-full flex justify-center items-center  '>
-                <Image src={First} alt='logo' />
+                <Image src={First} priority alt='logo' />
             </div>
             <div className='py-8 bg-slate-200 shadow-2xl shadow-black '>
                 <Footer />

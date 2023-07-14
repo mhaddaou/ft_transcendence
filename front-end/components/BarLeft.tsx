@@ -101,7 +101,7 @@ const BarLeft = (props: BarLeftProps) => {
   return (
     <button onClick={click} onMouseEnter={handlehover} onMouseLeave={handleLeave} className={`${props.page === props.name ? stylling : stl}   `} >
       <span className="text-left">
-        {img && <Image className={`${props.name === "Profile" ? 'w-8' : 'w-10'}`} alt="user" src={img} />}
+        {img && <Image className={`${props.name === "Profile" ? 'w-8' : 'w-10'}`} alt="user" priority src={img} />}
       </span>
       <span className="ml-4 text-sm font-normal">{props.name}</span>
     </button>

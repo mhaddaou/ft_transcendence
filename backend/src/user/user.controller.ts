@@ -121,10 +121,12 @@ constructor(private readonly userSrevice:UserService, private readonly achieveme
     @Post('blocks')
     async getListBlocked(@Body() findUser:findUserDto, @Res() response:Response){
         try {
+            console.log(findUser.login, ' this is login user');
             const result =  await this.userSrevice.getblockedUsers(findUser.login);
             response.status(200).json(result);
         }
         catch(error){
+            console.log(`error: `, error)
             response.status(400).json(error);
         }
     }

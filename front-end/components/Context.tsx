@@ -470,7 +470,6 @@ const MyContextProvider = ({children} : ChildProps) =>{
     //storing information
     useEffect(()=>{
       localStorage.setItem('name', name);
-      console.log("the name is changed to " + name);
   },[name]);
   useEffect(() =>{
     localStorage.setItem('contactchat', JSON.stringify(contactChat));

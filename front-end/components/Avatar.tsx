@@ -25,35 +25,43 @@ const Avatar = (props : PropsAvatar) => {
   const [color, setColor] = useState<string>(props.check === true ? "bg-green-500" : "bg-red-500");
   const [state , setState] = useState<string>(props.check === false ? "hidden" : "block");
   const [Img, setImg] = useState<string | StaticImageData>('');
-  const TreatImage = (img : string)=>{
-    if (img.length < 6){
-      //string
-      if (img === '0')
-        setImg(avatar);
-      if (img === 'smia')
-        setImg(smia);
-    }else{
-      //StaticImageData
-      setImg(img);
+  // const TreatImage = (img : string)=>{
+  //   if (img.length < 6){
+  //     //string
+  //     if (img === '0')
+  //       setImg(avatar);
+  //     if (img === 'smia')
+  //       setImg(smia);
+  //   }else{
+  //     //StaticImageData
+  //     setImg(img);
 
-    }
+  //   }
+  // }
+  
+  
+  
+  // useEffect(()=>{
+  //   if (context?.img)
+  //     TreatImage(context?.img);
+    
+    
+  // },[context?.img])
+
+  const GetImage = ({ name }: { name: string | undefined }) => {
+    if (name === '0')
+      return <Image className="mask mask-squircle w-8 h-8 sm:w-12 sm:h-12" src={avatar} priority alt="avatar" />
+    else
+      return <img className="mask mask-squircle w-8 h-8 sm:w-12 sm:h-12" src={name}  alt="avatar" />
+  
   }
-  
-  
-  
-  useEffect(()=>{
-    if (context?.img)
-      TreatImage(context?.img);
-    
-    
-  },[context?.img])
 
   return (
     
     <div className="dropdown dropdown-end">
     <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
       <div className="w-10 rounded-full">
-        {
+        {/* {
           (() =>{
             const elements = [];
             elements.push(
@@ -61,7 +69,8 @@ const Avatar = (props : PropsAvatar) => {
             )
             return elements;
           })()
-        }
+        } */}
+        <GetImage name={context?.img} />
 
         
 
