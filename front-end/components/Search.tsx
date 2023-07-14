@@ -528,16 +528,18 @@ const closeModale = () =>{
               }
             );
             context?.setChannels(channels.data);
-            const messages = await axios.post(
-              'http://localhost:5000/chat/channel/message/all',
-              {channelName: namech}, 
-              {
-                headers:{
-                  Authorization : `Bearer ${context?.token}`,
-                },
-              }
-            );
-            context?.setChannelHistory(messages.data[1]);
+            if (context.channelHistory[0].channelName === namech){
+              const messages = await axios.post(
+                'http://localhost:5000/chat/channel/message/all',
+                {channelName: namech}, 
+                {
+                  headers:{
+                    Authorization : `Bearer ${context?.token}`,
+                  },
+                }
+              );
+              context?.setChannelHistory(messages.data[1]);
+            }
           }
           fetData();
           if (namech){
