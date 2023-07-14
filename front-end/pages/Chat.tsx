@@ -20,6 +20,7 @@ import ChannelHistor from "@/components/ChannelHistory";
 import History from "@/components/HIstory";
 import { ModalInvite, ModalError } from "@/components/Modal";
 import { constrainedMemory } from "process";
+import { connect } from "http2";
 const router = Router;
 var token : string | null = null;
 

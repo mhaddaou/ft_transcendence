@@ -55,8 +55,6 @@ const closeModale = () =>{
 
   useEffect(() =>{
     if (context?.socket){
-     
-       
         context?.socket.on('joinOther', (pay) =>{
           if (pay){
             console.log('her channel name ', pay)
@@ -473,9 +471,12 @@ const closeModale = () =>{
       })
       
       context.socket.on('deleteAccount', (pay) =>{
+        console.log('this is name of channel ', context.nameChannel);
         if (pay){
-          if (context.nameDelete === pay.channelName || context.loginClick === pay.channelName)
-            console.log
+          const namech = localStorage.getItem('ChannelNameee')
+          if (pay.login === context.login)
+            return ;
+          
           console.log('Deleting account, ', pay);
           if (pay.login === context.login)
             return ;
@@ -517,7 +518,6 @@ const closeModale = () =>{
               }
             );
             context?.setContactChat(conversations.data);
-            // console.log(context.loginClick, ' this is login click ', context.nameDelete, ' this is delete acount ', pay.login, ' this is payload login')
             const channels = await axios.post(
               'http://localhost:5000/chat/memberships',
               { login: context?.login },
@@ -528,9 +528,27 @@ const closeModale = () =>{
               }
             );
             context?.setChannels(channels.data);
-            
+            const messages = await axios.post(
+              'http://localhost:5000/chat/channel/message/all',
+              {channelName: namech}, 
+              {
+                headers:{
+                  Authorization : `Bearer ${context?.token}`,
+                },
+              }
+            );
+            context?.setChannelHistory(messages.data[1]);
           }
           fetData();
+          if (namech){
+            pay.channels.map((cha : string) =>{
+              if (namech === cha){
+                context.setShowChannel(false);
+              }
+
+            })
+          }
+          
           
           
         }
@@ -613,7 +631,6 @@ const closeModale = () =>{
         context.socket.off('updatedFriend');
         context.socket.off('firstMsg');
         context.socket.off('errorJoin');
-        context.socket.off('deleteAccount');
         context.socket.off('twoInvite');
         // context.socket.off('createChannel');
         // context.socket.off('errorCreateChannel');

@@ -76,6 +76,8 @@ export default function ContactList({  onContactClick } : any) {
     }
     function handleClickCh(ChannelName : string){
       onContactClick(ChannelName, true);
+      localStorage.setItem('ChannelNameee', ChannelName);
+      
     }
 
     function GetImg(imge : string){
