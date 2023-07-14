@@ -41,9 +41,12 @@ export default  function Progress() {
   const [name, setName] = useState('');
     const [gameRoom, setGameRoom] = useState("")
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
 
 
   useEffect(() =>{
+    context?.setLoginClick('');
+    context?.setNameDelete('');
      token = localStorage.getItem('token');
     // console.log(context?.login, ' this is login in useEffect');
     token ? router.push('/Dashbord') : router.push('/')
@@ -71,12 +74,7 @@ export default  function Progress() {
 
   const [isPageReloaded, setIsPageReloaded] = useState(false);
 
-  useEffect(() => {
-    if (window.performance && window.performance.navigation.type === 1) {
-      setIsPageReloaded(true);
-      console.log("is refreching")
-    }
-  }, []);
+ 
 
 
   

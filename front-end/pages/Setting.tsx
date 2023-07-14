@@ -25,6 +25,7 @@ var token : string | null = null;
 
 
     useEffect(() =>{
+      
       token = localStorage.getItem('token');
       token ? router.push('/Setting') : router.push('/');
     },[])

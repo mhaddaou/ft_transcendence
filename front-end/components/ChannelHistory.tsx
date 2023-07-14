@@ -220,9 +220,10 @@ interface TypeModal {
 // udate channle or delete it
 const clickInfo = () => { }
 const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) => {
+
   const context = useContext(MyContext);
   const [msg, setMsg] = useState<msgChannel[]>([]);
-  
+ 
 
   useEffect(() => {
     context?.setChannelHistory(history);
@@ -237,6 +238,7 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
         }
         
       });
+      
     }
 
     return () => {

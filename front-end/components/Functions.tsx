@@ -28,6 +28,20 @@ export const GetAvatar = ({avat } : {avat : string | undefined}) =>{
 }
 
 
+ 
+  // const res = await axios.post(
+  //   'http://localhost:5000/chat/channel/message/all',
+  //   {channelName: context.loginClick}, 
+  //   {
+  //     headers:{
+  //       Authorization : `Bearer ${context?.token}`,
+  //     },
+  //   }
+  // );
+  // console.log('deleted acount in mssage channel ,', res.data[1])
+  // context?.setChannelHistory(res.data[1]);
+
+
 
 export function DataFunction (nbr : number){
   const context  = useContext(MyContext);

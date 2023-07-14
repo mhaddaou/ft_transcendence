@@ -28,6 +28,10 @@ export default function Chat() {
   const context = useContext(MyContext);
 
   const [check, setCheck] = useState('');
+  const [login , setLogin ] = useState('');
+
+  
+
   const [id, setId] = useState("");
   const [chatHistory, setChatHistory] = useState<MesgType[] | any>([]);
   const [show, setShow] = useState("block");
@@ -39,6 +43,35 @@ export default function Chat() {
   },[])
   useEffect(()=>{
     if (context?.socket){
+      context?.socket?.on('channelRemoved', (pay) =>{
+
+        if (pay){
+          console.log(context.channelInfo?.channelName, ' this is name of channel ', pay);
+          if (pay.channelName == context.channelInfo?.channelName)
+            context.setShowChannel(false);
+          const fetchData = async () => {
+            try {
+              const res = await axios.post(
+                'http://localhost:5000/chat/memberships',
+                { login: context?.login },
+                {
+                  headers: {
+                    Authorization: `Bearer ${context?.token}`,
+                  },
+                }
+              );
+              // context?.setContactChat(res.data);
+              context?.setChannels(res.data);
+      
+            } catch (error) {
+              console.error('Error fetching data:', error);
+            }
+          };
+        
+          fetchData();
+  
+        }
+      })
       
 
       context.socket.on('gameInvitation', (payload: any) => {
@@ -54,10 +87,9 @@ export default function Chat() {
       setIsModalOpen(false);
     };
   async function handleContactClick(login: string, Channel: boolean) {
+      setLogin(login);
       context?.setNameDelete(login);
       context?.setLoginClick(login);
-    
-
     if (Channel){
       context?.setShowChannel(true);
 

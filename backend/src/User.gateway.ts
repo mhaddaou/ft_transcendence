@@ -313,8 +313,9 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
                         const { resultMatch } = payload
                         const kk = await this.userService.storeMatch(resultMatch);
                         if (kk)
-                            client.emit('achiev', {})
-                        // Handle the hello event here
+                        client.emit('achiev', {})
+                        // this.world.olayers
+                        // Handle the hello event here  
                     });
                 }
                 if (!queueRoom) {

@@ -110,6 +110,7 @@ export interface adminsChannelType{
   login : string;
   username: string;
 }
+
 export interface membersChannelType{
   avatar: string;
   channelName : string;

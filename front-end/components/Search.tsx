@@ -55,34 +55,7 @@ const closeModale = () =>{
 
   useEffect(() =>{
     if (context?.socket){
-        context.socket.on('channelRemoved', (pay) =>{
-
-          if (pay){
-            if (context.nameDelete === pay.channelName || context.loginClick === pay.channelName)
-              context.setShowChannel(false);
-            const fetchData = async () => {
-              try {
-                const res = await axios.post(
-                  'http://localhost:5000/chat/memberships',
-                  { login: context?.login },
-                  {
-                    headers: {
-                      Authorization: `Bearer ${context?.token}`,
-                    },
-                  }
-                );
-                // context?.setContactChat(res.data);
-                context?.setChannels(res.data);
-        
-              } catch (error) {
-                console.error('Error fetching data:', error);
-              }
-            };
-          
-            fetchData();
-
-          }
-        })
+     
        
         context?.socket.on('joinOther', (pay) =>{
           if (pay){
@@ -495,16 +468,19 @@ const closeModale = () =>{
           };
         
           fetchData();
-          
         }
         
       })
+      
       context.socket.on('deleteAccount', (pay) =>{
         if (pay){
-          console.log('Deleting account')
+          if (context.nameDelete === pay.channelName || context.loginClick === pay.channelName)
+            console.log
+          console.log('Deleting account, ', pay);
           if (pay.login === context.login)
             return ;
           if (pay.login === context.nameDelete || pay.login === context.loginClick){
+            console.log('hello this is the samething')
             context.setShowChat(false);
             context.setFetchChannel(true);
           }
@@ -541,18 +517,18 @@ const closeModale = () =>{
               }
             );
             context?.setContactChat(conversations.data);
-              
-            // const res = await axios.post(
-            //   'http://localhost:5000/chat/channel/message/all',
-            //   {channelName: context.loginClick}, 
-            //   {
-            //     headers:{
-            //       Authorization : `Bearer ${context?.token}`,
-            //     },
-            //   }
-            // );
-            // console.log('deleted acount in mssage channel ,', res.data[1])
-            // context?.setChannelHistory(res.data[1]);
+            // console.log(context.loginClick, ' this is login click ', context.nameDelete, ' this is delete acount ', pay.login, ' this is payload login')
+            const channels = await axios.post(
+              'http://localhost:5000/chat/memberships',
+              { login: context?.login },
+              {
+                headers: {
+                  Authorization: `Bearer ${context?.token}`,
+                },
+              }
+            );
+            context?.setChannels(channels.data);
+            
           }
           fetData();
           
