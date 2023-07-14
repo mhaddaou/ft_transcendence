@@ -470,6 +470,29 @@ const closeModale = () =>{
         
       })
       
+      context.socket.on('staticsGame', (pay) =>{
+        if (pay){
+          console.log('Statics   Game:', pay);
+          context.setLosses(pay.lose);
+          context.setWins(pay.win);
+          const m : string = pay.lvl.toString();
+          context?.setLevel((+m.substring(0,1)))
+          context?.setLevlPer((+(m.substring(2.1))) * 10)
+          const getData = async () =>{
+            const matches = await axios.post('http://localhost:5000/user/',
+            {
+              headers : {
+                Authorization : `Bearer ${context?.token}`
+              }
+            }
+            )
+            context.setMatch(matches.data);
+          }
+          // getData();
+
+
+        }
+      })
       context.socket.on('deleteAccount', (pay) =>{
         console.log('this is name of channel ', context.nameChannel);
         if (pay){
@@ -634,7 +657,7 @@ const closeModale = () =>{
         context.socket.off('firstMsg');
         context.socket.off('errorJoin');
         context.socket.off('twoInvite');
-        // context.socket.off('createChannel');
+        context.socket.off('staticsGame');
         // context.socket.off('errorCreateChannel');
         
       }

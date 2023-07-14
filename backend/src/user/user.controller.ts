@@ -211,19 +211,19 @@ constructor(private readonly userSrevice:UserService, private readonly achieveme
         }
     }
 
-    @UseGuards(AuthGuard('jwt'))
-    @Delete('deleteAccount')
-    async deleteAccount(@Req() req:any, @Res() response:Response){
-        try{
-            const { login} = req.user;
-            const user = await this.userSrevice.findUser({login:login});
-            await this.userSrevice.deleteAcoount(login);
-            response.json({message:'Done'});
-        }
-        catch(error){
-            response.status(400).json(error);
-        }
-    }
+    // @UseGuards(AuthGuard('jwt'))
+    // @Delete('deleteAccount')
+    // async deleteAccount(@Req() req:any, @Res() response:Response){
+    //     try{
+    //         const { login} = req.user;
+    //         const user = await this.userSrevice.findUser({login:login});
+    //         await this.userSrevice.deleteAcoount(login);
+    //         response.json({message:'Done'});
+    //     }
+    //     catch(error){
+    //         response.status(400).json(error);
+    //     }
+    // }
 
     @Get('is7erag')
     async is7erag(@Req() req:any, @Res() response:Response){

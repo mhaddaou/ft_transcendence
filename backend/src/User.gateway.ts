@@ -8,7 +8,7 @@ import { ChannelDto, DeleteMemberChannelDto, MemberChannelDto, deleteChannelDto,
 import { ChatService } from './chat/chat.service';
 import { BadRequestException, NotFoundException, UseFilters, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { WebsocketExceptionsFilter } from './chat/socketException';
-import { FriendDto, UpdateStatus, UpdateUserDto, acceptFriend, findUserDto, invitationDto, newBlockDto, newFriendDto, newUpdateUserDto } from 'src/user/dto/user.dto';
+import { FriendDto, UpdateStatus, UpdateUserDto, acceptFriend, findUserDto, invitationDto, newBlockDto, newFriendDto, newUpdateUserDto, storeMatchDto } from 'src/user/dto/user.dto';
 import { BlockDto } from 'src/user/dto/user.dto';
 import { createHash } from 'crypto';
 import { checkQueue, matterNode, measurements, userInGame } from './Game/game.service';
@@ -311,11 +311,12 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
                     this.world = new matterNode(this.server, roomId, data.obj, queue, client.id);// user.login   
                     this.world.onSettingScores(async (payload: any) => {
                         const { resultMatch } = payload
-                        const kk = await this.userService.storeMatch(resultMatch);
-                        if (kk)
-                        client.emit('achiev', {})
-                        // this.world.olayers
-                        // Handle the hello event here  
+                        const result = await this.userService.storeMatch(resultMatch);
+                        if (result)
+                            client.emit('achiev', {})
+                        this.sendMsgToUser(resultMatch.loginA,result.staticsA,`staticsGame`);
+                        this.sendMsgToUser(resultMatch.loginB,result.staticsB,`staticsGame`);
+                        // Handle the hello event here
                     });
                 }
                 if (!queueRoom) {

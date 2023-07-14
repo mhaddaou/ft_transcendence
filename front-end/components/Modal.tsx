@@ -371,7 +371,7 @@ const handleInput = (e : ChangeEvent<HTMLInputElement>) =>{
             </div>
             <div className="w-full h-1/2">
               <div className="flex items-center justify-center">
-              <input type="password"  onChange={handleInput} value={inputPass}  placeholder="password" className="input input-ghost w-full max-w-xs" />
+              <input type="password" disabled = {!checkPass} onChange={handleInput} value={inputPass}  placeholder="password" className="input input-ghost w-full max-w-xs" />
               </div>
             </div>  
           
@@ -593,7 +593,7 @@ const ModalCreateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
               <input type="checkbox" onClick={clickPass} checked={pass} className="checkbox" />
             </label>
           </div>
-          <input type="password" ref={passref} placeholder="Password" className="input input-bordered input-sm w-full max-w-xs" />
+          <input type="password" disabled = {!pass} ref={passref}  placeholder="Password" className="input input-bordered input-sm w-full max-w-xs" />
 
 
 

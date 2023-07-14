@@ -84,37 +84,30 @@ export default function GetDataHistory({ matches }: { matches: MatchType[] }) {
       <>
         <div className="flex flex-col w-full h-full   overflow-y-auto scrollbar-thin scrollbar-track-slate-950 scrollbar-thumb-slate-300 ">
 
-          {(() => {
-            const elements = [];
-            // fix this this is error
-            let i = 0;
-            while (matches[i]) {
-              elements.push(
-                <div className="flex flex-row min-h-[60px] h-[14%]  mt-2 justify-center space-x-3 md:justify-between items-center bg-gray-300 md:space-x-2 lg:space-x-6 md:px-10 lg:px-32 rounded-lg">
-                  <div className="flex  md:space-x-10  w-1/3 h-full items-center">
-                    <GetImage name={matches[i].avatarA} />
-                    <div className="font-mono font-semibold md:text-[20px]">{matches[i].usernameA}</div>
-                  </div>
-                  <div className="flex w-1/5 md:w-[90px]    h-full items-center justify-between md:justify-center md:space-x-6 ">
-                    <div className={`font-bold text-lg ${matches[i].scoreB > matches[i].scoreA ? 'text-red-500' : 'text-green-600'}`}>{matches[i].scoreA}</div>
-                    <div className="font-bold md:text-xl  md:uppercase">vs</div>
-                    <div className={`font-bold text-lg ${matches[i].scoreA > matches[i].scoreB ? 'text-red-500' : 'text-green-600'} `}>{matches[i].scoreB}</div>
+          {context?.match.map((match =>{
+            return (
+              <div key={match.loginA} className="flex flex-row min-h-[60px] h-[14%]  mt-2 justify-center space-x-3 md:justify-between items-center bg-gray-300 md:space-x-2 lg:space-x-6 md:px-10 lg:px-32 rounded-lg">
+              <div className="flex  md:space-x-10  w-1/3 h-full items-center">
+                <GetImage name={match.avatarA} />
+                <div className="font-mono font-semibold md:text-[20px]">{match.usernameA}</div>
+              </div>
+              <div className="flex w-1/5 md:w-[90px]    h-full items-center justify-between md:justify-center md:space-x-6 ">
+                <div className={`font-bold text-lg ${match.scoreB > match.scoreA ? 'text-red-500' : 'text-green-600'}`}>{match.scoreA}</div>
+                <div className="font-bold md:text-xl  md:uppercase">vs</div>
+                <div className={`font-bold text-lg ${match.scoreA > match.scoreB ? 'text-red-500' : 'text-green-600'} `}>{match.scoreB}</div>
 
-                  </div>
-                  <div className="flex justify-around md:justify-between md:space-x-10  w-1/3 h-full items-center ">
-                    <div className="font-mono font-semibold md:text-[20px] ">{matches[i].usernameB}</div>
-                    <div>
-                      <GetImage name={matches[i].avatarB} />
-
-                    </div>
-                  </div>
+              </div>
+              <div className="flex justify-around md:justify-between md:space-x-10  w-1/3 h-full items-center ">
+                <div className="font-mono font-semibold md:text-[20px] ">{match.usernameB}</div>
+                <div>
+                  <GetImage name={match.avatarB} />
 
                 </div>
-              );
-              i++;
-            }
-            return elements;
-          })()}
+              </div>
+
+            </div>
+            );
+          }))}
         </div>
 
       </>
