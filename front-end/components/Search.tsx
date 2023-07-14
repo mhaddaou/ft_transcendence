@@ -479,16 +479,13 @@ const closeModale = () =>{
           context?.setLevel((+m.substring(0,1)))
           context?.setLevlPer((+(m.substring(2.1))) * 10)
           const getData = async () =>{
-            const matches = await axios.post('http://localhost:5000/user/',
-            {
-              headers : {
-                Authorization : `Bearer ${context?.token}`
-              }
-            }
-            )
-            context.setMatch(matches.data);
+            const res = await axios.get('http://localhost:5000/user/me', {headers:{
+            Authorization : `Bearer ${context.token}`
+        }})
+            context.setMatch(res.data.matches);
+            
           }
-          // getData();
+          getData();
 
 
         }

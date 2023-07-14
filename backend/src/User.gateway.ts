@@ -187,8 +187,6 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
                 await this.MsgToUpdatedfriends(updatedUser);
             }
             console.log(`${user.login} had connected   ${client.id}`);
-            // const msg:string = `welcome ${this.connectedUsers.get(login).username} you have connected succefully`;
-            // this.sendMsgToUser(login, msg, 'message');
             client.emit('message',`welcome ${this.connectedUsers.get(login).username} you have connected succefully`);
         }
         catch(error){

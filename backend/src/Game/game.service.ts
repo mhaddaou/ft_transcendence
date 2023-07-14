@@ -176,8 +176,6 @@ export class matterNode {
                     this.server.to(this.roomId).emit('ready', { msg: true });
                     if (this.restart == true) {
                         Body.setPosition(this.ball, { x: this.obj.divWidth / 2, y: this.obj.divHeight / 2 });
-                        console.log("game restarted, ball is at ", this.ball.position)
-
                         this.server.to(this.roomId).emit('score', { score: this.score, players: this.players });
                         this.restart = false
                         setTimeout(() => {    // after seconds launch the ball again
@@ -264,8 +262,6 @@ export class matterNode {
         if (room) {
             roomArray = Array.from(room.keys())
         }
-        // console.log("connected to room are: ", roomArray)
-        // console.log("available paddles", this.availablePaddles)
         this.updateConnectedUsers(user, client)
         const availablePaddle = this.availablePaddles.shift(); // Get the next available paddle
 

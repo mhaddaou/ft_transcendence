@@ -76,6 +76,16 @@ export class UserService {
                 }
             }
         });
+        for(let i = 0;i < channel.length ; ++i){
+            const memberShip = await this.prisma.client.membershipChannel.findFirst({
+                where:{
+                    channelId:channel[i].ChannelId,
+                    login:userLogin,
+                }
+            })
+            if (memberShip)
+                channel.splice(i, 1); 
+        }
         result.push({channelSearch:channel});
         return result;
     }
@@ -887,6 +897,7 @@ export class UserService {
     }
 
     async findNewAchievement(login:string, userId:string){
+        const user = await this.findUser({login:login});
         const matchesA = await this.prisma.client.match.findMany({
             where:{
                 userAId:userId,
@@ -917,9 +928,9 @@ export class UserService {
                     lose++;
                 nmMatches++;
             })
-        const pWin =  win / nmMatches * 100;
-        const pLose = lose / nmMatches * 100;
-        const statics:any = {win:pWin, lose:pLose, nmMatches:nmMatches};
+        const pWin:number =  win / nmMatches * 100;
+        const pLose:number = lose / nmMatches * 100;
+        const statics:any = {win:pWin.toFixed(2), lose:pLose.toFixed(2), nmMatches:nmMatches, lvl:user.lvl};
         // First Game
         if (matchesA.length + matchesB.length == 1)
         {
@@ -1024,8 +1035,8 @@ export class UserService {
             let otherUser = await this.findUserById(matchsA[i].userBId);
             if (matchsA[i])
                 win++;
-            const {scoreA, scoreB,winner, finishedAt} = matchsA[i];
-            result.push({loginA:user.login,avatarA:user.avatar, usernameA:user.username, loginB:otherUser.login, avatarB:otherUser.avatar, usernameB:otherUser.username, winner:winner,scoreA:scoreA,scoreB:scoreB, finishedAt:finishedAt});
+            const {scoreA, scoreB, finishedAt} = matchsA[i];
+            result.push({loginA:user.login,avatarA:user.avatar, usernameA:user.username, loginB:otherUser.login, avatarB:otherUser.avatar, usernameB:otherUser.username,scoreA:scoreA,scoreB:scoreB, finishedAt:finishedAt});
         }
         const matchsB =  await this.prisma.client.match.findMany({
             where:{
@@ -1036,8 +1047,8 @@ export class UserService {
             let otherUser = await this.findUserById(matchsB[i].userAId);
             if (matchsB[i])
                 lose++;
-            const {scoreA, scoreB,winner, finishedAt} = matchsB[i];
-            result.push({loginA:user.login, avatarA:user.avatar, usernameA:user.username, loginB:otherUser.login, avatarB:otherUser.avatar, usernameB:otherUser.username, winner:winner,scoreA:scoreA,scoreB:scoreB, finishedAt:finishedAt});
+            const {scoreA, scoreB, finishedAt} = matchsB[i];
+            result.push({loginA:otherUser.login, avatarA:otherUser.avatar, usernameA:otherUser.username, loginB:user.login, avatarB:user.avatar, usernameB:user.username,scoreA:scoreA,scoreB:scoreB, finishedAt:finishedAt});
         }
         const pWin =  win / result.length * 100;
         const pLose = lose / result.length * 100;
