@@ -60,13 +60,9 @@ const Other = () =>{
               Authorization : `Bearer ${context?.token}`
             }
           })
-          console.log("respnse profile  ", res.data);
           context?.setProfile(res.data);
-          console.log(res.data.avatar)
-          console.log('context ', context?.profile?.avatar);
           return res.data;
         }catch(e){
-          console.log(e);
         }
       }
         fetchData();

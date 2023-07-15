@@ -18,7 +18,6 @@ export class AuthController {
     async QuaranteDeuxCallback(@Req() req:any, @Res() response:Response) {
       try{
         let access = await this.authService.login42(req);
-        console.log(access);
         response.redirect(`${process.env.url_front}/${access}`);
       }
       catch(error){

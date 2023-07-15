@@ -50,40 +50,15 @@ const Other = () =>{
   
           }
         });
-        console.log('this is res profile ', res.data.message);
         if (res.data.message)
           setCheckIs(true);
         else
           router.push('/NotExist');
       }catch(e){
-        console.log(e);
       }
     }
     getData();
   }, [userLogin]);
-  console.log(userLogin);
-  // const [user, setUser] = useState();
-  // const getUser = async () =>{
-  //   if (userLogin){
-  //     try{
-  //       const res = await axios.post('http://localhost:5000/user/find',
-  //       {login : userLogin},{
-  //         headers:{
-  //           Authorization: `Bearer ${context?.token}`
-  //         }
-  //       }
-  //       )
-  //       console.log('here herkldjfkj ')
-  //       console.log(res.data);
-  //       setUser(res.data);
-
-  //     }catch(e){
-  //       console.log(e);
-  //     }
-  //   }
-
-  // }
-  // getUser();
 
 
   const [check, setCheck] = useState(0);
@@ -92,7 +67,6 @@ const Other = () =>{
   const [perLevel,setPerLevel] = useState(0);
 
   const GetData = (check : number) =>{
-    console.log(check , '  this is check')
     if (check === 1){
       if (context?.profile?.matches)
         return (<GetDataHistory matches={context?.profile?.matches} />);
@@ -119,8 +93,6 @@ const Other = () =>{
               Authorization : `Bearer ${context?.token}`
             }
           })
-          // context?.setProfileuser(JSON.stringify(userLogin));
-          console.log("respnse profile  ", res.data);
           if (res.data.inGame)
             setStatus('in Game');
           else{
@@ -132,15 +104,10 @@ const Other = () =>{
           const m : string = res.data.lvl.toString();
           setLevel((+m.substring(0,1)))
           setPerLevel((+(m.substring(2.1))) * 10)
-          console.log('this is all data in profile ', res.data.acheivement);
           // here when i check level 
-          console.log(res.data, '   here all response');
           context?.setProfile(res.data);
-          console.log(res.data.avatar)
-          console.log('context ', context?.profile?.avatar);
           return res.data;
         }catch(e){
-          console.log(e);
         }
       }
         fetchData();

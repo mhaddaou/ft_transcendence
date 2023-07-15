@@ -110,7 +110,6 @@ function GetAvatarAddFriend({ avatar }: { avatar: string }) {
 
 const AddMember = () => {
   const context = useContext(MyContext)
-  console.log(context?.friends);
   const [hidden, setHidden] = useState('hidden')
   const [alreadyMember, setAlreadyMember] = useState(false)
   const openModal = () => {
@@ -164,7 +163,6 @@ const AddMember = () => {
         }
         
       }catch(e){
-        console.log(e);
       }
       
     }
@@ -174,8 +172,8 @@ const AddMember = () => {
     context?.socket?.emit('inviteMember', { channelName: context.channelInfo?.channelName, login: friend.login })
     if(context?.socket)
     context?.socket.on('errorDuplicate', (pay) =>{
+      // this is error duplicate
       if (pay){
-        console.log(pay.message, ' this error for duplicate')
       }
     })
   }
@@ -313,7 +311,6 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
       context?.setMembersChannel(resp.data[1].members);
 
       } catch (e) {
-        console.log(e);
       }
     }
     GetDat();
@@ -411,7 +408,6 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
 
     const [check, setCheck] = useState(false);
     const user = context?.adminsChannel.find(user => user.isOwner === true)
-    // console.log(' this is the owner ', user);
 
     const checkis = (login : string) =>{
       context?.friends.map((user) =>{
@@ -504,7 +500,7 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
               </li>
             );
           }
-          return null; // Add a return statement for cases when the condition is not met
+          return null; 
         })}
       </>
     );
@@ -514,7 +510,7 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
     const [check, setCheck] = useState(false);
     
     if (!context || !context.membersChannel) {
-      return null; // Return null if context or channelUsers is undefined
+      return null; 
     }
     const checkThisUser = (user : adminsChannelType) =>{
       context.adminsChannel.map((admin) =>{
@@ -631,7 +627,6 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
   }
 
   const ListBan = () =>{
-    console.log('this is list banner ', context?.channelBanner);
     const getData = async () =>{
       const response = await axios.post('http://localhost:5000/chat/channel/banned', {
           channelName : context?.channelInfo?.channelName,
@@ -673,7 +668,6 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
   //send message channel
 
   const send = () => {
-    console.log('send message on this channel  ', context?.channelInfo?.channelName);
     if (inputValue != '') {
       if (context?.token)
       checkIs7rag(context?.token);
@@ -731,9 +725,9 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
       <div className="w-full h-[93%] flex flex-col p-2 " >
         {context?.channelHistory.map((msg: msgChannel) => {
           if (msg.login === context?.login)
-            return <Sender key={msg.login} msg={msg.content} time={msg.sendAt} avatar={msg.avatar} name={msg.username} />
+            return <Sender key={msg.sendAt} msg={msg.content} time={msg.sendAt} avatar={msg.avatar} name={msg.username} />
           else
-            return <Reciever key={msg.login} msg={msg.content} time={msg.sendAt} avatar={msg.avatar} name={msg.username} />
+            return <Reciever key={msg.sendAt} msg={msg.content} time={msg.sendAt} avatar={msg.avatar} name={msg.username} />
         })}
         <div className={`mt-auto pb-1 pl-1 `}>
           <form

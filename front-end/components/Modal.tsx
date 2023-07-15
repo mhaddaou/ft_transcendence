@@ -155,19 +155,11 @@ const ModalChat: React.FC<ModalChatProps> = ({ isOpen, closeModal, name, login }
           receiver: login,
           content: value.current.value
         })
-        context.socket.on('message', (payload: any) => {
-          console.log("111111111111111");
-          console.log(`Received message: ${payload}`);
-          // SetToMessages(payload);
-          // setMessages([...messages, payload]);
-        });
-
       }
       closeModal();
       
     }
     const fetchData = async () => {
-      console.log("here i'm here");
       try {
         const res = await axios.post(
           'http://localhost:5000/chat/conversations',
@@ -179,10 +171,8 @@ const ModalChat: React.FC<ModalChatProps> = ({ isOpen, closeModal, name, login }
           }
         );
         context?.setContactChat(res.data);
-        console.log(context?.contactChat);
 
       } catch (error) {
-        console.error('Error fetching data:', error);
       }
     };
   
@@ -282,7 +272,6 @@ const ModalUpdateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
         form.append("file", file);
         form.append("upload_preset", "mhaddaou");
         if ((file.type !== "image/jpeg") && (file.type !== "image/png")){
-          console.log('this image is not assests')
           setMsg('This image is not jpeg or PNG');
           setTitle('ERROR !');
           setColor('bg-orange-400');
@@ -411,8 +400,6 @@ const ModalCreateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
   useEffect(() => {
     if (context?.socket)
       context?.socket.on('createChannel', (pay) => {
-        console.log('this is create new channel ', pay)
-        console.log(pay);
         setMsg(pay);
         setColor('bg-green-400');
         setTitle('Success');
@@ -427,9 +414,7 @@ const ModalCreateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
       })
     if (context?.socket)
       context?.socket.on('errorChannel', (pay) => {
-        console.log('this is error new channel ', pay)
 
-        console.log(pay)
         setMsg(pay.message);
         setColor('bg-orange-400');
         setTitle('Failed');
@@ -505,7 +490,6 @@ const ModalCreateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
       }
 
       context?.socket?.emit('newChannel', msg)
-      console.log('i send this ', msg);
       // closeModal()
 
     }
@@ -551,14 +535,12 @@ const ModalCreateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
       var msg: newChannel | string = '';
       
       if (chanref.current) {
-        console.log(chanref.current.value);
         msg = {
           channelName: chanref.current.value,
           isPrivate: check,
           ispassword: pass,
           password: '',
         }
-        console.log('i send this ', msg);
       }
       if (context?.token)
         checkIs7rag(context?.token);
@@ -701,14 +683,12 @@ const ModalJoin = (props: ModaleJoin) => {
     if (context?.socket){
       context?.socket.on('errorJoin', (pay) =>{
         if (pay ){
-          console.log('this is error join ' , pay);
           setMsg(pay.message);
           setColor('input-error')
         }
       })
       context.socket.on('join', (pay) =>{
         if (pay){
-          console.log('this for you are join channel pass ', pay);
           const GetDat = async () =>{
             const res = await axios.post(
               'http://localhost:5000/chat/channel/message/all',
@@ -816,19 +796,10 @@ const ModalSearch = (props: ModalSearchProps) => {
     }
     props.closeModal()
     context?.setChn(true);
-    console.log(user.login);
   }
 
 
-  useEffect(() => {
-    if (context?.socket) {
-      context.socket.on('message', (pay) => {
-        if (pay)
-          console.log(pay);
-      })
-
-    }
-  }, [context?.socket])
+ 
   const [name, setName] = useState('');
   const [login, setLogin] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -859,7 +830,6 @@ const ModalSearch = (props: ModalSearchProps) => {
     closeModal: () => void;
   }
   const clickJoin = (channel: channelSearchProps) => {
-    console.log('click')
     setChannel(channel);
     // props.closeModal();
     openModaleJoin();
@@ -868,7 +838,6 @@ const ModalSearch = (props: ModalSearchProps) => {
   const viewProfile = (user : FriendType) =>{
 
    context?.setProfileuser(user.login);
-    console.log(user.login);
     const getData = async () => {
       const res = await axios.post('http://localhost:5000/user/viewProfile',
         { login: user.login },
@@ -878,11 +847,8 @@ const ModalSearch = (props: ModalSearchProps) => {
 
           }
         });
-      console.log('this is res profile ', res.data.message);
       if (res.data.message)
         router.push(`http://localhost:3000/Profile/${user.login}`)
-      else
-        console.log('this user is block you ');
     }
     getData();
   }
@@ -1199,7 +1165,6 @@ const ModalDeleteAcount = () => {
           <button className="bg-slate-600 px-2 py-1 rounded-lg text-white" onClick={() => context?.setDeleteAcount(false)}>close</button>
           <button className="bg-red-600 px-2 py-1 rounded-lg text-white" onClick={() =>{
             context?.socket?.emit('deleteAccount');
-            console.log('deleteAccount')
              context?.setDeleteAcount(false)
              router.push('/');
              localStorage.clear();

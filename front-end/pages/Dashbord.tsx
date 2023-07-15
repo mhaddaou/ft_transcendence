@@ -42,9 +42,6 @@ export default  function Progress() {
   useEffect(() =>{
     context?.setLoginClick('');
     context?.setNameDelete('');
-    //  token = localStorage.getItem('token');
-    // console.log(context?.login, ' this is login in useEffect');
-    // token ? router.push('/Dashbord') : router.push('/')
   },[])
 
   useEffect(() =>{
@@ -94,7 +91,6 @@ export default  function Progress() {
         setIsModalOpen(true)
         
       }
-      console.log(payload)
     });
     return () =>{
       if (context?.socket){
@@ -122,11 +118,10 @@ export default  function Progress() {
     setCheck(3);
   }
   const clickSent = () =>{
-    // console.log('sent')
     setCheck(4);
   }
   const clickRecieved = () =>{
-    // console.log('recieved')
+
     setCheck(5);
   }
   const blockFriend = () => {
@@ -183,7 +178,7 @@ export default  function Progress() {
                   </div>
             
           </div>
-          <div className='h-[75%] w-full shadow-lg bg-gray-100  shadow-slate-600 rounded-2xl overflow-x-auto flex'>
+          <div className=' min-h-[500px] h-[75%] w-full shadow-lg bg-gray-100  shadow-slate-600 rounded-2xl overflow-x-auto flex'>
             {DataFunction(check)}
           </div>
         </div>

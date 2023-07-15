@@ -19,7 +19,6 @@ const Search = ({page } : {page : string})=>{
   const handlKeyPres = async (e : React.KeyboardEvent<HTMLInputElement>) =>{
     if (e.key === 'Enter'){
         if (inputeValue != ''){
-            console.log(inputeValue)
             try{
                 const res = await axios.post("http://localhost:5000/user/search",{
                     search : inputeValue,
@@ -32,9 +31,7 @@ const Search = ({page } : {page : string})=>{
                 )
                 context?.setUserSearch(res.data[0].userSearch);
                 context?.setChannelSearch(res.data[1].channelSearch);
-                console.log(res.data[1].channelSearch)
             }catch (err : any){
-                console.log('not found')
             }
             openModal();
             
@@ -57,7 +54,6 @@ const closeModale = () =>{
     if (context?.socket){
         context?.socket.on('joinOther', (pay) =>{
           if (pay){
-            console.log('her channel name ', pay)
             const fetchData = async () => {
               try {
                 const res = await axios.post(
@@ -95,7 +91,6 @@ const closeModale = () =>{
         
         context?.socket.on('join', (pay)=>{
           if (pay){
-            console.log('her channel name ', pay)
             const fetchData = async () => {
               try {
                 const res = await axios.post(
@@ -165,28 +160,16 @@ const closeModale = () =>{
 
   useEffect(() => {
     if (context?.socket) {
-    //   context.socket.on('gameInvitation', (payload: any) => {
-        
-    //     console.log("game invite response ")
-    //     if (payload && payload.sender) {
-    //       setGameRoom(payload.sender)
-    //       setIsModalOpen(true)
-          
-    //     }
-    //     console.log(payload)
-    //   });
+    
       
       
       context.socket.on('invite',(pay : any) =>{
         if (pay){
-          console.log(pay);
           const friend ={
             login : pay.login,
             username : pay.username,
             avatar : pay.avatar
           }
-
-            // context.setPendingInvitation((prev) =>[...prev,friend])
             const getDat = async () =>{
               try{
                 const resp = await axios.post('http://localhost:5000/user/friends', 
@@ -197,7 +180,6 @@ const closeModale = () =>{
 
                   }
                 });
-                console.log(resp);
                 const res= await axios.post('http://localhost:5000/user/friends',
                 {login : context.login},
                 {
@@ -207,10 +189,8 @@ const closeModale = () =>{
                 }
                 )
                 context.setPendingInvitation(res.data.waitToAccept);
-                console.log('this fro event invite j',res.data )
 
               }catch(e){
-                console.log(e);
               }
             }
             getDat()
@@ -229,7 +209,6 @@ const closeModale = () =>{
       });
       context.socket.on('twoInvite',(pay : any) =>{
         if (pay){
-          console.log(pay, 'twoInvite');
           const fetchData = async () =>{
             try{
               const res = await axios.post('http://localhost:5000/user/friends',
@@ -244,20 +223,9 @@ const closeModale = () =>{
               context.setFriends(res.data.friends);
               context.setWaitToAccept(res.data.pendingInvitation)
               context.setPendingInvitation(res.data.waitToAccept);
-//               friends
-// : 
-// [{…}]
-// pendingInvitation
-// : 
-// []
-// waitToAccept
-// : 
-// []
-              console.log(res.data)
               // context.setF
 
             }catch (error) {
-              console.log(error)
             }
 
           }
@@ -266,12 +234,6 @@ const closeModale = () =>{
           
         }
       })
-
-      // context.socket.on('updatedFriend', (pay) =>{
-      //   if (pay){
-      //     console.log('this is updated ', pay);
-      //   }
-      // })
       context.socket.on('accept',(pay) =>{
         if (pay){
           rmv(pay.login);
@@ -373,13 +335,6 @@ const closeModale = () =>{
 
         }
       })
-     
-      // context.socket.on('errorCreateChannel',(pay)=>{
-      //   if (pay){
-      //     console.log('this is errorCreateChannel ', pay.message);
-      //   }
-      // })
-      
       context.socket.on('blockuser', (pay) =>{
         if (pay) {
           const getData = async () =>{
@@ -392,7 +347,6 @@ const closeModale = () =>{
                 Authorization : `Bearer ${context.token}`,
               }
             })
-            console.log('this all  friends  and not friend  ', res.data);
             context.setFriends(res.data.friends);
             context.setWaitToAccept(res.data.pendingInvitationt);
             context.setPendingInvitation(res.data.waitAccept);
@@ -420,10 +374,8 @@ const closeModale = () =>{
           fetchData();
           context?.setShowChat(false);
         }
-        console.log('ths is block ', pay);
       })
       context.socket.on('privateMessage',(pay) =>{
-        console.log('message received');
         const fetchData = async () => {
           try {
             const res = await axios.post(
@@ -471,7 +423,6 @@ const closeModale = () =>{
       
       context.socket.on('staticsGame', (pay) =>{
         if (pay){
-          console.log('Statics   Game:', pay);
           context.setLosses(pay.lose);
           context.setWins(pay.win);
           const m : string = pay.lvl.toString();
@@ -490,17 +441,13 @@ const closeModale = () =>{
         }
       })
       context.socket.on('deleteAccount', (pay) =>{
-        console.log('this is name of channel ', context.nameChannel);
         if (pay){
           const namech = localStorage.getItem('ChannelNameee')
           if (pay.login === context.login)
             return ;
-          
-          console.log('Deleting account, ', pay);
           if (pay.login === context.login)
             return ;
           if (pay.login === context.nameDelete || pay.login === context.loginClick){
-            console.log('hello this is the samething')
             context.setShowChat(false);
             context.setFetchChannel(true);
           }
@@ -574,19 +521,10 @@ const closeModale = () =>{
           
         }
       })
-      // this for if you are open many window
-      context.socket.on('deleteMyAccount', (pay) =>{
-        if (pay){
-
-          console.log('deleteMyAccount  ', pay);
-        }
-
-      });
+      
       context.socket.on('updateChannel', (pay) =>{
         if (pay){
-          // console.log('this is pay ', pay);
           context.setChannelInfo(pay);
-          console.log('this is pass ', context.channelInfo?.ispassword)
           const fetchData = async () => {
             try {
               const res = await axios.post(
@@ -633,7 +571,6 @@ const closeModale = () =>{
           }
 
         }
-          // console.log(pay);
       })
       
     }
@@ -665,9 +602,9 @@ const closeModale = () =>{
   return (
 <div className="container relative left-0 z-40 flex w-3/4 h-auto md:h-full ">
     {isOpen && <ModalSearch isOpen={isOpen} closeModal={closeModale}   />}
-                            {/* <div className="relative flex items-center w-full h-20 lg:w-64 group">
+                            <div className="relative flex items-center w-full h-20 lg:w-64 group">
                                 <div className="absolute z-50 flex items-center justify-center  w-auto h-10 p-3 pr-2 text-sm text-gray-500 uppercase cursor-pointer sm:hidden">
-                                    <svg fill="none" className="relative w-5 h-5" strokeLinecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg fill="none" className="relative w-5 h-5" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" stroke="currentColor" viewBox="0 0 24 24">
                                         <path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z">
                                         </path>
                                     </svg>
@@ -680,7 +617,7 @@ const closeModale = () =>{
                                     <div className="absolute right-0 hidden h-auto px-2 py-1 mr-2 text-xs text-gray-400 border border-gray-300 rounded-2xl md:block">
                                         +
                                     </div>
-  </div>*/}
+  </div>
                             </div> 
     );
 }

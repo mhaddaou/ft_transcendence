@@ -6,7 +6,6 @@ const NewContactList = () =>{
     const context = useContext(MyContext);
 
     const click = () =>{
-        console.log('is click abouve contact')
         context?.setShowMsg('hidden');
     }
     return (

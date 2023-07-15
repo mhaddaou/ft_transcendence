@@ -35,7 +35,6 @@ function QrCode() {
     fetchData();
   }, [context?.token]);
   const handleClick = async (e: any) => {
-    // console.log("handle click kkkkkkkkkk ", code)
     try {
       const res = await axios.post(
         "http://localhost:5000/auth/2-FA",
@@ -55,11 +54,8 @@ function QrCode() {
       else
         setOpenModal(true)
 
-      console.log("handle res")
-      console.log(res.data)
     }
     catch (error) {
-      console.error(error);
     }
 
   }

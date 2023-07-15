@@ -187,7 +187,6 @@ export class MatterJsModules {
         }
 
         this.socket?.on("paddleAssigned", (data) => {
-            console.log("recieved paddle", data)
             this.paddleSide = data
             if (this.paddleSide == "left") {
                 this.bodies.myPaddle = this.bodies.leftPaddle
@@ -335,7 +334,6 @@ export class MatterJsModules {
             Matter.Body.setPosition(body, newPosition);
             // var  scaleX = newScreen.w / oldScreen.w
             // var  scaleY = newScreen.h / oldScreen.h;
-            // console.log(body.label)
             // if (body.label !== "ball")
             // Matter.Body.scale(body, scaleX, scaleY);
             // // Update dimensions
@@ -371,7 +369,6 @@ export class MatterJsModules {
             this.bodies.ball.position.x = data.x * widthRatio
             this.bodies.ball.position.y = data.y * heightRatio
             // Matter.Body.scale(this.bodies.ball, widthRatio, widthRatio);
-            // console.log(this.bodies.ball.position.x, this.bodies.ball.position.y)
 
         });
 
@@ -413,12 +410,10 @@ export class MatterJsModules {
         this.socket?.on('score', (data) => {
             const receivedScore = data.score;
             const players = data.players;
-            console.log(players)
             if (players)
                 setPlayer({ p1: players.player1.user.login, p2: players.player2.user.login })
             setScore(receivedScore);
             setCountDown(0)
-            console.log(receivedScore)
         });
     }
 

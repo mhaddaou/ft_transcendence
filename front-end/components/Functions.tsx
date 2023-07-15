@@ -27,21 +27,6 @@ export const GetAvatar = ({avat } : {avat : string | undefined}) =>{
 }
 
 
- 
-  // const res = await axios.post(
-  //   'http://localhost:5000/chat/channel/message/all',
-  //   {channelName: context.loginClick}, 
-  //   {
-  //     headers:{
-  //       Authorization : `Bearer ${context?.token}`,
-  //     },
-  //   }
-  // );
-  // console.log('deleted acount in mssage channel ,', res.data[1])
-  // context?.setChannelHistory(res.data[1]);
-
-
-
 export function DataFunction (nbr : number){
   const context  = useContext(MyContext);
     return (
@@ -75,12 +60,9 @@ export function DataFunction (nbr : number){
                     }
                   }
                   )
-                  console.log(' this is all users you are block ', res.data);
                   context?.setUserBlocked(res.data);
-                  console.log('and this is all users you are blocked in context ', context?.userBlocked);
           
                 }catch(e){
-                  console.log(e)
                 }
           
                }
@@ -110,10 +92,10 @@ export function CallBarLeft(props: PropsCallBarLeft){
     return (
         <>
             <BarLeft name="Profile" check={false} page={props.page}  />
-            {/* <BarLeft name="Chat" check={false} page={props.page}  /> 
+            <BarLeft name="Chat" check={false} page={props.page}  /> 
             <BarLeft name="Game" check={false}  page={props.page}/>
             <BarLeft name="Setting" check={false} page={props.page}/>
-            <BarLeft name="Logout" check={false} page={props.page}/>  */}
+            <BarLeft name="Logout" check={false} page={props.page}/> 
         </>
     );
 
@@ -121,27 +103,6 @@ export function CallBarLeft(props: PropsCallBarLeft){
 
 export function  GetAvatarChannel (){
   const context = useContext(MyContext);
-  // useEffect (() =>{
-  //   const GetData =  async () => {
-  //     try{
-  //       const res = await axios.post(
-  //         'http://localhost:5000/chat/channel/message/all',
-  //         {channelName: context?.channelInfo?.channelName}, 
-  //         {
-  //           headers:{
-  //             Authorization : `Bearer ${context?.token}`,
-  //           },
-  //         }
-  //       );
-  //       context?.setChannelInfo(res.data[0]);
-  //     }catch(e){
-  //       console.log(e);
-  //     }
-  //     }
-  
-  //   GetData();
-    
-  // },[context?.channelInfo?.avatar])
   
 
   if (context?.channelInfo?.avatar === '0')
@@ -161,15 +122,10 @@ export async function  checkIs7rag(token : string) {
     const res = await axios.get('http://localhost:5000/user/is7erag', {headers:{
             Authorization : `Bearer ${token}`
         }})
-        if (res.data.message)
-          console.log('is not 7rag');
-        else{
-          console.log('is 7rag 7rag');
+        if (!res.data.message)
           router.push('/NotExist');
-        }
 
   }catch(e){
-    console.log(e);
   }
 
 

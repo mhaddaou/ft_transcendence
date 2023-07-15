@@ -186,7 +186,6 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
                 this.connectedUsers.set(login,updatedUser);
                 await this.MsgToUpdatedfriends(updatedUser);
             }
-            console.log(`${user.login} had connected   ${client.id}`);
             client.emit('message',`welcome ${this.connectedUsers.get(login).username} you have connected succefully`);
         }
         catch(error){
@@ -231,7 +230,6 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
     
             // set status offline in database
             client.emit("message", 'you have disonnected');
-            console.log(`${user.login} had disconected  ${client.id}`);
             this.connectedSocket.delete(client.id);
             await this.deleteSocketFromMapUsers(client.id);
         }
@@ -853,7 +851,6 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
     // we need a token jwt of that  user to blacklist it
     @SubscribeMessage('logout')
     async lougOut(@ConnectedSocket() client:Socket){
-        console.log('logout');
         try {
             const login = this.getLoginBySocketId(client.id);
             const user = this.connectedUsers.get(login);
@@ -873,7 +870,6 @@ export class UserGateWay implements OnGatewayConnection, OnGatewayDisconnect, On
             client.disconnect();
         }
         catch(error){
-            console.log('hello error')
             client.emit('errorMessage', error);
         }
     }

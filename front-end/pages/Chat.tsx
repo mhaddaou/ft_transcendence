@@ -47,7 +47,6 @@ export default function Chat() {
       context?.socket?.on('channelRemoved', (pay) =>{
 
         if (pay){
-          console.log(context.channelInfo?.channelName, ' this is name of channel ', pay);
           if (pay.channelName == context.channelInfo?.channelName)
             context.setShowChannel(false);
           const fetchData = async () => {
@@ -120,10 +119,8 @@ export default function Chat() {
           Authorization: `Bearer ${context?.token}`
         }
       })
-      console.log('this is users ',  resp.data)
       context?.setAdminChannel(resp.data[0].admins);
       context?.setMembersChannel(resp.data[1].members);
-      console.log('here is memebers channel ', context?.membersChannel);
       setCheck('channel');
       setId(login);
       context?.setChannelInfo(res.data[0]);
@@ -133,8 +130,7 @@ export default function Chat() {
     else {
     context?.setShowChat(true);
    
-    console.log(context?.nameDelete)
-    console.log(context?.loginClick)
+    
       try{
         const res = await axios.post(
          "http://localhost:5000/chat/findConversation",
@@ -145,7 +141,6 @@ export default function Chat() {
            },
          }
        );
-       console.log('this is responese of chat ', res.data);
        setCheck('chat');
        setChatHistory(res.data[1]);
        context?.setMessageInfo(res.data[0]);
@@ -153,7 +148,6 @@ export default function Chat() {
        setId(login);
 
       }catch(e){
-        console.log(e);
       }
       // setShow("hidden");
     }

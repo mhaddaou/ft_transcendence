@@ -9,7 +9,6 @@ import RealFooter from "@/components/RealFooter";
 import { MyContext } from "@/components/Context";
 import { useContext, useEffect } from "react";
 import {io} from "socket.io-client"
-import InfoContact from "@/components/InfoContact";
 import Router from "next/router";
 import createSocketConnection from "@/components/socketConnection";
 import { ModalError, ModalDeleteAcount } from "@/components/Modal";
@@ -37,7 +36,6 @@ var token : string | null = null;
     
     if (context?.socket)
     context?.socket.on('message',(paylo) =>{
-      console.log(paylo);
     })
 
     
@@ -56,7 +54,6 @@ var token : string | null = null;
                     <div className="w-full  flex flex-col gap-2">
                             <NavBar page="Setting" />
                         <div className="h-[88%] bg-slate-300 md:bg-inherit rounded-2xl flex justify-center items-center">
-                        {/* <Image className="w-full h-full" src={setting2} alt="setting2"/> */}
                         <Lottie className="w-full h-full" animationData={Anim} />
   
                         </div>

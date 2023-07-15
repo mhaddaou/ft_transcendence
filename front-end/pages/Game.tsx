@@ -129,7 +129,6 @@ export default function Game() {
 
 
       }
-      console.log("left button clicked")
     }, [theme])
     // var token: string | null = '';
     useEffect(() => {
@@ -140,8 +139,6 @@ export default function Game() {
           }
         });
         socket.on('message', (payload: any) => {
-          console.log("111111111111111");
-          console.log(`Received message: ${payload}`);
           // SetToMessages(payload);
           // setMessages([...messages, payload]);
         });
@@ -151,7 +148,6 @@ export default function Game() {
       }
     }, [context?.token]);
     useEffect(() => {
-      console.log(animations)
 
       if (countDown <= 4) {
 

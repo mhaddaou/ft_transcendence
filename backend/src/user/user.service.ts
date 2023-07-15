@@ -985,7 +985,6 @@ export class UserService {
     //store New finished match
     async storeMatch(matchDto:storeMatchDto){
         const {loginA, loginB, scoreA, scoreB, winner} = matchDto;
-        console.log(`A: `,loginA, `B: `, loginB)
         const userA = await  this.findUser({login:loginA});
         const userB = await  this.findUser({login:loginB});
         if (loginA === loginB)

@@ -21,7 +21,6 @@ const ContactSearch = () => {
     if (inp !== "") {
       for (const cnt of contacts) {
         if (cnt === inp.toLowerCase()) {
-          console.log("found");
           setInp("");
           check = true;
           break;
@@ -30,7 +29,6 @@ const ContactSearch = () => {
     }
     if (check === false) {
       setInp("");
-      console.log("not found");
     }
   };
   

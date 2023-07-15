@@ -2,7 +2,6 @@ export default class NotificationUtil {
     static show(message: string) {
       // Check if the browser supports notifications
       if (!("Notification" in window)) {
-        console.log("This browser does not support desktop notifications");
         return;
       }
   

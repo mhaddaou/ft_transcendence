@@ -46,7 +46,6 @@ const Upload = () =>{
                     setIsModalOpen(true);
                 }
                 else if ((file.size / (1024 * 1024)) > 10){
-                    console.log("this file is too big");
                     setColor('bg-orange-600');
                     setMsg('this image is more than 6MB');
                     setTitle('Warning!');

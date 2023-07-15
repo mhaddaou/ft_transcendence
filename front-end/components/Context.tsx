@@ -477,7 +477,6 @@ const MyContextProvider = ({children} : ChildProps) =>{
   },[contactChat])
   useEffect(()=>{
       localStorage.setItem('img', img.toString());
-      console.log()
   },[img]);
   useEffect(() =>{
       localStorage.setItem('checkName',checkname.toString() )

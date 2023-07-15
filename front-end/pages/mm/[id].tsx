@@ -1,17 +1,10 @@
 import axios from "axios";
 import { useRouter } from "next/router";
-import Profile from "./Profile";
 import Router from "next/router";
 import { MyContext } from "@/components/Context";
 import { useContext, useEffect } from "react";
-import { string } from "prop-types";
-import { match } from "assert";
-import {io} from "socket.io-client"
-import { type } from "os";
-import { Socket } from "dgram";
 import Lottie from "lottie-react";
 import wait from '../../image/wait.json'
-import createSocketConnection from '@/components/socketConnection'
 // import use
 
 
@@ -33,12 +26,10 @@ async function fetchdata(tokene :string){
         }})
 
         const response = await res.data;
-        console.log('res ', response);
         
         
         return response;      
-    }catch(e){
-        console.log(e)}
+    }catch(e){}
 }
 
 
@@ -50,28 +41,7 @@ export default function Profileid() {
       const fetchTokenAndConnectSocket = async () => {
         if (router.query.id) {
           const token = router.query.id.toString();
-  
-          // Create the socket connection with the token
-        //   const socket = createSocketConnection(token);
-  
-          // Connect the socket
-        //   socket.connect();
-        //   context?.setSocket(socket);
-  
-          // Store the socket in your context or use it as needed
-          // For example, if you have a socket value in your context
-          // you can set it here
-          // setSocket(socket);
-  
-          // Perform other operations with the socket as needed
-        //   socket.on('message', (data) => {
-        //     console.log('Received message:', data);
-        //   });
-  
-          // Fetch data using the id
           const response = await fetchdata(token);
-          console.log("2f response is ", response.enableTwoFa)
-          console.log('this is response ', response);
           context?.setToken(token);
           context?.setName(response.username);
         context?.setImg(response.avatar);
@@ -80,17 +50,11 @@ export default function Profileid() {
         context?.setPendingInvitation(response.friends.waitToAccept);
         context?.setEnableTwofa(response.enableTwoFa)
         context?.setLogin(response.login);
-        console.log('this is friends ' , context?.friends);
-        console.log('this is pending ', context?.pendingInvitation)
-        console.log('this is wating to accept ', context?.waitToAccept);
-
         context?.setMatch(response.matches);
-        console.log("well the 2f is actually", context?.enableTwoFa)
         if (response.enableTwoFa)
         router.push('http://localhost:3000/QrCode');
       else
         router.push('http://localhost:3000/Dashbord');
-        // response.enableTwoFa
         }
       };
   

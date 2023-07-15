@@ -113,9 +113,7 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
   useEffect(() => {
     if (context?.socket) {
       context.socket.on('PrivateMessage', (payload: any) => {
-        console.log('privateMessage is received ' , payload)
         if (payload) {
-          // console.log('this is new message , ', payload)
           setNewMsg((prevMsgs) => [...prevMsgs, payload]);
           const fetchData = async () => {
             try {
@@ -141,13 +139,11 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
 
       context.socket.on('gameInvitation', (payload: any) => {
    
-        console.log("game invite response ")
         if (payload && payload.sender) {
           setGameRoom(payload.sender)
           setIsModalOpen(true)
 
         }
-        console.log(payload)
       });
     }
   
@@ -306,24 +302,13 @@ const blockUser = () =>{
       removefriend(context?.loginClick);
       removeChat(context?.loginClick);
     }
-  
-    // const friend = context?.friends.find((user) => user.login === context.loginClick)
-    // if (friend)
-    //   context?.setUserBlocked((prev) =>[...prev, friend]);
-    //   console.log(friend, ' this is friend that want to block');
-    // context?.setMessageContent([])
-    // setNewMsg([]);
-    // setShowChat(false);
     context?.setShowChat(false);
   
 
 
 }
 const viewProfile = () =>{
-  console.log("viewProfile");
-  console.log(context?.loginClick);
   context?.setProfileuser(context?.loginClick);
-      console.log(context?.loginClick);
       const getData = async () =>{
         const res = await axios.post('http://localhost:5000/user/viewProfile', 
         {login : context?.loginClick}, 
@@ -333,11 +318,8 @@ const viewProfile = () =>{
 
           }
         });
-        console.log('this is res profile ', res.data.message);
         if (res.data.message)
           router.push(`http://localhost:3000/Profile/${context?.loginClick}`)
-        else
-          console.log('this user is block you ');
       }
       getData();
 }
