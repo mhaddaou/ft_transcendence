@@ -5,22 +5,11 @@ import Image, { StaticImageData } from "next/image";
 import Lottie from "lottie-react";
 import Avatar from "./Avatar";
 import axios from "axios";
-import mhaddaou from '../image/mhaddaou.jpg'
-import { io } from "socket.io-client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
-import Link from "next/link";
-// import InfoContact from "./InfoContact";
 import { MyContext, MesgType } from "./Context";
-import { element } from "prop-types";
-import Notification from './Notification'
-import { Stack } from "@mui/material";
-import Info from "@/components/Info";
-import { useRouter } from 'next/router';
 import Router from "next/router";
 import avatar from '../image/avatar.webp'
-
-import ChannelHistor from "./ChannelHistory";
 import { ModalInvite } from '@/components/Modal';
 import { checkIs7rag } from "./Functions";
 
@@ -65,7 +54,6 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
   const [newMsg, setNewMsg] = useState<MesgType[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [gameRoom, setGameRoom] = useState("")
-  const [userBlock, setUserBlock] = useState('');
 
 
   const Sender = ({ msg }: { msg: string }) => {
@@ -129,7 +117,6 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
               context?.setContactChat(res.data);
       
             } catch (error) {
-              console.error('Error fetching data:', error);
             }
           };
         
@@ -165,13 +152,6 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
       sendAt: new Date().toISOString(),
     };
   };
-  // export interface MesgType{
-  //   content : string;
-  //   sendAt: string;
-  //   loginSender: string;
-  //   loginReceiver: string;
-  //   fromUserA: boolean;
-  // }
 
   const sendMsg = () => {
   
@@ -216,21 +196,8 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
 
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   
-  const clickchoices = () => {
-    
-  };
-  const btnBlock = () => {
-    // to block
-  };
-    
   const [inputValue, setInputValue] = useState("");
-  const [info, setInfo] = useState('hidden');
-  const clickChoices = () => {
-    if (info === 'hidden')
-      setInfo('block');
-    else
-      setInfo('hidden');
-  };
+
 
 // ...
 
@@ -245,13 +212,6 @@ useEffect(() => {
   }
 }, [newMsg]);
 
-// ...
-
-// return (
-//   <div ref={chatContainerRef} style={{ maxHeight: "400px", overflowY: "auto" }}>
-//     {/* Chat history rendering */}
-//   </div>
-// )
 const [hidden, setHidden] = useState('hidden');
 const router = Router
 
@@ -261,6 +221,7 @@ const clickPro = (): void => {
   else
     setHidden('hidden');
 }
+
 const handleGameInvite = () => {
   if (context?.socket) {
 
@@ -339,7 +300,7 @@ const viewProfile = () =>{
         </div>
         <div className="w-1/2 pr-6 text-end">
           <div className="dropdown w-20 dropdown-left">
-            <button onClick={clickPro}>
+            <div onClick={clickPro} className=" cursor-pointer">
               <FontAwesomeIcon className="w-8 h-7 text-black" icon={faBars} flip />
               <ul className={`${hidden} bg-white absolute -left-24 z-20 rounded-lg y-2 text-sm text-gray-700  flex flex-col font-mono font-semibold`} aria-labelledby="dropdownLargeButton">
                 <li>
@@ -349,19 +310,10 @@ const viewProfile = () =>{
                   <button onClick={blockUser} className=" hover:text-cyan-700 text-left block px-4 py-2 hover:bg-gray-100 ">block</button>
                 </li>
                 <li>
-                  {/* <Link href="#" className="hover:text-cyan-700 text-left rounded-b-lg block px-4 py-2 hover:bg-gray-100 ">Earnings</Link> */}
-                </li>
-                <li>
                   <button onClick={handleGameInvite} className="hover:text-cyan-700 text-left rounded-b-lg block px-4 py-2 hover:bg-gray-100 ">Invite</button>
                 </li>
 
               </ul>
-            </button>
-            <div className={`${info} w-50 bg-gray-100 rounded-xl mt-20 z-50`}>
-              <div className="m-4">
-                {/* <InfoContact /> */}
-              </div>
-              {/* <button onClick={btnBlock} className="btn flex text-center bg-transparent border-none hover:bg-slate-300 text-slate-600 m-4">block</button> */}
             </div>
           </div>
         </div>
@@ -371,9 +323,9 @@ const viewProfile = () =>{
   (chatHistory.length > 0  ) &&
   newMsg.map((msg: MesgType) => {
     if (msg.loginSender === context?.login) {
-      return <Sender key={msg.loginSender} msg={msg.content} />;
+      return <Sender key={msg.sendAt} msg={msg.content} />;
     } else {
-      return <Reciever key={msg.loginReceiver}  msg={msg.content} />;
+      return <Reciever key={msg.sendAt}  msg={msg.content} />;
     }
   })
 }
@@ -398,5 +350,3 @@ const viewProfile = () =>{
 
   );
 }
-
-// export {Reciever, Sender};

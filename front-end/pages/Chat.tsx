@@ -64,7 +64,6 @@ export default function Chat() {
               context?.setChannels(res.data);
       
             } catch (error) {
-              console.error('Error fetching data:', error);
             }
           };
         
@@ -149,8 +148,8 @@ export default function Chat() {
 
       }catch(e){
       }
-      // setShow("hidden");
     }
+    
   }
 
   useEffect(() => {

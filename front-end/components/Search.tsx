@@ -69,7 +69,6 @@ const closeModale = () =>{
                 context?.setChannels(res.data);
         
               } catch (error) {
-                console.error('Error fetching data:', error);
               }
             };
           
@@ -106,7 +105,6 @@ const closeModale = () =>{
                 context?.setChannels(res.data);
         
               } catch (error) {
-                console.error('Error fetching data:', error);
               }
             };
           
@@ -327,7 +325,6 @@ const closeModale = () =>{
               context?.setChannels(res.data);
       
             } catch (error) {
-              console.error('Error fetching data:', error);
             }
           };
         
@@ -367,7 +364,6 @@ const closeModale = () =>{
               context?.setContactChat(res.data);
       
             } catch (error) {
-              console.error('Error fetching data:', error);
             }
           };
         
@@ -390,7 +386,6 @@ const closeModale = () =>{
             context?.setContactChat(res.data);
     
           } catch (error) {
-            console.error('Error fetching data:', error);
           }
         };
       
@@ -412,7 +407,6 @@ const closeModale = () =>{
               context?.setContactChat(res.data);
       
             } catch (error) {
-              console.error('Error fetching data:', error);
             }
           };
         
@@ -549,7 +543,6 @@ const closeModale = () =>{
               context.setChannelInfo(resp.data[0])
       
             } catch (error) {
-              console.error('Error fetching data:', error);
             }
           };
         

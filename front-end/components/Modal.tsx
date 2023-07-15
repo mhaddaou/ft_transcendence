@@ -570,10 +570,17 @@ const ModalCreateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
             <input type="text" ref={chanref} placeholder="Name Channel" className="input input-bordered input-sm w-full max-w-xs" />
           </div>
           <div className="form-control font-semibold font-mono">
-            <label className="label cursor-pointer">
-              <span className="label-text">Password</span>
-              <input type="checkbox" onClick={clickPass} checked={pass} className="checkbox" />
-            </label>
+          <label htmlFor="password" className="label cursor-pointer">
+            <span className="label-text">Password</span>
+            <input
+              type="checkbox"
+              id="password"
+              onClick={clickPass}
+              checked={pass}
+              className="checkbox"
+            />
+          </label>
+
           </div>
           <input type="password" disabled = {!pass} ref={passref}  placeholder="Password" className="input input-bordered input-sm w-full max-w-xs" />
 

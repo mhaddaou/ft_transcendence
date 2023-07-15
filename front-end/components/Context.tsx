@@ -423,12 +423,8 @@ const MyContextProvider = ({children} : ChildProps) =>{
           try{
             setContactChat(JSON.parse(GetContaChat));
           }catch(e){
-            console.error(e);
           }
 
-        }
-        else{
-          console.error("the contact chat is not available or null or undefined");
         }
         if (getLogin) setLogin(getLogin);
         if (getCheckName) setCheckname(+getCheckName);
@@ -437,10 +433,7 @@ const MyContextProvider = ({children} : ChildProps) =>{
           try {
             setMatch(JSON.parse(getMatch));
           } catch (error) {
-            console.error("Error parsing JSON:", error);
           }
-        } else {
-          console.warn("getfriends is undefined or null");
         }
         if (getname) setName(getname);
         if (getimg) setImg(getimg);
@@ -448,10 +441,7 @@ const MyContextProvider = ({children} : ChildProps) =>{
             try {
               setFriends(JSON.parse(getfriends));
             } catch (error) {
-              console.error("Error parsing JSON:", error);
             }
-          } else {
-            console.warn("getfriends is undefined or null");
           }
         if (getlevel)
           setLevel(+getlevel)

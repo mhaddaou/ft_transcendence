@@ -2,8 +2,6 @@ import Lottie from "lottie-react";
 import ChatHistory from "./ChatHistory";
 import anim from '../image/chatanim.json'
 import ChannelHistor from "./ChannelHistory";
-import { MesgType } from "./Context";
-import { msgChannel } from "./ChannelHistory";
 interface HIstoryType{
     history : any;
     check : string;

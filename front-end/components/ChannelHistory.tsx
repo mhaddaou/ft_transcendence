@@ -611,7 +611,6 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
         }
 
       } catch (error) {
-        console.error('Error fetching data:', error);
       }
     };
 

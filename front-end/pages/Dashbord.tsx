@@ -12,7 +12,6 @@ import { MyContext , ContextTypes, FriendType} from '@/components/Context';
 import { ModalError, ModalInvite } from '@/components/Modal';
 import createSocketConnection from '@/components/socketConnection'
 import { useRouter } from 'next/router';
-import Modal from '@/components/Pop';
 
 // var i = 0;
 // var token : string | null = null;
@@ -134,7 +133,6 @@ export default  function Progress() {
       <div className='bg-gradient-to-t from-gray-100 to-gray-400 min-h-screen ' >
         <ModalError />
         <div className='flex flex-col container mx-auto h-screen min-h-[1100px] py-2 gap-3  '>
-        {/* {isModalOpen && <Modal isOpen={isModalOpen} closeModal={closeModal} title={name} msg={mms} color="bg-white"/>} */}
         <div className=' h-1/2 flex md:space-x-2'>
           <div className="hidden md:flex md:flex-col min-w-[130px]  md:w-[15%]  bg-gray-200 shadow-2xl shadow-gray-200  rounded-2xl  pt-4   ">
                      <div className=" self-center">
@@ -148,7 +146,7 @@ export default  function Progress() {
             <NavBar page='Dashbord' />
             <div className=' h-[88%] md:h-[86%]  rounded-2xl flex flex-col'>
               <div className='h-1/2 w-full flex justify-center '>
-                <Image className='w-full h-full' src={Staticsee} priority={true} alt='static' placeholder="blur" blurDataURL={'../image/statics.svg'} />
+                <Image className='w-full h-full' src={require('../image/statics.svg')} priority={true} alt='static' placeholder="blur" blurDataURL={'../image/statics.svg'} />
               </div>
               <div className='bg-gray-200 w-full  h-1/2 rounded-2xl px-8 md:px-0  overflow-y-auto scrollbar-thin'>
                 <div className='h-full  w-full flex  flex-col gap-4 md:flex-row md:justify-around md:items-center'>
