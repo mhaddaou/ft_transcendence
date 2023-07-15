@@ -112,7 +112,9 @@ function containsSpecialChars(str : string) : boolean {
       <div className='w-full max-w-sm'>
         {/* <InfoContact /> */}
         <div className="flex items-center border-b border-slate-600 py-2">
-          <input
+          
+          <input 
+          name="name"
             value={valueName}
             onChange={handleInputChange}
             onKeyDown={handleKeyPress}
@@ -120,7 +122,7 @@ function containsSpecialChars(str : string) : boolean {
             className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
             type="text"
             placeholder={`${name}`}
-            aria-label="Full name"
+            // aria-label="Full name"
           />
 
           {isModalOpen && <Modal isOpen={isModalOpen} closeModal={closeModal} title={title} msg={msg} color={color}/>}

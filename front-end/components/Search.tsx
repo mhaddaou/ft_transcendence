@@ -606,7 +606,7 @@ const closeModale = () =>{
                                     <path d="M12.9 14.32a8 8 0 1 1 1.41-1.41l5.35 5.33-1.42 1.42-5.33-5.34zM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12z">
                                     </path>
                                 </svg>
-                                <input type="text" value={inputeValue} onKeyPress={handlKeyPres} onChange={handlChange} className={`input input-bordered block w-full ${page === 'Setting' ?'h-[50%]' :'h-ful' } py-1.5 pl-10 pr-4 leading-normal rounded-2xl   ring-opacity-90 bg-gray-100  text-gray-400 aa-input`} placeholder="Search"/>
+                                <input id="search" type="text" value={inputeValue} onKeyPress={handlKeyPres} onChange={handlChange} className={`input input-bordered block w-full ${page === 'Setting' ?'h-[50%]' :'h-ful' } py-1.5 pl-10 pr-4 leading-normal rounded-2xl   ring-opacity-90 bg-gray-100  text-gray-400 aa-input`} placeholder="Search"/>
                                     <div className="absolute right-0 hidden h-auto px-2 py-1 mr-2 text-xs text-gray-400 border border-gray-300 rounded-2xl md:block">
                                         +
                                     </div>

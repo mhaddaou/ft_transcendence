@@ -170,12 +170,6 @@ const AddMember = () => {
     if (context?.token)
       checkIs7rag(context?.token);
     context?.socket?.emit('inviteMember', { channelName: context.channelInfo?.channelName, login: friend.login })
-    if(context?.socket)
-    context?.socket.on('errorDuplicate', (pay) =>{
-      // this is error duplicate
-      if (pay){
-      }
-    })
   }
   return (
     <>
@@ -729,7 +723,7 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
             return <Reciever key={msg.sendAt} msg={msg.content} time={msg.sendAt} avatar={msg.avatar} name={msg.username} />
         })}
         <div className={`mt-auto pb-1 pl-1 `}>
-          <form
+          <form id="jj"
             onSubmit={handleSubmit}
           >
             <div className="flex items-center">

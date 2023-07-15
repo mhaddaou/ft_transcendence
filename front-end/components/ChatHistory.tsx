@@ -331,7 +331,7 @@ const viewProfile = () =>{
 }
   
         <div className={`mt-auto pb-1 pl-1 ${chatHistory.length === 0 ? "hidden" : ""}`}>
-          <form onSubmit={handleSubmit}>
+          <form id="ll" onSubmit={handleSubmit}>
             <div className="flex items-center">
               <input
                 type="text"

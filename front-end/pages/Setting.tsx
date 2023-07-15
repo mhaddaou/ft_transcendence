@@ -28,10 +28,15 @@ var token : string | null = null;
 
     const context = useContext(MyContext);
     useEffect(() =>{
-      context?.setSocket(createSocketConnection(context?.token))
+      if (context?.socket?.connected)
+        console.log('Connected');
+      else{
+        console.log('is not connected');
+        context?.setSocket(createSocketConnection(context?.token))
+      }
     },[context?.token])
     
-    if (context?.socket)
+    if (context?.socket?.connected)
     context?.socket.on('message',(paylo) =>{
     })
 
