@@ -5,18 +5,12 @@ import defaul from '../image/avatar.webp'
 import Image from "next/image";
 import React, { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
 import { FriendType, MembersType, MyContext, adminsChannelType, membersChannelType, userSearchProps } from "./Context";
-// import { Reciever, Sender } from "./ChatHistory";
 import { ModalUpdateChannel, ModalListBanner } from "./Modal";
-import { Contrail_One } from "next/font/google";
-import History from "./HIstory";
-import Router from "next/router";
 import { useRouter } from "next/router";
 import axios from "axios";
-import { Socket } from "socket.io-client";
 import { ModalChat } from "./Modal";
 import { AlertCircle, CheckCircle } from 'react-feather'
 import { GetAvatarChannel, checkIs7rag } from "./Functions";
-import { library } from "@fortawesome/fontawesome-svg-core";
 import Lottie from "lottie-react";
 import anim from '../image/chatanim.json'
 
@@ -31,7 +25,7 @@ interface recvProps {
 function GetAvatar({ avatar }: { avatar: string }) {
   if (avatar === '0')
     return (
-      <Image src={defaul} alt="ava" />
+      <Image src={defaul} priority alt="ava" />
     );
   else
     return (
@@ -102,7 +96,7 @@ export interface msgChannel {
 function GetAvatarAddFriend({ avatar }: { avatar: string }) {
   if (avatar === '0')
     return (
-      <Image className="w-10 h-10 rounded-full border-4 border-green-600" src={defaul} alt="ava" />
+      <Image className="w-10 h-10 rounded-full border-4 border-green-600" src={defaul} priority alt="ava" />
     );
   else
     return (

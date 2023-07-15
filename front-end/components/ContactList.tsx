@@ -128,7 +128,7 @@ export default function ContactList({  onContactClick } : any) {
               {
                 (() =>{
                   if (channel.avatar.length < 5)
-                    return <Image src={GetImg(channel.avatar)} className="w-10 h-10 rounded-full mr-3" alt="dklfj" width={200} height={200}/>
+                    return <Image src={GetImg(channel.avatar)} className="w-10 h-10 rounded-full mr-3" alt="dklfj" priority width={200} height={200}/>
                   else
                     return <img className="w-10 h-10 rounded-full mr-3" src={channel.avatar} alt='avatar' width={200} height={200}/>
                 }) ()
@@ -153,7 +153,7 @@ export default function ContactList({  onContactClick } : any) {
                         {
                           (() =>{
                             if (contact.avatar.length < 5)
-                              return <Image src={GetImg(contact.avatar)} className="w-10 h-10 rounded-full mr-3" alt="dklfj" width={200} height={200}/>
+                              return <Image src={GetImg(contact.avatar)} className="w-10 h-10 rounded-full mr-3" alt="dklfj" priority width={200} height={200}/>
                             else
                               return <img className="w-10 h-10 rounded-full mr-3" src={contact.avatar} alt='avatar' width={200} height={200}/>
                           }) ()

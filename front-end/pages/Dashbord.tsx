@@ -1,5 +1,5 @@
-import React, { use, useContext, useEffect, useState } from 'react';
-import Statics from '../image/statics.svg'
+import React, {  useContext, useEffect, useState } from 'react';
+import Staticsee from '../image/statics.svg'
 import 'react-circular-progressbar/dist/styles.css';
 import LevelStatics, {Stats} from '@/components/Statics'
 import RealFooter from '@/components/RealFooter';
@@ -153,7 +153,7 @@ export default  function Progress() {
             <NavBar page='Dashbord' />
             <div className=' h-[88%] md:h-[86%]  rounded-2xl flex flex-col'>
               <div className='h-1/2 w-full flex justify-center '>
-                <Image className='w-full h-full' src={Statics} alt='static' />
+                <Image className='w-full h-full' src={Staticsee} priority={true} alt='static' placeholder="blur" blurDataURL={'../image/statics.svg'} />
               </div>
               <div className='bg-gray-200 w-full  h-1/2 rounded-2xl px-8 md:px-0  overflow-y-auto scrollbar-thin'>
                 <div className='h-full  w-full flex  flex-col gap-4 md:flex-row md:justify-around md:items-center'>

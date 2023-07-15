@@ -6,7 +6,6 @@ import avatar from '../image/avatar.webp'
 import Image from 'next/image';
 import axios from 'axios';
 import Router from 'next/router';
-import { Content } from 'next/font/google';
 const router = Router
 
 interface PropsCallBarLeft{
@@ -111,10 +110,10 @@ export function CallBarLeft(props: PropsCallBarLeft){
     return (
         <>
             <BarLeft name="Profile" check={false} page={props.page}  />
-            <BarLeft name="Chat" check={false} page={props.page}  /> 
+            {/* <BarLeft name="Chat" check={false} page={props.page}  /> 
             <BarLeft name="Game" check={false}  page={props.page}/>
             <BarLeft name="Setting" check={false} page={props.page}/>
-            <BarLeft name="Logout" check={false} page={props.page}/> 
+            <BarLeft name="Logout" check={false} page={props.page}/>  */}
         </>
     );
 

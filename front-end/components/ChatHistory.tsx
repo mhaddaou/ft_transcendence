@@ -10,7 +10,7 @@ import { io } from "socket.io-client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
-import InfoContact from "./InfoContact";
+// import InfoContact from "./InfoContact";
 import { MyContext, MesgType } from "./Context";
 import { element } from "prop-types";
 import Notification from './Notification'
@@ -26,7 +26,7 @@ import { checkIs7rag } from "./Functions";
 
 const GetImage = ({name } : {name : string | undefined}) =>{
   if (name === '0')
-    return <Image className="mask mask-squircle w-12 h-12" src={avatar} alt="avatar" /> 
+    return <Image className="mask mask-squircle w-12 h-12" src={avatar} priority alt="avatar" /> 
   else
     return <img className="mask mask-squircle w-12 h-12" src={name} alt="avatar"/>
 
@@ -37,7 +37,7 @@ const AvatarOffline = ({ img }: { img: StaticImageData }) => {
   return (
     <div className="avatar offline">
       <div className="w-14 rounded-full">
-        <Image src={img} alt="avatar" />
+        <Image src={img} priority alt="avatar" />
       </div>
     </div>
   );
@@ -377,9 +377,9 @@ const viewProfile = () =>{
             </button>
             <div className={`${info} w-50 bg-gray-100 rounded-xl mt-20 z-50`}>
               <div className="m-4">
-                <InfoContact />
+                {/* <InfoContact /> */}
               </div>
-              <button onClick={btnBlock} className="btn flex text-center bg-transparent border-none hover:bg-slate-300 text-slate-600 m-4">block</button>
+              {/* <button onClick={btnBlock} className="btn flex text-center bg-transparent border-none hover:bg-slate-300 text-slate-600 m-4">block</button> */}
             </div>
           </div>
         </div>
