@@ -9,7 +9,6 @@ module.exports = {nextConfig,
     ME : 'http://localhost:5000/user/me',
     Blocks : 'http://localhost:5000/user/blocks',
     Dashbord : 'http://localhost:3000/Dashbord',
-    NotExist : '/NotExist',
     Qrcode : 'http://localhost:3000/QrCode',
     Setting : 'http://localhost:3000/Setting',
     Chat : 'http://localhost:3000/Chat',
@@ -20,7 +19,6 @@ module.exports = {nextConfig,
     Conversations : 'http://localhost:5000/chat/conversations',
     Localhost : 'http://localhost:3000',
     ViewProfile : 'http://localhost:5000/user/viewProfile',
-    findProfile : 'http://localhost:5000/user/find',
     Profile : 'http://localhost:3000/Profile',
     Memb : 'http://localhost:5000/chat/memberships',
     Leaderboard : 'http://localhost:5000/user/Leaderboard',
@@ -28,11 +26,16 @@ module.exports = {nextConfig,
     Auth : 'http://localhost:5000/auth/42',
     Search : 'http://localhost:5000/user/search',
     Friends : 'http://localhost:5000/user/friends',
-    Pprofile : 'http://localhost:5000/user/profile',
+    FindConversation : 'http://localhost:5000/chat/findConversation',
+    Socket : 'http://localhost:3333',
+    AuthQr : 'http://localhost:5000/auth/QR',
+    TwoFa : 'http://localhost:5000/auth/2-FA',
+    Pprofile : 'http://localhost:5000/user/profile'
   },
+
   images: {
     unoptimized: true,
   },
 }
 
-// ${process.env.NotExist}
+ 
