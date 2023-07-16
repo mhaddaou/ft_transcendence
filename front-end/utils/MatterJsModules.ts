@@ -445,6 +445,7 @@ export class MatterJsModules {
         this.socket?.on('gameStatus', (data) => {
             const { msg } = data
             setGameStatusMsg(msg);
+          
         });
         this.socket?.on('cancelGame', (data) => {
             const { msg } = data
@@ -453,4 +454,3 @@ export class MatterJsModules {
     }
 
 }
-

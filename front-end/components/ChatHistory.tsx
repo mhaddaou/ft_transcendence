@@ -10,7 +10,6 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { MyContext, MesgType } from "./Context";
 import Router from "next/router";
 import avatar from '../image/avatar.webp'
-import { ModalInvite } from '@/components/Modal';
 import { checkIs7rag } from "./Functions";
 
 const GetImage = ({name } : {name : string | undefined}) =>{
@@ -106,7 +105,7 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
           const fetchData = async () => {
             try {
               const res = await axios.post(
-                'http://localhost:5000/chat/conversations',
+                `${process.env.Conversations}`,
                 { login: context?.login },
                 {
                   headers: {
@@ -127,9 +126,8 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
       context.socket.on('gameInvitation', (payload: any) => {
    
         if (payload && payload.sender) {
-          setGameRoom(payload.sender)
-          setIsModalOpen(true)
-
+          context.setGameHost(payload.sender)
+          context.setGameInvitation(true)
         }
       });
     }
@@ -234,7 +232,7 @@ const handleGameInvite = () => {
     const handleHref = (link : string) => {
       router.push(link);
     };
-    handleHref(`http://localhost:3000/${url}`)
+    handleHref(`${process.env.Localhost}/${url}`)
    
     
   }
@@ -271,7 +269,7 @@ const blockUser = () =>{
 const viewProfile = () =>{
   context?.setProfileuser(context?.loginClick);
       const getData = async () =>{
-        const res = await axios.post('http://localhost:5000/user/viewProfile', 
+        const res = await axios.post(`${process.env.ViewProfile}`, 
         {login : context?.loginClick}, 
         {
           headers: {
@@ -280,7 +278,7 @@ const viewProfile = () =>{
           }
         });
         if (res.data.message)
-          router.push(`http://localhost:3000/Profile/${context?.loginClick}`)
+          router.push(`${process.env.Profile}/${context?.loginClick}`)
       }
       getData();
 }
@@ -292,7 +290,6 @@ const viewProfile = () =>{
       <Lottie  animationData={anim}  /> 
     </div>
     <div className={`flex flex-col h-full overflow-y-auto relative scrollbar scrollbar-thumb-green-400 scrollbar-w-1 scrollbar-track-slate-100 scrollbar- gap-1 bg-gray-300 rounded-2xl ${context?.showChat ? 'block' : 'hidden'}`}>
-       {isModalOpen && <ModalInvite isOpen={isModalOpen} closeModal={closeModal} title="Invitation to Game" msg={`you've been invited to join a game against ${gameRoom}`} color={gameRoom}  />}
       <div className={`w-full h-[7%] flex chat chat-start  border-b-2 border-slate-500 items-center ${chatHistory.length === 0 ? "hidden" : ""}`}>
         <div className="w-1/2 pl-6">
           {context?.login === context?.MessageInfo?.loginA ? <AvatarOnline img={context?.MessageInfo?.avatarB} /> : <AvatarOnline img={context?.MessageInfo?.avatarA} /> }

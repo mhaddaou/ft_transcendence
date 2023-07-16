@@ -6,7 +6,7 @@ export default function Modal( ) {
   const router = Router;
   const [showModal, setShowModal] = React.useState(false);
   const click = () =>{
-    router.push('http://localhost:5000/auth/42');
+    router.push(`${process.env.Auth}`);
     
   }
   

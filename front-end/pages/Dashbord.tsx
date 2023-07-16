@@ -9,7 +9,7 @@ import { faTableTennisPaddleBall } from '@fortawesome/free-solid-svg-icons';
 import {DataFunction, CallBarLeft} from '@/components/Functions';
 import NavBar from '@/components/NavBar';
 import { MyContext , ContextTypes, FriendType} from '@/components/Context';
-import { ModalError, ModalInvite } from '@/components/Modal';
+import { ModalError, ModalGameInvite } from '@/components/Modal';
 import createSocketConnection from '@/components/socketConnection'
 import { useRouter } from 'next/router';
 
@@ -33,7 +33,6 @@ export default  function Progress() {
   const router = useRouter();
   const [mms, setMesg] = useState('');
   const [name, setName] = useState('');
-    const [gameRoom, setGameRoom] = useState("")
   const [isModalOpen, setIsModalOpen] = useState(false);
   
 
@@ -44,8 +43,10 @@ export default  function Progress() {
   },[])
 
   useEffect(() =>{
-    context?.setSocket(createSocketConnection(context?.token))
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (!context?.socket?.connected){
+      context?.setSocket(createSocketConnection(context?.token))
+      console.log('newconnect')
+    }
   },[context?.token])
   
 
@@ -86,16 +87,11 @@ export default  function Progress() {
         
      
       if (payload && payload.sender) {
-        setGameRoom(payload.sender)
-        setIsModalOpen(true)
-        
+        context.setGameInvitation(true)
+        context.setGameHost(payload.sender)
       }
     });
-    return () =>{
-      if (context?.socket){
-        context.socket.off('gameInvitation')
-      }
-    }
+   
   }, [context?.socket])
 
  
@@ -132,6 +128,7 @@ export default  function Progress() {
     return (
       <div className='bg-gradient-to-t from-gray-100 to-gray-400 min-h-screen ' >
         <ModalError />
+        <ModalGameInvite />
         <div className='flex flex-col container mx-auto h-screen min-h-[1100px] py-2 gap-3  '>
         <div className=' h-1/2 flex md:space-x-2'>
           <div className="hidden md:flex md:flex-col min-w-[130px]  md:w-[15%]  bg-gray-200 shadow-2xl shadow-gray-200  rounded-2xl  pt-4   ">

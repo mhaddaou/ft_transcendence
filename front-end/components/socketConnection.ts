@@ -11,4 +11,3 @@ const createSocketConnection = (token : string) => {
 };
 
 export default createSocketConnection;
-

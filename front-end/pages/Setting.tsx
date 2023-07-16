@@ -8,7 +8,7 @@ import { MyContext } from "@/components/Context";
 import { useContext, useEffect } from "react";
 import Router from "next/router";
 import createSocketConnection from "@/components/socketConnection";
-import { ModalError, ModalDeleteAcount } from "@/components/Modal";
+import { ModalError, ModalDeleteAcount, ModalGameInvite,  } from "@/components/Modal";
 const router = Router;
 var token : string | null = null;
 
@@ -28,24 +28,33 @@ var token : string | null = null;
 
     const context = useContext(MyContext);
     useEffect(() =>{
-      if (context?.socket?.connected)
-        console.log('Connected');
-      else{
-        console.log('is not connected');
+      if (!context?.socket?.connected)
         context?.setSocket(createSocketConnection(context?.token))
-      }
     },[context?.token])
     
     if (context?.socket?.connected)
     context?.socket.on('message',(paylo) =>{
     })
 
-    
+    useEffect(() =>{
+      if (context?.socket)
+      context.socket.on('gameInvitation', (payload: any) => {
+          
+       
+        if (payload && payload.sender) {
+          context.setGameInvitation(true)
+          context.setGameHost(payload.sender)
+        }
+      });
+     
+    }, [context?.socket])
 
     if (token){
       return (
         <div className="bg-gradient-to-t from-gray-100 to-gray-400 min-h-screen">
           <ModalError />
+        <ModalGameInvite />
+
           <div className=" overflow-hidden">
 
           <ModalDeleteAcount/>

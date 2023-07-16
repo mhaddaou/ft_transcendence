@@ -18,7 +18,7 @@ import createSocketConnection from "@/components/socketConnection";
 import { useRouter } from "next/router";
 import ChannelHistor from "@/components/ChannelHistory";
 import History from "@/components/HIstory";
-import { ModalInvite, ModalError } from "@/components/Modal";
+import { ModalGameInvite, ModalError } from "@/components/Modal";
 import { constrainedMemory } from "process";
 import { connect } from "http2";
 const router = Router;
@@ -72,14 +72,19 @@ export default function Chat() {
         }
       })
       
-
       context.socket.on('gameInvitation', (payload: any) => {
-        if (payload && payload.sender) {
-          setGameRoom(payload.sender)
-          setIsModalOpen(true)
           
+       
+        if (payload && payload.sender) {
+          context.setGameInvitation(true)
+          context.setGameHost(payload.sender)
         }
       });
+      return () =>{
+        if (context?.socket){
+          context.socket.off('gameInvitation')
+        }
+      }
     }
     })
     const closeModal = () => {
@@ -152,15 +157,17 @@ export default function Chat() {
     
   }
 
-  useEffect(() => {
-    context?.setSocket(createSocketConnection(context?.token));
-  }, [context?.token]);
+  useEffect(() =>{
+    if (!context?.socket?.connected){
+      context?.setSocket(createSocketConnection(context?.token))
+      console.log('newconnect')
+    }
+  },[context?.token])
 if (token){
   return (
     <div className="bg-gradient-to-t from-gray-100 to-gray-400 min-h-screen">
       <ModalError />
-       {isModalOpen && <ModalInvite isOpen={isModalOpen} closeModal={closeModal} title="Invitation to Game" msg={`you've been invited to join a game against ${gameRoom}`} color={gameRoom}  />}
-       
+      <ModalGameInvite />       
       <div className="container w-full mx-auto h-screen min-h-[1024px] flex flex-row py-2 gap-2 z-30">
         <Barl page="Chat" />
         <div className="w-full h-full rounded-2xl flex flex-col  gap-2 ">

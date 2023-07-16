@@ -245,7 +245,7 @@ export class matterNode {
             else {
                 Body.setVelocity(this.ball, { x: 0, y: 0 });
                 Body.setPosition(this.ball, { x: -155, y: this.obj.divHeight / 2 });
-
+                this.restart = true;
                 // Body.setPosition(this.ball, { x: -155, y: this.obj.divHeight / 2 });
                 this.score = { left: 0, right: 0 }
                 this.server.to(this.roomId).emit('ready', { msg: false });
@@ -283,7 +283,8 @@ export class matterNode {
                 }
             })
         } else {
-            throw new BadRequestException('this room is full'); // No available paddles, disconnect the user
+            // No available paddles, disconnect the user
+            client.emit('gameStatus', { msg: "Game is full" });
         }
     }
     updateConnectedUsers(user: User, client: Socket) {

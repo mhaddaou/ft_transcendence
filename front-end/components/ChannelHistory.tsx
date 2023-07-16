@@ -144,7 +144,7 @@ const AddMember = () => {
 
     const GetData = async () => {
       try{
-        const res = await axios.post('http://localhost:5000/chat/channel/members',
+        const res = await axios.post(`${process.env.Members}`,
         {channelName: context?.channelInfo?.channelName},
         {
           headers:{
@@ -293,7 +293,7 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
     const GetDat = async () => {
       try {
        
-        const resp = await axios.post('http://localhost:5000/chat/channel/memberShips',
+        const resp = await axios.post(`${process.env.Membership}`,
       {
         channelName : context?.channelInfo?.channelName,
       }, {
@@ -591,7 +591,7 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
     const fetchData = async () => {
       try {
         const res = await axios.post(
-          'http://localhost:5000/chat/channel/memberShips',
+          `${process.env.Membership}`,
           { channelName: context?.channelInfo?.channelName },
           {
             headers: {
@@ -621,7 +621,7 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
 
   const ListBan = () =>{
     const getData = async () =>{
-      const response = await axios.post('http://localhost:5000/chat/channel/banned', {
+      const response = await axios.post(`${process.env.Banned}`, {
           channelName : context?.channelInfo?.channelName,
         },{
           headers:{

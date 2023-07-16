@@ -73,13 +73,13 @@ const BarLeft = (props: BarLeftProps) => {
 
   const click = () => {
     if (props.name === "Profile")
-      router.push('http://localhost:3000/Dashbord');
+      router.push(`${process.env.Dashbord}`);
     if (props.name === "Setting")
-      router.push('http://localhost:3000/Setting');
+      router.push(`${process.env.Setting}`);
     if (props.name === "Chat")
-      router.push('http://localhost:3000/Chat')
+      router.push(`${process.env.Chat}`);
     if (props.name === "Game")
-      router.push(`http://localhost:3000/Game/?room=${context?.login}&queue=true`)
+      router.push(`${process.env.Game}/?room=${context?.login}&queue=true`)
     if (props.name === "Logout"){
       context?.socket?.emit('logout');
       localStorage.clear();

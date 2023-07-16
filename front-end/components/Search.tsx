@@ -20,7 +20,7 @@ const Search = ({page } : {page : string})=>{
     if (e.key === 'Enter'){
         if (inputeValue != ''){
             try{
-                const res = await axios.post("http://localhost:5000/user/search",{
+                const res = await axios.post(`${process.env.Search}`,{
                     search : inputeValue,
                 },
                 {
@@ -57,7 +57,7 @@ const closeModale = () =>{
             const fetchData = async () => {
               try {
                 const res = await axios.post(
-                  'http://localhost:5000/chat/memberships',
+                  `${process.env.Memb}`,
                   { login: context?.login },
                   {
                     headers: {
@@ -93,7 +93,7 @@ const closeModale = () =>{
             const fetchData = async () => {
               try {
                 const res = await axios.post(
-                  'http://localhost:5000/chat/memberships',
+                  `${process.env.Memb}`,
                   { login: context?.login },
                   {
                     headers: {
@@ -170,15 +170,8 @@ const closeModale = () =>{
           }
             const getDat = async () =>{
               try{
-                const resp = await axios.post('http://localhost:5000/user/friends', 
-                {login : context?.login}, 
-                {
-                  headers: {
-                    Authorization : `Bearer ${context?.token} `
-
-                  }
-                });
-                const res= await axios.post('http://localhost:5000/user/friends',
+               
+                const res = await axios.post(`${process.env.Friends}`, 
                 {login : context.login},
                 {
                   headers : {
@@ -209,7 +202,7 @@ const closeModale = () =>{
         if (pay){
           const fetchData = async () =>{
             try{
-              const res = await axios.post('http://localhost:5000/user/friends',
+              const res = await axios.post(`${process.env.Friends}`,
               {
                 login : context?.login
               },{
@@ -295,6 +288,10 @@ const closeModale = () =>{
             context?.setPendingInvitation(friend.data.waitToAccept);
             context?.setWaitToAccept(friend.data.pendingInvitation);
             context.setFriends(friend.data.friends);
+            const history = await axios.get('http://localhost:5000/user/me', {headers:{
+            Authorization : `Bearer ${context.token}`
+        }})
+            context.setMatch(history.data.matches);
           }
           getData();
           const fetchLeaderBoard = async () =>{

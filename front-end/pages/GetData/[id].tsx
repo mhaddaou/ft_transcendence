@@ -18,9 +18,13 @@ import { checkIs7rag } from "@/components/Functions";
 
 
 export async function  checkIsFalse(token : string) {
-    const res = await axios.get('http://localhost:5000/user/is7erag', {headers:{
+    const res = await axios.get(`${process.env.is7rag}`, {headers:{
             Authorization : `Bearer ${token}`
         }})
+      if (res.data.message)
+        console.log('is not 7rag')
+      else
+        console.log('7rag');
        return res.data.message;
 }
 
@@ -28,7 +32,7 @@ const router = Router;
 async function fetchdata(tokene :string){
     localStorage.setItem('token', tokene);
     try{
-        const res = await axios.get('http://localhost:5000/user/me', {headers:{
+        const res = await axios.get(`${process.env.ME}`, {headers:{
             Authorization : `Bearer ${tokene}`
         }})
 
@@ -71,9 +75,9 @@ export default function Profileid() {
 
         context?.setMatch(response.matches);
         if (response.enableTwoFa)
-        router.push('http://localhost:3000/QrCode');
+        router.push(`${process.env.Qrcode}`);
       else
-        router.push('http://localhost:3000/Dashbord');
+        router.push(`${process.env.Dashbord}`);
         // response.enableTwoFa
         }
       };
@@ -82,7 +86,7 @@ export default function Profileid() {
        const fetchBlockusers = async () =>{
         if (context?.login){
           try{
-            const res = await axios.post('http://localhost:5000/user/blocks',
+            const res = await axios.post(`${process.env.Blocks}`,
             {
               login : context?.login
             },{
@@ -114,22 +118,3 @@ export default function Profileid() {
   
 
 
-// {
-//     UserId: '65eabf7b-3176-4ac5-a594-8856f68db353',
-//     login: 'smia',
-//     username: 'said lbatal',
-//     email: 'smia@student.1337.ma',
-//     avatar: '0',
-//     enableTwoFa: true,
-//     twoFactorSecret: null,
-//     bioGra: ''
-//   }
-
-// {
-//   "FriendshipId": "2c0a1d9f-d58f-43fb-81ed-74b72142598b",
-//   "userAId": "c643911e-fc8d-4e4b-b39b-6b18ce82db06",
-//   "loginA": "mhaddaou",
-//   "userBId": "4d750f18-2b0a-4906-aa40-689960b552cf",
-//   "loginB": "izail",
-//   "isFriends": false
-// }

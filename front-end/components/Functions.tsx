@@ -51,7 +51,7 @@ export function DataFunction (nbr : number){
             else if (nbr == 6){
               const fetchBlockusers = async () =>{
                 try{
-                  const res = await axios.post('http://localhost:5000/user/blocks',
+                  const res = await axios.post(`${process.env.Blocks}`,
                   {
                     login : context?.login
                   },{
@@ -71,7 +71,7 @@ export function DataFunction (nbr : number){
             }
             else if (nbr == 7){
               const fetchLeaderBoard = async () =>{
-                const res = await axios.get('http://localhost:5000/user/Leaderboard',{
+                const res = await axios.get(`${process.env.Leaderboard}`,{
                   headers:{
                     Authorization: `Bearer ${context?.token}`
                   }
@@ -119,7 +119,7 @@ else
 
 export async function  checkIs7rag(token : string) {
   try{
-    const res = await axios.get('http://localhost:5000/user/is7erag', {headers:{
+    const res = await axios.get(`${process.env.is7rag}`, {headers:{
             Authorization : `Bearer ${token}`
         }})
         if (!res.data.message)

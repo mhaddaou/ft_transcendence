@@ -162,7 +162,7 @@ const ModalChat: React.FC<ModalChatProps> = ({ isOpen, closeModal, name, login }
     const fetchData = async () => {
       try {
         const res = await axios.post(
-          'http://localhost:5000/chat/conversations',
+          `${process.env.Conversations}`,
           { login: context?.login },
           {
             headers: {
@@ -698,7 +698,7 @@ const ModalJoin = (props: ModaleJoin) => {
         if (pay){
           const GetDat = async () =>{
             const res = await axios.post(
-              'http://localhost:5000/chat/channel/message/all',
+              `${process.env.AllMes}`,
               {channelName: props.channel.channelName}, 
               {
                 headers:{
@@ -846,7 +846,7 @@ const ModalSearch = (props: ModalSearchProps) => {
 
    context?.setProfileuser(user.login);
     const getData = async () => {
-      const res = await axios.post('http://localhost:5000/user/viewProfile',
+      const res = await axios.post(`${process.env.ViewProfile}`,
         { login: user.login },
         {
           headers: {
@@ -855,7 +855,7 @@ const ModalSearch = (props: ModalSearchProps) => {
           }
         });
       if (res.data.message)
-        router.push(`http://localhost:3000/Profile/${user.login}`)
+        router.push(`${process.env.Profile}/${user.login}`)
     }
     getData();
   }
@@ -982,7 +982,7 @@ const ModalGame: React.FC<ModalProps> = ({ isOpen, closeModal, title, msg, color
               </button>
             ) : null
           }
-          <button onClick={()=>{router.push('http://localhost:3000/Dashbord');}} className="px-4 py-2 bg-red-200 text-gray-700 rounded hover:bg-red-300">Leave</button>
+          <button onClick={()=>{router.push(`${process.env.Dashbord}`);}} className="px-4 py-2 bg-red-200 text-gray-700 rounded hover:bg-red-300">Leave</button>
         </div>
       </div>
     </div>
@@ -993,7 +993,7 @@ const ModalInvite: React.FC<ModalProps> = ({ isOpen, closeModal, title, msg, col
   const context = useContext(MyContext);
   const handleAccept = () => {
     const url = `Game?room=${color}&queue=false`;
-    router.push(`http://localhost:3000/${url}`)
+    router.push(`${process.env.Localhost}/${url}`)
   }
 
   const handleDecline = () => {
@@ -1062,7 +1062,53 @@ const ModalQRcode: React.FC<ModalProps> = ({ isOpen, closeModal, title, msg, col
   );
 };
 
+const ModalGameInvite = () => {
+  const context = useContext(MyContext);
+  const handleAccept = () => {
+    const url = `Game?room=${context?.gameHost}&queue=false`;
+    context?.setGameInvitation(false)
+    router.push(`${process.env.Localhost}/${url}`)
+  }
+  const handleDecline = () => {
+    if (context?.token)
+      checkIs7rag(context?.token);
+    if (context?.socket)
+      context?.socket.emit("cancelGame", {
+        host: context.gameHost
+      })
+    context?.setGameInvitation(false)
+  }
+  return (
+    <div className={`absolute inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50  ${context?.gameInvitation ? 'block' : 'hidden'} `}>
+      <div className={`bg-orange-500 rounded-md flex flex-col w-[400px] h-[200px] p-6`}>
+      <div className="flex justify-center gap-2">
+            <Star fill="gold" color='gold' />
+        <div className="text-center text-xl font-mono font-semibold">Game Invitation</div>
+            <Star fill="gold" color='gold' />
+          </div>
+        <div className="w-full h-[80%] text-center text-lg flex justify-center items-center">
+          <p >
 
+            Play against {context?.gameHost}
+          </p>
+        </div>
+        <div className="flex justify-end gap-2">
+        
+            <button
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+              onClick={handleAccept}
+            >
+              Accept
+            </button>
+        
+          <button onClick={handleDecline} className="px-4 py-2 bg-red-200 text-gray-700 rounded hover:bg-red-300">Decline</button>
+        </div>
+
+      </div>
+    </div>
+  )
+
+}
 
 
 const ModalError = () => {
@@ -1184,4 +1230,4 @@ const ModalDeleteAcount = () => {
 
 }
 export default Modal;
-export { ModalChat, ModalInvite, ModalCreateChannel, ModalUpdateChannel, ModalSearch, ModalGame, ModalJoin, ModalQRcode, ModalError, ModalListBanner , ModalDeleteAcount};
+export { ModalChat, ModalGameInvite, ModalCreateChannel, ModalUpdateChannel, ModalSearch, ModalGame, ModalJoin, ModalQRcode, ModalError, ModalListBanner , ModalDeleteAcount};

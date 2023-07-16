@@ -26,7 +26,7 @@ export default function ContactList({  onContactClick } : any) {
     const fetchData = async () => {
       try {
         const res = await axios.post(
-          'http://localhost:5000/chat/conversations',
+          `${process.env.Conversations}`,
           { login: context?.login },
           {
             headers: {
@@ -46,7 +46,7 @@ export default function ContactList({  onContactClick } : any) {
     const fetchData = async () => {
       try {
         const res = await axios.post(
-          'http://localhost:5000/chat/memberships',
+          `${process.env.Memb}`,
           { login: context?.login },
           {
             headers: {

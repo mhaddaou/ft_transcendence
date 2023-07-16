@@ -13,6 +13,7 @@ import { ModalGame } from '@/components/Modal';
 
 import { useRouter } from 'next/router';
 import { checkIs7rag } from '@/components/Functions';
+import createSocketConnection from '@/components/socketConnection';
 
 // const inter = Inter({ subsets: ['latin'] })
 // var token : string | null = null;
@@ -28,7 +29,7 @@ export default function Game() {
   const [players, setPlayers] = useState({ p1: "player1", p2: "player2" })
   const [countDown, setCountDown] = useState(5);
   const [animations, setAnimations] = useState(1)
-  const [matterjsInstance, setMatterjsInstance] = useState<MatterJsModules>()
+  const [matterjsInstance, setMatterjsInstance] = useState<MatterJsModules | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [winner, setWinner] = useState('')
   const [gameStatus, setGameStatus] = useState(false)
@@ -84,157 +85,169 @@ export default function Game() {
   ]
   const divStyle = {
     height: `${height}px`,
-    backgroundColor : `${themes[theme].background}`
+    backgroundColor: `${themes[theme].background}`
   };
   const handleReplay = () => {
     closeModal()
     setRestart(true)
   }
 
-
-
-  if (context?.token) {
-
-    useEffect(() => {
-
-
-      const handleLeavePage = () => {
-        if (context?.token)
-          checkIs7rag(context?.token);
-        if (matterjsInstance && matterjsInstance.socket) {
-          matterjsInstance.socket.emit('gameDisconnection', 'User has navigated from the page');
+  useEffect(() => {
+    if (context?.token) {
+      var socket = io("http://localhost:3333", {
+        extraHeaders: {
+          Authorization: context?.token,
         }
+      });
+      socket.on('message', (payload: any) => {
+        // SetToMessages(payload);
+        // setMessages([...messages, payload]);
+      });
+
+      context.setSocket(socket);
+
+    }
+  }, [context?.token]);
+
+
+  useEffect(() => {
+    if (matterjsInstance && matterjsInstance.socket && !gameStatus && gameStatusMsg == "Host left the game..") {
+      console.log("host left the game emiting")
+      matterjsInstance.socket.emit('gameDisconnection', 'host left');
+      matterjsInstance.socket.off("paddleAssigned")
+      matterjsInstance.socket.off("right")
+      matterjsInstance.socket.off("left")
+      matterjsInstance.socket.off("score")
+      matterjsInstance.socket.off("gameOver")
+      matterjsInstance.socket.off("restart")
+      matterjsInstance.socket.off("ready")
+      matterjsInstance.socket.off("gameStatus")
+      matterjsInstance.socket.off("cancelGame")
+      matterjsInstance.socket.disconnect()
+    }
+  }, [gameStatus, gameStatusMsg])
+
+  useEffect(() => {
+
+
+    const handleLeavePage = () => {
+      if (context?.token)
+        checkIs7rag(context?.token);
+      if (matterjsInstance && matterjsInstance.socket) {
+        matterjsInstance.socket.emit('gameDisconnection', 'User has navigated from the page');
       }
+    }
 
-      router.events.on('routeChangeStart', handleLeavePage);
-      return () => {
-        router.events.off('routeChangeStart', handleLeavePage);
-      };
-
-    });
-
-    useEffect(() => {
-
-      if (matterjsInstance) {
-
-        matterjsInstance.bodies.ball.render.fillStyle = themes[theme].ball
-        matterjsInstance.bodies.circleA.render.fillStyle = themes[theme].wall
-        matterjsInstance.bodies.circleB.render.fillStyle = themes[theme].background
-        matterjsInstance.bodies.circleC.render.fillStyle = themes[theme].wall
-        matterjsInstance.bodies.centerLine.render.fillStyle = themes[theme].wall
-        matterjsInstance.bodies.leftPaddle.render.fillStyle = themes[theme].leftP
-        matterjsInstance.bodies.rightPaddle.render.fillStyle = themes[theme].rightP
-        matterjsInstance.bodies.wall.render.fillStyle = themes[theme].wall
-        matterjsInstance.bodies.wallLeft.render.fillStyle = themes[theme].wall
+    router.events.on('beforeHistoryChange', handleLeavePage);
 
 
-      }
-    }, [theme])
-    // var token: string | null = '';
-    useEffect(() => {
-      if (context?.token) {
-        var socket = io("http://localhost:3333", {
-          extraHeaders: {
-            Authorization: context?.token,
-          }
-        });
-        socket.on('message', (payload: any) => {
-          // SetToMessages(payload);
-          // setMessages([...messages, payload]);
-        });
+  });
 
-        context.setSocket(socket);
+  useEffect(() => {
 
-      }
-    }, [context?.token]);
-    useEffect(() => {
+    if (matterjsInstance) {
 
-      if (countDown <= 4) {
+      matterjsInstance.bodies.ball.render.fillStyle = themes[theme].ball
+      matterjsInstance.bodies.circleA.render.fillStyle = themes[theme].wall
+      matterjsInstance.bodies.circleB.render.fillStyle = themes[theme].background
+      matterjsInstance.bodies.circleC.render.fillStyle = themes[theme].wall
+      matterjsInstance.bodies.centerLine.render.fillStyle = themes[theme].wall
+      matterjsInstance.bodies.leftPaddle.render.fillStyle = themes[theme].leftP
+      matterjsInstance.bodies.rightPaddle.render.fillStyle = themes[theme].rightP
+      matterjsInstance.bodies.wall.render.fillStyle = themes[theme].wall
+      matterjsInstance.bodies.wallLeft.render.fillStyle = themes[theme].wall
 
-        const timer = setTimeout(() => {
 
-          setCountDown(countDown + 1);
-          setAnimations(animations + 1)
-          if (countDown == 2)
-            setAnimations(animations + 2)
-        }, 1000); // Example: Increment count every 2 seconds
+    }
+  }, [theme])
 
-        return () => clearTimeout(timer);
-      }
+  useEffect(() => {
 
-    }, [countDown]);
+    if (countDown <= 4) {
+
+      const timer = setTimeout(() => {
+
+        setCountDown(countDown + 1);
+        setAnimations(animations + 1)
+        if (countDown == 2)
+          setAnimations(animations + 2)
+      }, 1000); // Example: Increment count every 2 seconds
+
+      return () => clearTimeout(timer);
+    }
+
+  }, [countDown]);
 
 
 
-    useEffect(() => {
-      const matterContainer = document.querySelector("#matter-Container") as HTMLElement
-
+  useEffect(() => {
+    const matterContainer = document.querySelector("#matter-Container") as HTMLElement
+    if (matterContainer)
       setHeight(matterContainer.clientWidth * 16 / 9)
-      const handleResize = () => {
+    const handleResize = () => {
 
-        setHeight(matterContainer.clientWidth * 16 / 9); // Update the width based on the window size
-      };
+      setHeight(matterContainer?.clientWidth * 16 / 9); // Update the width based on the window size
+    };
 
-      window.addEventListener('resize', handleResize);
-
-
-      return () => {
-        window.removeEventListener('resize', handleResize); // Clean up the event listener
-      };
-    }, []);
-    useEffect(() => {
-      matterjsInstance?.onWindowSizeChange()
-
-    }, [height])
+    window.addEventListener('resize', handleResize);
 
 
-    useEffect(() => {
-      const timeoutId = setTimeout(() => {
-        setJoinRoom("go")
-        const { room, queue } = router.query;
-        log("this is the query", room, queue)
-        if (room && queue) {
-          const openQueue = queue === "true" ? true : false
-          const MatterNode = new MatterJsModules(`${room}`, openQueue, context?.socket)
-          setMatterjsInstance(MatterNode)
-          MatterNode.gameStatusListener(setGameStatus, setGameStatusMsg)
-          MatterNode.createModules()
-          MatterNode.createBodies()
-          MatterNode.events()
-          MatterNode.run()
-          MatterNode.socketStuff()
-          MatterNode.updateGameScore(setScore, setCountDown, setPlayers)
-          MatterNode.gameOverListener(setIsModalOpen, setWinner)
-          MatterNode.restartGameListener(setIsModalOpen)
-        }
-      }, 1000); // 2000 milliseconds = 2 seconds
+    return () => {
+      window.removeEventListener('resize', handleResize); // Clean up the event listener
+    };
+  }, [context?.socket]);
+  useEffect(() => {
+    matterjsInstance?.onWindowSizeChange()
 
-      return () => {
-        // Clean up the timeout when the component unmounts or the effect re-runs
-        clearTimeout(timeoutId);
-      };
-
-    }, [context?.socket, router.query]); // Empty dependency array to run the effect only once
+  }, [height])
 
 
-
-
-    useEffect(() => {
-      if (restart) {
-        matterjsInstance?.restartMatch(setWinner, setRestart)
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setJoinRoom("go")
+      const { room, queue } = router.query;
+      log("this is the query", room, queue)
+      if (room && queue) {
+        const openQueue = queue === "true" ? true : false
+        const MatterNode = new MatterJsModules(`${room}`, openQueue, context?.socket)
+        setMatterjsInstance(MatterNode)
+        MatterNode.gameStatusListener(setGameStatus, setGameStatusMsg)
+        MatterNode.createModules()
+        MatterNode.createBodies()
+        MatterNode.events()
+        MatterNode.run()
+        MatterNode.socketStuff()
+        MatterNode.updateGameScore(setScore, setCountDown, setPlayers)
+        MatterNode.gameOverListener(setIsModalOpen, setWinner)
+        MatterNode.restartGameListener(setIsModalOpen)
       }
+    }, 1000); // 2000 milliseconds = 2 seconds
 
-    }, [restart])
+    return () => {
+      // Clean up the timeout when the component unmounts or the effect re-runs
+      clearTimeout(timeoutId);
+    };
 
-    useEffect(() => {
-      if (!winner.length)
-        setIsModalOpen(!gameStatus);
-    }, [gameStatus])
-
-
+  }, [context?.socket, router.query]); // Empty dependency array to run the effect only once
 
 
-  }
+
+
+  useEffect(() => {
+    if (restart) {
+      matterjsInstance?.restartMatch(setWinner, setRestart)
+    }
+
+  }, [restart])
+
+  useEffect(() => {
+    if (!winner.length)
+      setIsModalOpen(!gameStatus);
+  }, [gameStatus])
+
+
+
+
 
   if (context?.token) {
     return (
@@ -270,7 +283,7 @@ export default function Game() {
                         <span className="text-white">{score.right}</span>
                       </div>
                     </div>
-                    <div id="matter-Container" style={divStyle}  className={` border-8 border-black rounded w-full max-w-[623px] bg-[${themes[theme].background}] !important ${!joinRoom && "hidden"}`}>  </div>
+                    <div id="matter-Container" style={divStyle} className={` border-8 border-black rounded w-full max-w-[623px] bg-[${themes[theme].background}] !important ${!joinRoom && "hidden"}`}>  </div>
                     {
                       countDown <= 4 &&
                       <div className="absolute text-white text-xl "

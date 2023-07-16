@@ -15,7 +15,7 @@ const Form2fa = () => {
 
     async function fetchdata(tokene: string) {
         try {
-            const res = await axios.get('http://localhost:5000/user/me', {
+            const res = await axios.get(`${process.env.ME}`, {
                 headers: {
                     Authorization: `Bearer ${tokene}`
                 }

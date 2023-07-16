@@ -67,30 +67,28 @@ export default function GetDataHistory({ matches }: { matches: MatchType[] }) {
       <>
         <div className="flex flex-col w-full h-full   overflow-y-auto scrollbar-thin scrollbar-track-slate-950 scrollbar-thumb-slate-300 ">
 
-          {context?.match.map((match =>{
-            return (
-              <div  className="flex flex-row min-h-[60px] h-[14%]  mt-2 justify-center space-x-3 md:justify-between items-center bg-gray-300 md:space-x-2 lg:space-x-6 md:px-10 lg:px-32 rounded-lg">
-              <div key={match.loginA} className="flex  md:space-x-10  w-1/3 h-full items-center">
-                <GetImage name={match.avatarA} />
-                <div className="font-mono font-semibold md:text-[20px]">{match.usernameA}</div>
-              </div>
-              <div className="flex w-1/5 md:w-[90px]    h-full items-center justify-between md:justify-center md:space-x-6 ">
-                <div className={`font-bold text-lg ${match.scoreB > match.scoreA ? 'text-red-500' : 'text-green-600'}`}>{match.scoreA}</div>
-                <div className="font-bold md:text-xl  md:uppercase">vs</div>
-                <div className={`font-bold text-lg ${match.scoreA > match.scoreB ? 'text-red-500' : 'text-green-600'} `}>{match.scoreB}</div>
+        {context?.match.map(match => {
+  return (
+    <div key={match.loginA} className="flex flex-row min-h-[60px] h-[14%] mt-2 justify-center space-x-3 md:justify-between items-center bg-gray-300 md:space-x-2 lg:space-x-6 md:px-10 lg:px-32 rounded-lg">
+      <div className="flex md:space-x-10 w-1/3 h-full items-center">
+        <GetImage name={match.avatarA} />
+        <div className="font-mono font-semibold md:text-[20px]">{match.usernameA}</div>
+      </div>
+      <div className="flex w-1/5 md:w-[90px] h-full items-center justify-between md:justify-center md:space-x-6">
+        <div className={`font-bold text-lg ${match.scoreB > match.scoreA ? 'text-red-500' : 'text-green-600'}`}>{match.scoreA}</div>
+        <div className="font-bold md:text-xl md:uppercase">vs</div>
+        <div className={`font-bold text-lg ${match.scoreA > match.scoreB ? 'text-red-500' : 'text-green-600'} `}>{match.scoreB}</div>
+      </div>
+      <div className="flex justify-around md:justify-between md:space-x-10 w-1/3 h-full items-center">
+        <div className="font-mono font-semibold md:text-[20px] ">{match.usernameB}</div>
+        <div>
+          <GetImage name={match.avatarB} />
+        </div>
+      </div>
+    </div>
+  );
+})}
 
-              </div>
-              <div key={match.loginB} className="flex justify-around md:justify-between md:space-x-10  w-1/3 h-full items-center ">
-                <div className="font-mono font-semibold md:text-[20px] ">{match.usernameB}</div>
-                <div>
-                  <GetImage name={match.avatarB} />
-
-                </div>
-              </div>
-
-            </div>
-            );
-          }))}
         </div>
 
       </>
@@ -267,6 +265,8 @@ export function GetDataFriend() {
     setIsModalOpen(true);
 
   }
+
+
   
   const deleteFriend = (friend: FriendType) => {
     if (context?.token)
@@ -277,7 +277,7 @@ export function GetDataFriend() {
   const viewProfile = (friend: FriendType) => {
     context?.setProfileuser(friend.login);
     const getData = async () => {
-      const res = await axios.post('http://localhost:5000/user/viewProfile',
+      const res = await axios.post(`${process.env.ViewProfile}`,
         { login: friend.login },
         {
           headers: {
@@ -286,7 +286,7 @@ export function GetDataFriend() {
           }
         });
       if (res.data.message)
-        router.push(`http://localhost:3000/Profile/${friend.login}`)
+        router.push(`${process.env.Profile}/${friend.login}`)
     }
     getData();
   }
