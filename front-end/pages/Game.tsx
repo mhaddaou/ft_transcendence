@@ -94,7 +94,7 @@ export default function Game() {
 
   useEffect(() => {
     if (context?.token) {
-      var socket = io("http://localhost:3333", {
+      var socket = io(`${process.env.Socket}`, {
         extraHeaders: {
           Authorization: context?.token,
         }

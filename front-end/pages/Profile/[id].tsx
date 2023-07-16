@@ -12,10 +12,6 @@ import NavBar from '@/components/NavBar';
 import { MyContext , ContextTypes} from '@/components/Context';
 import Modal from '@/components/Modal';
 import axios from 'axios';
-import {io} from "socket.io-client";
-import createSocketConnection from '@/components/socketConnection'
-import { MesgType } from '@/components/Context';
-import mhaddaou from '../image/mhaddaou.jpg'
 import Sky from '../../image/sky.png'
 import avatar from '../../image/avatar.webp'
 import GetDataHistory ,{GetDataAchievement} from '@/components/GetData';
@@ -42,7 +38,7 @@ const Other = () =>{
     const getData = async () =>{
 
       try{
-        const res = await axios.post('http://localhost:5000/user/viewProfile', 
+        const res = await axios.post(`${process.env.ViewProfile}`, 
         {login : userLogin}, 
         {
           headers: {
@@ -85,7 +81,7 @@ const Other = () =>{
     useEffect(() =>{
       const fetchData = async  () =>{
         try{
-          const res = await axios.post('http://localhost:5000/user/profile',{
+          const res = await axios.post(`${process.env.Pprofile}`,{
             login: context?.profileuser
           },
           {

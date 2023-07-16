@@ -52,7 +52,7 @@ export default function Chat() {
           const fetchData = async () => {
             try {
               const res = await axios.post(
-                'http://localhost:5000/chat/memberships',
+                `${process.env.Memb}`,
                 { login: context?.login },
                 {
                   headers: {
@@ -98,7 +98,7 @@ export default function Chat() {
       context?.setShowChannel(true);
 
       const res = await axios.post(
-        'http://localhost:5000/chat/channel/message/all',
+        `${process.env.AllMes}`,
         {channelName: login}, 
         {
           headers:{
@@ -106,7 +106,7 @@ export default function Chat() {
           },
         }
       );
-      const response = await axios.post('http://localhost:5000/chat/channel/banned', {
+      const response = await axios.post(`${process.env.Banned}`, {
         channelName : login,
       },{
         headers:{
@@ -115,7 +115,7 @@ export default function Chat() {
       })
       context?.setChannelBanner(response.data);
       // context?.setMembersChannel(response.data);
-      const resp = await axios.post('http://localhost:5000/chat/channel/memberShips',
+      const resp = await axios.post(`${process.env.Membership}`,
       {
         channelName : login,
       }, {
@@ -137,7 +137,7 @@ export default function Chat() {
     
       try{
         const res = await axios.post(
-         "http://localhost:5000/chat/findConversation",
+         `${process.env.FindConversation}`,
          { loginA: context?.login, loginB: login },
          {
            headers: {

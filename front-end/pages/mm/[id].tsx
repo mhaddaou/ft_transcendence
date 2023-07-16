@@ -21,7 +21,7 @@ async function fetchdata(tokene :string){
         l = tokene;
     localStorage.setItem('token', tokene);
     try{
-        const res = await axios.get('http://localhost:5000/user/me', {headers:{
+        const res = await axios.get(`${process.env.ME}`, {headers:{
             Authorization : `Bearer ${tokene}`
         }})
 
@@ -52,9 +52,9 @@ export default function Profileid() {
         context?.setLogin(response.login);
         context?.setMatch(response.matches);
         if (response.enableTwoFa)
-        router.push('http://localhost:3000/QrCode');
+        router.push(`${process.env.Qrcode}`);
       else
-        router.push('http://localhost:3000/Dashbord');
+        router.push(`${process.env.Dashbord}`);
         }
       };
   

@@ -52,7 +52,7 @@ const Other = () =>{
     useEffect(() =>{
       const fetchData = async  () =>{
         try{
-          const res = await axios.post('http://localhost:5000/user/profile',{
+          const res = await axios.post(`${process.env.Pprofile}`,{
             login: "izail"
           },
           {

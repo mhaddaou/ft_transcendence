@@ -16,7 +16,7 @@ function QrCode() {
     const fetchData = async () => {
       try {
         const res = await axios.post(
-          "http://localhost:5000/auth/QR",
+          `${process.env.AuthQr}`,
           { login: context?.login },
           {
             headers: {
@@ -36,7 +36,7 @@ function QrCode() {
   const handleClick = async (e: any) => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/auth/2-FA",
+        `${process.env.TwoFa}`,
         {
           code: `${code}`,
           login: context?.login
@@ -49,7 +49,7 @@ function QrCode() {
       );
       // Handle the response data here
       if (res.data)
-        router.push('http://localhost:3000/Dashbord');
+        router.push(`${process.env.Dashbord}`);
       else
         setOpenModal(true)
 
