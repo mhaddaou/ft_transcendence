@@ -239,7 +239,6 @@ const closeModale = () =>{
           }
         }
       })
-      // context.socket.on('updateUser', )
       context?.socket.on('delete', (pay) =>{
         if (pay){
           rmvFriend(pay.login);
@@ -250,8 +249,10 @@ const closeModale = () =>{
           rmvPend(pay.login)
         }
       })
+      // context.socket.on('updateUser', )
       context.socket.on('updatedFriend', (pay) =>{
         if (pay){
+          console.log('this is pay update ', pay);
           if (pay.login === context.login)
             return;
           const getData = async () =>{

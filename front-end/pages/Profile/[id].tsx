@@ -1,10 +1,11 @@
 import { useRouter } from 'next/router';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { use, useContext, useEffect, useState } from 'react';
 import Statics from '../image/statics.svg'
 import 'react-circular-progressbar/dist/styles.css';
 import LevelStatics, {Stats} from '@/components/Statics'
 import RealFooter from '@/components/RealFooter';
 import Image from 'next/image';
+import NotExist from '../NotExist';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTableTennisPaddleBall } from '@fortawesome/free-solid-svg-icons';
 import {DataFunction, CallBarLeft} from '@/components/Functions';
@@ -12,6 +13,10 @@ import NavBar from '@/components/NavBar';
 import { MyContext , ContextTypes} from '@/components/Context';
 import Modal from '@/components/Modal';
 import axios from 'axios';
+import {io} from "socket.io-client";
+import createSocketConnection from '@/components/socketConnection'
+import { MesgType } from '@/components/Context';
+import mhaddaou from '../image/mhaddaou.jpg'
 import Sky from '../../image/sky.png'
 import avatar from '../../image/avatar.webp'
 import GetDataHistory ,{GetDataAchievement} from '@/components/GetData';
@@ -33,12 +38,33 @@ const GetAvatar = ({name} : {name : string}) =>{
 const Other = () =>{
   const [checkis , setCheckIs] = useState(false);
   const context = useContext(MyContext)
+  const [user, setUser] = useState<string>('');
   const userLogin = useRouter()?.query?.id;
   useEffect(()=>{
     const getData = async () =>{
+      const getUser = async () =>{
+        if (userLogin){
+          try{
+            const res = await axios.post('http://localhost:5000/user/find',
+            {login : userLogin},{
+              headers:{
+                Authorization: `Bearer ${context?.token}`
+              }
+            }
+            )
+            setUser(res.data.login);
+          
+    
+          }catch(e){
+            setUser('none')
+          }
+        }
+    
+      }
+      getUser();
 
       try{
-        const res = await axios.post(`${process.env.ViewProfile}`, 
+        const res = await axios.post('http://localhost:5000/user/viewProfile', 
         {login : userLogin}, 
         {
           headers: {
@@ -46,15 +72,19 @@ const Other = () =>{
   
           }
         });
-        if (res.data.message)
+        if (res.data.message){
+          setUser('is')
           setCheckIs(true);
-        else
-          router.push('/NotExist');
+        }
+        else{
+          setUser('none')
+        }
       }catch(e){
       }
     }
     getData();
   }, [userLogin]);
+  
 
 
   const [check, setCheck] = useState(0);
@@ -81,7 +111,7 @@ const Other = () =>{
     useEffect(() =>{
       const fetchData = async  () =>{
         try{
-          const res = await axios.post(`${process.env.Pprofile}`,{
+          const res = await axios.post('http://localhost:5000/user/profile',{
             login: context?.profileuser
           },
           {
@@ -89,6 +119,7 @@ const Other = () =>{
               Authorization : `Bearer ${context?.token}`
             }
           })
+          // context?.setProfileuser(JSON.stringify(userLogin));
           if (res.data.inGame)
             setStatus('in Game');
           else{
@@ -196,15 +227,18 @@ if (context?.profile && checkis ){
 
   );
 }
+if (user === 'none')
+  return <NotExist />
+
+else{
+  return (
+    <div></div>
+  )
+}
+
+ 
+
 }
 
 export default Other;
 
-// const MyScreen = () =>{
-//     const page = useRouter()?.query?.id ?? "1";
-//     // Default value = "1"
-
-//     return (<>id is: {page}</>);
-// }
-
-// export default MyScreen 

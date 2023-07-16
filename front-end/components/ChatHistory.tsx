@@ -21,11 +21,11 @@ const GetImage = ({name } : {name : string | undefined}) =>{
 }
 
 
-const AvatarOffline = ({ img }: { img: StaticImageData }) => {
+const AvatarOffline = ({ img }: { img: string | undefined }) => {
   return (
     <div className="avatar offline">
       <div className="w-14 rounded-full">
-        <Image src={img} priority alt="avatar" />
+        <GetImage name={img} />
       </div>
     </div>
   );
@@ -52,7 +52,27 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
   const context = useContext(MyContext);
   const [newMsg, setNewMsg] = useState<MesgType[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [state, setState] = useState(false);
   const [gameRoom, setGameRoom] = useState("")
+  useEffect(() =>{
+    const checkState = async () =>{
+      try{
+        const res = await axios.post(`${process.env.Pprofile}`,{
+          login: login
+        },
+        {
+          headers:{
+            Authorization : `Bearer ${context?.token}`
+          }
+        })
+        console.log(res.data)
+      }catch(e){
+        checkState();
+      }
+    }
+    checkState();
+    
+  })
 
 
   const Sender = ({ msg }: { msg: string }) => {
@@ -206,7 +226,7 @@ export default function ChatHistory({ chatHistory, login }: { chatHistory: MesgT
 useEffect(() => {
   const chatContainer = chatContainerRef.current;
   if (chatContainer) {
-    chatContainer.scrollTop = chatContainer.scrollHeight;
+    chatContainer.scrollTop = chatContainer.scrollHeight; 
   }
 }, [newMsg]);
 
@@ -283,6 +303,20 @@ const viewProfile = () =>{
       getData();
 }
 
+const Getstate = () =>{
+  console.log(state, ' this is state');
+  if (state){
+    return( 
+      (context?.login === context?.MessageInfo?.loginA) ? <AvatarOnline img={context?.MessageInfo?.avatarB} /> : <AvatarOnline img={context?.MessageInfo?.avatarA} /> 
+    )
+    }
+  else{
+    return (context?.login === context?.MessageInfo?.loginA ? <AvatarOffline img={context?.MessageInfo?.avatarB} /> : <AvatarOffline img={context?.MessageInfo?.avatarA} /> 
+    )
+  }
+          
+}
+
 
   return (
     <>
@@ -292,8 +326,7 @@ const viewProfile = () =>{
     <div className={`flex flex-col h-full overflow-y-auto relative scrollbar scrollbar-thumb-green-400 scrollbar-w-1 scrollbar-track-slate-100 scrollbar- gap-1 bg-gray-300 rounded-2xl ${context?.showChat ? 'block' : 'hidden'}`}>
       <div className={`w-full h-[7%] flex chat chat-start  border-b-2 border-slate-500 items-center ${chatHistory.length === 0 ? "hidden" : ""}`}>
         <div className="w-1/2 pl-6">
-          {context?.login === context?.MessageInfo?.loginA ? <AvatarOnline img={context?.MessageInfo?.avatarB} /> : <AvatarOnline img={context?.MessageInfo?.avatarA} /> }
-          
+          <Getstate />
         </div>
         <div className="w-1/2 pr-6 text-end">
           <div className="dropdown w-20 dropdown-left">
@@ -317,7 +350,7 @@ const viewProfile = () =>{
       </div>
       <div className="w-full h-[93%] flex flex-col p-2 " ref={chatContainerRef}>
       {
-  (chatHistory.length > 0  ) &&
+  (chatHistory.length > 0  ) && Array.isArray(newMsg) && 
   newMsg.map((msg: MesgType) => {
     if (msg.loginSender === context?.login) {
       return <Sender key={msg.sendAt} msg={msg.content} />;
