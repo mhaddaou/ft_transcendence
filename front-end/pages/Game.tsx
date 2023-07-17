@@ -112,7 +112,6 @@ export default function Game() {
 
   useEffect(() => {
     if (matterjsInstance && matterjsInstance.socket && !gameStatus && (gameStatusMsg == "Host left the game.." || gameStatusMsg == "Game is full")) {
-      console.log("host left the game emiting")
       matterjsInstance.socket.emit('gameDisconnection', 'host left');
       matterjsInstance.socket.off("paddleAssigned")
       matterjsInstance.socket.off("right")

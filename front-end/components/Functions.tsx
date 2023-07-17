@@ -70,15 +70,6 @@ export function DataFunction (nbr : number){
               return <BlackList />
             }
             else if (nbr == 7){
-              const fetchLeaderBoard = async () =>{
-                const res = await axios.get(`${process.env.Leaderboard}`,{
-                  headers:{
-                    Authorization: `Bearer ${context?.token}`
-                  }
-                })
-                context?.setLeaderBoard(res.data);
-              }
-              fetchLeaderBoard();
               return <LeaderBord />
             }
             else{

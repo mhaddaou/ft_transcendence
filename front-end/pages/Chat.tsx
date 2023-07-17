@@ -161,7 +161,6 @@ export default function Chat() {
   useEffect(() =>{
     if (!context?.socket?.connected){
       context?.setSocket(createSocketConnection(context?.token))
-      console.log('newconnect')
     }
   },[context?.token])
 if (token){

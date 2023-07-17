@@ -253,10 +253,8 @@ const closeModale = () =>{
       // {UserId: 'a165ab12-735a-4a2c-a4ed-18b97583d6e0', login: 'mhaddaou', username: 'medhaddaoui', email: 'mhaddaou@student.1337.ma', avatar: 'https://res.cloudinary.com/daczu80rh/image/upload/v1689478024/hastid_gwes2d.jpg', …} ' this is the pay'
       context.socket.on('updatedFriend', (pay) =>{
         if (pay){
-          console.log(pay, ' this is the pay');
           if (pay.isOnline){
             context.setOnligne((prev) => [...prev, pay.login])
-            console.log(context.onligne);
           }
           
           const getData = async () =>{

@@ -174,7 +174,6 @@ export class matterNode {
 
             if (!this.availablePaddles.length) {
                 if (this.ready) {
-                    console.log("ready")
                     this.server.to(this.roomId).emit('ready', { msg: true });
                     if (this.restart == true) {
                         Body.setPosition(this.ball, { x: this.obj.divWidth / 2, y: this.obj.divHeight / 2 });
@@ -241,7 +240,6 @@ export class matterNode {
 
                 }
                 else {
-                    console.log("not ready")
 
                     this.server.to(this.roomId).emit('ready', { msg: true });
 
@@ -249,7 +247,6 @@ export class matterNode {
                 }
             }
             else {
-                console.log("no room")
 
                 Body.setVelocity(this.ball, { x: 0, y: 0 });
                 Body.setPosition(this.ball, { x: -155, y: this.obj.divHeight / 2 });
