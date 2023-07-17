@@ -14,7 +14,7 @@ import createSocketConnection from '@/components/socketConnection'
 import { useRouter } from 'next/router';
 
 // var i = 0;
-// var token : string | null = null;
+var token : string | null = null;
 
 
 function usleep(milliseconds: number) {
@@ -36,7 +36,10 @@ export default  function Progress() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   
 
-
+  useEffect(() =>{
+    token = localStorage.getItem('token');
+    token ? router.push('/Chat') : router.push('/');
+  },[])
   useEffect(() =>{
     context?.setLoginClick('');
     context?.setNameDelete('');
@@ -122,7 +125,7 @@ export default  function Progress() {
   const blockFriend = () => {
     setCheck(6);
   }
-  // if (token)
+  if (token)
   {
 
     return (
