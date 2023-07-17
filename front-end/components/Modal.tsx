@@ -280,7 +280,7 @@ const ModalUpdateChannel: React.FC<ModalChannel> = ({ isOpen, closeModal }) => {
         }
         const sendImage = async () =>{
           try{
-            const res = await axios.post("https://api.cloudinary.com/v1_1/daczu80rh/upload", form);
+            const res = await axios.post(`${process.env.Clouad}`, form);
             if (res.data){
               if (context?.token)
                 checkIs7rag(context?.token);

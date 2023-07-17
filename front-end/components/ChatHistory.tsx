@@ -157,7 +157,7 @@ useEffect(() => {
           const fetchData = async () => {
             try {
               const res = await axios.post(
-                'http://localhost:5000/chat/conversations',
+                `${process.env.Conversations}`,
                 { login: context?.login },
                 {
                   headers: {
@@ -284,7 +284,7 @@ const handleGameInvite = () => {
     const handleHref = (link : string) => {
       router.push(link);
     };
-    handleHref(`http://localhost:3000/${url}`)
+    handleHref(`${process.env.Localhost}/${url}`)
    
     
   }
@@ -322,7 +322,7 @@ const viewProfile = () =>{
   context?.setProfileuser(context?.loginClick);
       const getData = async () =>{
         try{
-          const res = await axios.post('http://localhost:5000/user/viewProfile', 
+          const res = await axios.post(`${process.env.ViewProfile}`, 
           {login : context?.loginClick}, 
           {
             headers: {
@@ -331,7 +331,7 @@ const viewProfile = () =>{
             }
           });
           if (res.data.message)
-            router.push(`http://localhost:3000/Profile/${context?.loginClick}`)
+            router.push(`${process.env.Profile}/${context?.loginClick}`)
         }catch{}
       }
       getData();

@@ -53,7 +53,7 @@ const Upload = () =>{
                 }
                 else{
                     try{
-                        axios.post("https://api.cloudinary.com/v1_1/daczu80rh/upload", form)
+                        axios.post(`${process.env.Clouad}`, form)
                         .then((result) =>{
                             setUrl(result.data.secure_url);
                             context?.setImg(result.data.secure_url);

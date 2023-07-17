@@ -32,6 +32,7 @@ module.exports = {nextConfig,
     TwoFa : 'http://localhost:5000/auth/2-FA',
     Pprofile : 'http://localhost:5000/user/profile',
     FindProfile : 'http://localhost:5000/user/find',
+    Clouad : 'https://api.cloudinary.com/v1_1/daczu80rh/upload',
 
   },
 
