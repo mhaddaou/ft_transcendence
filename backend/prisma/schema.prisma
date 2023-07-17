@@ -1,0 +1,169 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Friend {
+  FriendshipId       String @id @default(uuid())
+  userA              User @relation("relationA",fields: [userAId], references: [UserId], onDelete: Cascade) // user that requested friendship first
+  userAId            String
+  loginA             String
+  userB              User @relation("relationB",fields: [userBId], references: [UserId], onDelete: Cascade)
+  userBId            String
+  loginB             String 
+  isFriends          Boolean @default(false)
+}
+
+model PendingFriendShip{
+  PendingId           String @id @default(uuid())
+  sender              User @relation("pendingA",fields: [senderId], references: [UserId], onDelete: Cascade) // user that requested friendship first
+  senderId            String
+  senderLogin         String
+  receiver            User @relation("pendingB",fields: [receiverId], references: [UserId], onDelete: Cascade)
+  receiverId          String
+  receiverLogin       String
+}
+
+
+model  Block {
+  BlockId       String @id @default(uuid())
+  blockBy       User   @relation("BlockedBy",fields: [blockedById], references: [UserId], onDelete: Cascade)
+  blockedById   String
+  blockByLogin  String
+  blocked       User   @relation("Blocked",fields: [blockedId], references: [UserId], onDelete: Cascade)
+  blockedId     String
+  blockedLogin  String
+  BlockeddAt    DateTime @default(now())
+}
+
+
+// channel Models
+
+model channel {
+  ChannelId      String    @id @default(uuid())
+  isPrivate      Boolean
+  channelName    String    @unique
+  createdAt      DateTime  @default(now())
+  LoginOwner     String
+  avatar         String   @default("0")
+  messages       MsgChannel[] @relation("MessagesChannel")
+  members        MembershipChannel[] @relation("MembersChannel")
+  ispassword     Boolean
+  password       String
+}
+
+model MembershipChannel {
+  MembershipId      String @id @default(uuid())
+  createdAt         DateTime  @default(now())
+  isMute            Boolean  @default(false)
+  timeMute          DateTime @default(now()) 
+  isBlacklist       Boolean  @default(false)
+  isOwner           Boolean  @default(false)
+  isAdmin           Boolean  @default(false)
+  channel           channel  @relation("MembersChannel",fields: [channelId], references: [ChannelId], onDelete: Cascade)
+  channelName       String
+  channelId         String
+  login             String
+  user              User    @relation("Membership",fields: [userId], references: [UserId], onDelete: Cascade)
+  userId            String
+}
+
+model MsgChannel {
+  MsgChannelId        String @id @default(uuid())
+  login               String        
+  avatar              String   
+  username            String   
+  content             String
+  sendAt              DateTime  @default(now())
+  channel             channel @relation("MessagesChannel",fields: [channelId], references: [ChannelId], onDelete: Cascade)
+  channelId           String
+  channelName         String
+}
+
+model Acheivement {
+  acheivementId    String @id @default(uuid())
+  Id               Int
+  user             User   @relation("Acheivement", fields: [userId], references: [UserId], onDelete: Cascade)
+  userId           String 
+  //
+  login        String
+}
+
+model User {
+  UserId              String @id @default(uuid())
+  login               String @unique()
+  username            String @unique
+  email               String @unique
+  avatar              String @default("0")
+  enableTwoFa         Boolean @default(false)
+  twoFactorSecret     String?
+  lvl                 Float  @default(0)
+  isOnline            Boolean   @default(false)
+  inGame              Boolean   @default(false)
+  // Acheivement
+  achievement         Acheivement[] @relation("Acheivement")
+  // Friends
+  friendsAddedUser     Friend[] @relation("relationA")
+  friendsAddeBydUser   Friend[] @relation("relationB")
+
+  // Block
+  blockedBy             Block[] @relation("BlockedBy")
+  blocked               Block[] @relation("Blocked")
+
+  // conversations
+  conversationsA        Conversation[]  @relation("conversationA")
+  conversationsB        Conversation[]  @relation("conversationB")
+
+  // channel
+  memberships            MembershipChannel[] @relation("Membership")
+
+  //matches
+  matchhistoryA   match[] @relation("matchA")
+  matchhistoryB   match[] @relation("matchB")
+
+  // pending friendShips
+  pendingA PendingFriendShip[] @relation("pendingA")
+  pendingB PendingFriendShip[] @relation("pendingB")
+}
+
+model match {
+  matchyId     String    @id @default(uuid())
+  userA        User      @relation("matchA",fields: [userAId], references: [UserId], onDelete: Cascade)
+  userAId      String
+  scoreA       Int       @default(0)
+  userB        User      @relation("matchB",fields: [userBId], references: [UserId], onDelete: Cascade)
+  userBId      String
+  scoreB       Int       @default(0)
+  winner       Boolean     // userA :true  , userB:false
+  finishedAt   DateTime  @default(now())
+}
+
+model Conversation {
+  ConvId          String @id @default(uuid())
+  userA          User   @relation("conversationA", fields: [userAId], references: [UserId], onDelete: Cascade)
+  userAId        String
+  loginA         String
+  userB          User   @relation("conversationB", fields: [userBId], references: [UserId], onDelete: Cascade)
+  userBId        String
+  loginB         String
+  messages        Message[]
+  createdAt       DateTime  @default(now())
+}
+
+model Message {
+  MsgId           String @id @default(uuid())
+  content         String
+  sendAt          DateTime  @default(now())
+  loginSender     String
+  loginReceiver   String
+  fromUserA       Boolean // to know who send the msg (userA or userB) of conversation
+  conversation    Conversation @relation(fields: [conversationId], references: [ConvId], onDelete: Cascade)
+  conversationId  String 
+}
