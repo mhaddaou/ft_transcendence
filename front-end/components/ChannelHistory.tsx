@@ -621,14 +621,16 @@ const ChannelHistor = ({ history, id }: { history: msgChannel[], id: string }) =
 
   const ListBan = () =>{
     const getData = async () =>{
-      const response = await axios.post(`${process.env.Banned}`, {
-          channelName : context?.channelInfo?.channelName,
-        },{
-          headers:{
-            Authorization: `Bearer ${context?.token}`,
-          }
-        })
-        context?.setChannelBanner(response.data);
+      try{
+        const response = await axios.post(`${process.env.Banned}`, {
+            channelName : context?.channelInfo?.channelName,
+          },{
+            headers:{
+              Authorization: `Bearer ${context?.token}`,
+            }
+          })
+          context?.setChannelBanner(response.data);
+      }catch(e){}
     }
     getData();
     openBanner();

@@ -51,17 +51,19 @@ const Upload = () =>{
                     setTitle('Warning!');
                     setIsModalOpen(true);
                 }
-                else{  
-                    axios.post("https://api.cloudinary.com/v1_1/daczu80rh/upload", form)
-                    .then((result) =>{
-                        setUrl(result.data.secure_url);
-                        context?.setImg(result.data.secure_url);
-                        sendToBck(result.data.secure_url);
-                        setColor('bg-green-500');
-                        setMsg('The image was successfully uploaded');
-                        setTitle('Success!');
-                        setIsModalOpen(true);
-                    })
+                else{
+                    try{
+                        axios.post("https://api.cloudinary.com/v1_1/daczu80rh/upload", form)
+                        .then((result) =>{
+                            setUrl(result.data.secure_url);
+                            context?.setImg(result.data.secure_url);
+                            sendToBck(result.data.secure_url);
+                            setColor('bg-green-500');
+                            setMsg('The image was successfully uploaded');
+                            setTitle('Success!');
+                            setIsModalOpen(true);
+                        })
+                    }catch(e){}  
                 }
                 setFile(null);
                 

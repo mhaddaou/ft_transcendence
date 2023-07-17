@@ -277,16 +277,19 @@ export function GetDataFriend() {
   const viewProfile = (friend: FriendType) => {
     context?.setProfileuser(friend.login);
     const getData = async () => {
-      const res = await axios.post(`${process.env.ViewProfile}`,
-        { login: friend.login },
-        {
-          headers: {
-            Authorization: `Bearer ${context?.token} `
+      try{
+        const res = await axios.post(`${process.env.ViewProfile}`,
+          { login: friend.login },
+          {
+            headers: {
+              Authorization: `Bearer ${context?.token} `
+  
+            }
+          });
+        if (res.data.message)
+          router.push(`${process.env.Profile}/${friend.login}`)
 
-          }
-        });
-      if (res.data.message)
-        router.push(`${process.env.Profile}/${friend.login}`)
+      }catch(e){}
     }
     getData();
   }

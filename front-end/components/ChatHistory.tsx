@@ -321,16 +321,18 @@ const blockUser = () =>{
 const viewProfile = () =>{
   context?.setProfileuser(context?.loginClick);
       const getData = async () =>{
-        const res = await axios.post('http://localhost:5000/user/viewProfile', 
-        {login : context?.loginClick}, 
-        {
-          headers: {
-            Authorization : `Bearer ${context?.token} `
-
-          }
-        });
-        if (res.data.message)
-          router.push(`http://localhost:3000/Profile/${context?.loginClick}`)
+        try{
+          const res = await axios.post('http://localhost:5000/user/viewProfile', 
+          {login : context?.loginClick}, 
+          {
+            headers: {
+              Authorization : `Bearer ${context?.token} `
+  
+            }
+          });
+          if (res.data.message)
+            router.push(`http://localhost:3000/Profile/${context?.loginClick}`)
+        }catch{}
       }
       getData();
 }

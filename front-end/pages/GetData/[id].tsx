@@ -18,11 +18,13 @@ import { checkIs7rag } from "@/components/Functions";
 
 
 export async function  checkIsFalse(token : string) {
+  try{
     const res = await axios.get(`${process.env.is7rag}`, {headers:{
             Authorization : `Bearer ${token}`
         }})
       
        return res.data.message;
+  }catch(e){}
 }
 
 const router = Router;
