@@ -70,6 +70,7 @@ export class matterNode {
     private intervalId: NodeJS.Timeout | null;
     private score = { left: 0, right: 0 }
     private winner = ""
+    private winnerUsername = ""
     private ready = true
     private eventEmitter: EventEmitter;
     public openGame = false
@@ -81,7 +82,7 @@ export class matterNode {
             player1: { user: null, client: null },
             player2: { user: null, client: null },
         };
-    private restart : boolean
+    private restart: boolean
     constructor(server: any, roomId: string, obj: measurements, openGame: boolean, clientSocket: string) {
         this.hostSocket = clientSocket
         this.roomId = roomId
@@ -102,7 +103,7 @@ export class matterNode {
             scale: 0
         };
         this.ball = Bodies.circle(-155, this.obj.ball.y, this.obj.ball.radius, { label: "ball", restitution: 1.1, friction: 0, frictionAir: 0, density: 10 });
-        this.leftPaddle = Bodies.rectangle(this.obj.leftPaddle.x, this.obj.leftPaddle.y,  this.obj.leftPaddle.width, this.obj.leftPaddle.height, { label: "leftPaddle", isStatic: true });
+        this.leftPaddle = Bodies.rectangle(this.obj.leftPaddle.x, this.obj.leftPaddle.y, this.obj.leftPaddle.width, this.obj.leftPaddle.height, { label: "leftPaddle", isStatic: true });
         this.rightPaddle = Bodies.rectangle(this.obj.rightPaddle.x, this.obj.rightPaddle.y, this.obj.rightPaddle.width, this.obj.rightPaddle.height, { label: "rightPaddle", isStatic: true })
         this.paddles = { left: this.leftPaddle, right: this.rightPaddle }
         var roof = Bodies.rectangle(obj.wallTop.x, obj.wallTop.y, obj.wallTop.width, obj.wallTop.height, {
@@ -167,12 +168,13 @@ export class matterNode {
     sendBallPosition() {
 
         // checking if there are users connected to the socket if false, the game instance is shut down and cleqred
-     
+
 
         this.intervalId = setInterval(() => {
 
             if (!this.availablePaddles.length) {
                 if (this.ready) {
+                    console.log("ready")
                     this.server.to(this.roomId).emit('ready', { msg: true });
                     if (this.restart == true) {
                         Body.setPosition(this.ball, { x: this.obj.divWidth / 2, y: this.obj.divHeight / 2 });
@@ -202,10 +204,11 @@ export class matterNode {
                         if (this.score.right >= 2) {
                             this.ready = false
                             this.winner = this.players.player2.user.login
+                            this.winnerUsername = this.players.player2.user.username
                             const resultMatch: storeMatchDto = { loginA: this.winner, scoreA: this.score.right, loginB: this.players.player1.user.login, scoreB: this.score.left, winner: true }
 
                             this.eventEmitter.emit('settingScores', { resultMatch: resultMatch });
-                            this.server.to(this.roomId).emit("gameOver", { gameOver: this.winner });
+                            this.server.to(this.roomId).emit("gameOver", { gameOver: this.winnerUsername });
                         }
                         else
                             setTimeout(() => {    // after seconds launch the ball again
@@ -220,10 +223,11 @@ export class matterNode {
                         if (this.score.left >= 2) {
                             this.ready = false
                             this.winner = this.players.player1.user.login
+                            this.winnerUsername = this.players.player1.user.username
                             const resultMatch: storeMatchDto = { loginA: this.winner, scoreA: this.score.left, loginB: this.players.player2.user.login, scoreB: this.score.right, winner: true }
                             this.eventEmitter.emit('settingScores', { resultMatch: resultMatch });
 
-                            this.server.to(this.roomId).emit("gameOver", { gameOver: this.winner });
+                            this.server.to(this.roomId).emit("gameOver", { gameOver: this.winnerUsername });
                         }
                         else
                             setTimeout(() => {
@@ -237,12 +241,16 @@ export class matterNode {
 
                 }
                 else {
+                    console.log("not ready")
+
                     this.server.to(this.roomId).emit('ready', { msg: true });
 
-                    this.server.to(this.roomId).emit('gameOver', { gameOver: this.winner });
+                    this.server.to(this.roomId).emit('gameOver', { gameOver: this.winnerUsername });
                 }
             }
             else {
+                console.log("no room")
+
                 Body.setVelocity(this.ball, { x: 0, y: 0 });
                 Body.setPosition(this.ball, { x: -155, y: this.obj.divHeight / 2 });
                 this.restart = true;
@@ -282,9 +290,11 @@ export class matterNode {
                     this.restart = true
                 }
             })
+            return true
         } else {
             // No available paddles, disconnect the user
             client.emit('gameStatus', { msg: "Game is full" });
+            return false
         }
     }
     updateConnectedUsers(user: User, client: Socket) {
@@ -294,7 +304,7 @@ export class matterNode {
             this.players.player2 = { user: user, client: client.id }
 
     }
-    
+
     clearGame() {
         clearInterval(this.intervalId)
         World.clear(this.world);

@@ -7,7 +7,7 @@ export class Achievements {
 
   constructor() {
     // Read the JSON file and parse its contents
-    const jsonData = readFileSync('/home/mhaddaou/Documents/ft_transcendence/backend/src/acheivements.json', 'utf8');
+    const jsonData = readFileSync('/goinfre/mhaddaou/meerg/good/backend/src/acheivements.json', 'utf8');
     this.data = JSON.parse(jsonData);
   }
 

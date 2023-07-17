@@ -411,7 +411,7 @@ export class MatterJsModules {
             const receivedScore = data.score;
             const players = data.players;
             if (players)
-                setPlayer({ p1: players.player1.user.login, p2: players.player2.user.login })
+                setPlayer({ p1: players.player1.user.username, p2: players.player2.user.username })
             setScore(receivedScore);
             setCountDown(0)
         });

@@ -30,7 +30,9 @@ module.exports = {nextConfig,
     Socket : 'http://localhost:3333',
     AuthQr : 'http://localhost:5000/auth/QR',
     TwoFa : 'http://localhost:5000/auth/2-FA',
-    Pprofile : 'http://localhost:5000/user/profile'
+    Pprofile : 'http://localhost:5000/user/profile',
+    FindProfile : 'http://localhost:5000/user/find',
+
   },
 
   images: {

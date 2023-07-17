@@ -133,6 +133,7 @@ export default function Chat() {
     }
     else {
     context?.setShowChat(true);
+    localStorage.setItem('statee', login);
    
     
       try{

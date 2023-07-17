@@ -239,6 +239,7 @@ const closeModale = () =>{
           }
         }
       })
+      // context.socket.on('updateUser', )
       context?.socket.on('delete', (pay) =>{
         if (pay){
           rmvFriend(pay.login);
@@ -249,15 +250,24 @@ const closeModale = () =>{
           rmvPend(pay.login)
         }
       })
-      // context.socket.on('updateUser', )
+      // {UserId: 'a165ab12-735a-4a2c-a4ed-18b97583d6e0', login: 'mhaddaou', username: 'medhaddaoui', email: 'mhaddaou@student.1337.ma', avatar: 'https://res.cloudinary.com/daczu80rh/image/upload/v1689478024/hastid_gwes2d.jpg', …} ' this is the pay'
       context.socket.on('updatedFriend', (pay) =>{
         if (pay){
-          console.log('this is pay update ', pay);
-          if (pay.login === context.login)
-            return;
+          console.log(pay, ' this is the pay');
+          if (pay.isOnline){
+            context.setOnligne((prev) => [...prev, pay.login])
+            console.log(context.onligne);
+          }
+          
           const getData = async () =>{
+            const history = await axios.get(`${process.env.ME}`, {headers:{
+              Authorization : `Bearer ${context.token}`
+          }})
+              context.setMatch(history.data.matches);
+            if (pay.login === context.login)
+              return;
             const res = await axios.post(
-              "http://localhost:5000/chat/findConversation",
+              `${process.env.FindConversation}`,
               { loginA: context?.login, loginB: pay.login },
               {
                 headers: {
@@ -268,7 +278,7 @@ const closeModale = () =>{
             context?.setMessageInfo(res.data[0]);
             context?.setMessageContent(res.data[1]);
             const chatconver = await axios.post(
-              'http://localhost:5000/chat/conversations',
+              `${process.env.Conversations}`,
               { login: context?.login },
               {
                 headers: {
@@ -277,7 +287,7 @@ const closeModale = () =>{
               }
             );
             context.setContactChat(chatconver.data);
-            const friend = await axios.post('http://localhost:5000/user/friends',
+            const friend = await axios.post(`${process.env.Friends}`,
             {
               login: context.login,
             },
@@ -289,14 +299,11 @@ const closeModale = () =>{
             context?.setPendingInvitation(friend.data.waitToAccept);
             context?.setWaitToAccept(friend.data.pendingInvitation);
             context.setFriends(friend.data.friends);
-            const history = await axios.get('http://localhost:5000/user/me', {headers:{
-            Authorization : `Bearer ${context.token}`
-        }})
-            context.setMatch(history.data.matches);
+          
           }
           getData();
           const fetchLeaderBoard = async () =>{
-            const res = await axios.get('http://localhost:5000/user/Leaderboard',{
+            const res = await axios.get(`${process.env.Leaderboard}`,{
               headers:{
                 Authorization: `Bearer ${context?.token}`
               }
@@ -312,7 +319,7 @@ const closeModale = () =>{
           const fetchData = async () => {
             try {
               const res = await axios.post(
-                'http://localhost:5000/chat/memberships',
+                `${process.env.Memb}`,
                 { login: context?.login },
                 {
                   headers: {
@@ -333,7 +340,7 @@ const closeModale = () =>{
       context.socket.on('blockuser', (pay) =>{
         if (pay) {
           const getData = async () =>{
-            const res = await axios.post('http://localhost:5000/user/friends', 
+            const res = await axios.post(`${process.env.Friends}`, 
             {
               login: context.login,
             },
@@ -351,7 +358,7 @@ const closeModale = () =>{
           const fetchData = async () => {
             try {
               const res = await axios.post(
-                'http://localhost:5000/chat/conversations',
+                `${process.env.Conversations}`,
                 { login: context?.login },
                 {
                   headers: {
@@ -373,7 +380,7 @@ const closeModale = () =>{
         const fetchData = async () => {
           try {
             const res = await axios.post(
-              'http://localhost:5000/chat/conversations',
+              `${process.env.Conversations}`,
               { login: context?.login },
               {
                 headers: {
@@ -394,7 +401,7 @@ const closeModale = () =>{
           const fetchData = async () => {
             try {
               const res = await axios.post(
-                'http://localhost:5000/chat/conversations',
+                `${process.env.Conversations}`,
                 { login: context?.login },
                 {
                   headers: {
@@ -421,7 +428,7 @@ const closeModale = () =>{
           context?.setLevel((+m.substring(0,1)))
           context?.setLevlPer((+(m.substring(2.1))) * 10)
           const getData = async () =>{
-            const res = await axios.get('http://localhost:5000/user/me', {headers:{
+            const res = await axios.get(`${process.env.ME}`, {headers:{
             Authorization : `Bearer ${context.token}`
         }})
             context.setMatch(res.data.matches);
@@ -444,7 +451,7 @@ const closeModale = () =>{
             context.setFetchChannel(true);
           }
           const fetData = async () =>{
-            const friend = await axios.post('http://localhost:5000/user/friends',
+            const friend = await axios.post(`${process.env.Friends}`,
             {
               login : context.login
             },{
@@ -455,7 +462,7 @@ const closeModale = () =>{
             context.setFriends(friend.data.friends);
             context.setPendingInvitation(friend.data.waitToAccept);
             context.setWaitToAccept(friend.data.waitToAccep);
-            const blocks = await axios.post('http://localhost:5000/user/blocks',
+            const blocks = await axios.post(`${process.env.Blocks}`,
             {
               login : context?.login
             },{
@@ -467,7 +474,7 @@ const closeModale = () =>{
             context?.setUserBlocked(blocks.data);
 
             const conversations = await axios.post(
-              'http://localhost:5000/chat/conversations',
+              `${process.env.Conversations}`,
               { login: context?.login },
               {
                 headers: {
@@ -477,7 +484,7 @@ const closeModale = () =>{
             );
             context?.setContactChat(conversations.data);
             const channels = await axios.post(
-              'http://localhost:5000/chat/memberships',
+              `${process.env.Memb}`,
               { login: context?.login },
               {
                 headers: {
@@ -488,7 +495,7 @@ const closeModale = () =>{
             context?.setChannels(channels.data);
             if (context.channelHistory[0].channelName === namech){
               const messages = await axios.post(
-                'http://localhost:5000/chat/channel/message/all',
+                `${process.env.AllMes}`,
                 {channelName: namech}, 
                 {
                   headers:{
@@ -520,7 +527,7 @@ const closeModale = () =>{
           const fetchData = async () => {
             try {
               const res = await axios.post(
-                'http://localhost:5000/chat/memberships',
+                `${process.env.Memb}`,
                 { login: context?.login },
                 {
                   headers: {
@@ -530,7 +537,7 @@ const closeModale = () =>{
               );
               context?.setChannels(res.data);
               const resp = await axios.post(
-                'http://localhost:5000/chat/channel/message/all',
+                `${process.env.AllMes}`,
                 {channelName: pay.channelName}, 
                 {
                   headers:{

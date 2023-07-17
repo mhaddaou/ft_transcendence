@@ -45,7 +45,7 @@ const Other = () =>{
       const getUser = async () =>{
         if (userLogin){
           try{
-            const res = await axios.post('http://localhost:5000/user/find',
+            const res = await axios.post(`${process.env.FindProfile}`,
             {login : userLogin},{
               headers:{
                 Authorization: `Bearer ${context?.token}`
@@ -64,7 +64,7 @@ const Other = () =>{
       getUser();
 
       try{
-        const res = await axios.post('http://localhost:5000/user/viewProfile', 
+        const res = await axios.post(`${process.env.ViewProfile}`, 
         {login : userLogin}, 
         {
           headers: {
@@ -111,7 +111,7 @@ const Other = () =>{
     useEffect(() =>{
       const fetchData = async  () =>{
         try{
-          const res = await axios.post('http://localhost:5000/user/profile',{
+          const res = await axios.post(`${process.env.Pprofile}`,{
             login: context?.profileuser
           },
           {
@@ -241,4 +241,3 @@ else{
 }
 
 export default Other;
-
