@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+
+    db:
+      image: postgres
+      restart: always
+      ports:
+        - 5432:5432
+      environment:
+        - POSTGRES_DB=${DB_NAME}
+        - POSTGRES_USER=${POSTGRES_USER}
+        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      env_file:
+        - .env
+    adminer:
+      image: adminer
+      restart: always
+      ports:
+        - 8080:8080
+
+    backend:
+      container_name: backend
+      build:
+        context: ./backend
+      ports:
+        - "127.0.0.1:5000:5000"
+        - "127.0.0.1:3333:3333"
+        - "127.0.0.1:5555:5555"
+      depends_on:
+        - db
+      restart: always
+        
+    front-end:
+      container_name: front-end
+      build:
+        context: ./front-end
+      ports:
+        - "3000:3000"
+      depends_on:
+        - backend
+      restart: always
