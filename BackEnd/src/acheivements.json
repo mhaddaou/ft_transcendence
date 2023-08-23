@@ -1,0 +1,40 @@
+{
+    "achievements": [
+      {
+        "id": "1",
+        "avatar":"1",
+        "title": "Rookie Champion",
+        "description": "Congratulations on winning your first Pigpong game!",
+        "condition": "First Game"
+      },
+      {
+        "id": "2",
+        "avatar":"2",
+        "title": "Winning Streak",
+        "description": "You're on fire! This achievement is unlocked when you win three consecutive Pigpong games.",
+        "condition": "3 Wins",
+        "reward": ""
+      },
+      {
+        "id": "3",
+        "avatar":"3",
+        "title": "Paddle Prodigy",
+        "description": "You've proven your paddle skills. This achievement is unlocked when you win a total of nine Pigpong games.",
+        "condition": "9 Wins"
+      },
+      {
+        "id": "4",
+        "avatar":"4",
+        "title": "Never Give Up",
+        "description": "You've faced defeat but never let it stop you. This achievement is unlocked when you experience nine losses in Pigpong games.",
+        "condition": "9 Losses"
+      },
+      {
+        "id": "5",
+        "avatar":"5",
+        "title": "Ultimate Champion",
+        "description": "You've reached the pinnacle of Pigpong success! This achievement is unlocked when you accumulate a total of nine wins in the game. You've proven yourself as the ultimate champion, dominating the competition. Enjoy your well-deserved glory!",
+        "condition": "21 Wins"
+      }
+    ]
+  }
