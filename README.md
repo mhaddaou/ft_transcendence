@@ -31,7 +31,6 @@ This project consists of creating user accounts, chatting in channels and playin
 
 - Users should be able to play a live pong game vs another player directly on the website
 - Matchmaking system - the user can join a queue until they get automatically matched with someone.
-- 2D, 2.5D or 3D Pong.
 - Customisation Options (eg. Power-ups, Different Maps), however, the user should be able to select a default version of the game.
 - The Pong Game must be responsive.
 
